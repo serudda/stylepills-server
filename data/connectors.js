@@ -35,16 +35,12 @@ const db = new Sequelize('stylepills', null, null, {
     storage: 'data/stylepills.sqlite',    
 });
 
-console.log('LOG', db);
-
 const UiComponentModel = db.define('uiComponent', {
     title: { type: Sequelize.STRING},
     html: { type: Sequelize.STRING},
     css: { type: Sequelize.STRING},
     scss: { type: Sequelize.STRING},
 });
-
-console.log('LOG 2:', UiComponentModel);
 
 const ColorPaletteModel = db.define('colorPalette', {
     label: { type: Sequelize.STRING},

@@ -3,8 +3,7 @@
   "version": "0.1.0",
   "description": "Minimal set of code to write a GraphQL server with Apollo graphql-tools",
   "scripts": {
-    "start": "nodemon ./server.js --exec babel-node",
-    "debug": "node --debug-brk --inspect server.js",
+    "start": "nodemon ./index.js --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ."
   },
@@ -30,12 +29,15 @@
     "@types/body-parser": "^1.16.5",
     "@types/express": "^4.0.37",
     "@types/lodash": "^4.14.74",
+    "@types/pg": "^7.1.1",
     "@types/sequelize": "^4.0.73",
     "apollo-server-express": "^1.0.2",
     "body-parser": "^1.17.2",
     "express": "4.13.4",
     "graphql-tools": "^1.0.0",
     "lodash": "^4.17.4",
+    "pg": "^7.3.0",
+    "pg-hstore": "^2.3.2",
     "sequelize": "^4.8.4",
     "sqlite": "^2.8.0"
   },
