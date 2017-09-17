@@ -32,7 +32,7 @@ export interface SequelizeModels {
 
 const db = new Sequelize('stylepills', null, null, {
     dialect: 'sqlite',
-    storage: 'data/stylepills.sqlite',    
+    storage: 'src/data/stylepills.sqlite',    
 });
 
 const UiComponentModel = db.define('uiComponent', {
