@@ -1,18 +1,18 @@
-import Sequelize from 'sequelize';
-//import { Instance, Model } from 'sequelize';
+//import Sequelize from 'sequelize';
+import { Instance, Model } from 'sequelize';
 import * as casual from 'casual';
 import * as _ from 'lodash';
 
-//var Sequelize = require('sequelize');
+var Sequelize = require('sequelize');
 
-/*export interface IUiComponentAttributes {
+export interface IUiComponentAttributes {
     title: string;
     html: string;
     css: string;
     scss: string;
-}*/
+}
 
-/*export interface IUiComponentInstance extends Instance<IUiComponentAttributes> {
+export interface IUiComponentInstance extends Instance<IUiComponentAttributes> {
     dataValues: IUiComponentAttributes;
 }
 
@@ -28,11 +28,11 @@ export interface IColorPaletteInstance extends Instance<IColorPaletteAttributes>
 export interface SequelizeModels {
     UiComponent: Model<IUiComponentInstance, IUiComponentAttributes>;
     ColorPaletteModel: Model<IColorPaletteInstance, IColorPaletteAttributes>;
-}*/
+}
 
 const db = new Sequelize('stylepills', null, null, {
     dialect: 'sqlite',
-    storage: 'data/stylepills.sqlite',    
+    storage: 'src/data/stylepills.sqlite',    
 });
 
 const UiComponentModel = db.define('uiComponent', {
@@ -59,7 +59,7 @@ db.sync({ force: true }).then(() => {
             html: casual.email,
             css: casual.short_description,
             scss: casual.short_description,
-        }).then((uiComponent) => {
+        }).then((uiComponent: any) => {
             return uiComponent.createColorPalette({
                 hex: casual.rgb_hex,
                 label: casual.rgb_hex,

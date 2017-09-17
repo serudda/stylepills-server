@@ -1,6 +1,6 @@
-import express from 'express';
+import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
-import bodyParser from 'body-parser';
+import * as bodyParser from 'body-parser';
 import schema from './data/schema';
 
 const GRAPHQL_PORT = 3000;

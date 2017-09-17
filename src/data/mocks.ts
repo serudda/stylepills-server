@@ -1,8 +1,8 @@
-import casual from 'casual';
+import * as casual from 'casual';
 
 const mocks = {
     Query: () => ({
-        uiComponent: (root, args) => {
+        uiComponent: (root: any, args: any) => {
             return {
                 id: args.id,
                 title: args.title,

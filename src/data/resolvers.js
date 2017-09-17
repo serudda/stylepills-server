@@ -1,9 +1,10 @@
-import { UiComponent } from './connectors';
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const connectors_1 = require("./connectors");
 const resolvers = {
     Query: {
         uiComponents() {
-            return UiComponent.findAll();
+            return connectors_1.UiComponent.findAll();
         },
         uiComponent(_, args) {
             return {
@@ -11,7 +12,7 @@ const resolvers = {
                 css: 'More css',
                 scss: 'More scss',
                 html: 'More html',
-            }
+            };
         },
     },
     UiComponent: {
@@ -20,5 +21,5 @@ const resolvers = {
         },
     },
 };
-
-export default resolvers;
+exports.default = resolvers;
+//# sourceMappingURL=resolvers.js.map
