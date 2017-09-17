@@ -1,7 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const graphql_tools_1 = require("graphql-tools");
-const resolvers_1 = require("./resolvers");
+import {
+    makeExecutableSchema,
+    //addMockFunctionsToSchema,
+} from 'graphql-tools';
+import mocks from './mocks';
+import resolvers from './resolvers';
+
 const typeDefs = `
 
 type ColorPalette {
@@ -41,9 +44,14 @@ type Mutation {
 }
 
 `;
-const schema = graphql_tools_1.makeExecutableSchema({ typeDefs, resolvers: resolvers_1.default });
+
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+
 //addMockFunctionsToSchema({ schema, mocks });
-exports.default = schema;
+
+export default schema;
+
+
 /**
 Teoria:
 
@@ -141,4 +149,3 @@ Teoria:
 
 
  */
-//# sourceMappingURL=schema.js.map

@@ -1,25 +1,24 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const connectors_1 = require("./connectors");
+import { UiComponent } from './connectors';
+
 const resolvers = {
     Query: {
         uiComponents() {
-            return connectors_1.UiComponent.findAll();
+            return UiComponent.findAll();
         },
-        uiComponent(_, args) {
+        uiComponent(_: any, args: any) {
             return {
                 title: 'Ghost Button',
                 css: 'More css',
                 scss: 'More scss',
                 html: 'More html',
-            };
+            }
         },
     },
     UiComponent: {
-        colorPalette(uiComponent) {
+        colorPalette(uiComponent: any) {
             return uiComponent.getColorPalettes();
         },
     },
 };
-exports.default = resolvers;
-//# sourceMappingURL=resolvers.js.map
+
+export default resolvers;

@@ -1,9 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const casual = require("casual");
+import * as casual from 'casual';
+
 const mocks = {
     Query: () => ({
-        uiComponent: (root, args) => {
+        uiComponent: (root: any, args: any) => {
             return {
                 id: args.id,
                 title: args.title,
@@ -20,5 +19,5 @@ const mocks = {
         title: () => casual.title,
     }),
 };
-exports.default = mocks;
-//# sourceMappingURL=mocks.js.map
+
+export default mocks;
