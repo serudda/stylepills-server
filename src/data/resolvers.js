@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const connectors_1 = require("./connectors");
+const index_1 = require("../models/index");
 const resolvers = {
     Query: {
         uiComponents() {
-            return connectors_1.UiComponent.findAll();
+            return index_1.models.UiComponent.findAll();
         },
         uiComponent(_, args) {
             return {

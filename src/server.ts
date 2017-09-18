@@ -6,12 +6,14 @@ import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
 import schema from './data/schema';
 
+
 // CONSTANTS
 const GRAPHQL_PORT = 3000;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 
 const graphQLServer = express();
+
 
 // INIT GRAPHQL SERVER
 graphQLServer.use(GRAPHQL_ROUTE, bodyParser.json(), graphqlExpress({ schema }));

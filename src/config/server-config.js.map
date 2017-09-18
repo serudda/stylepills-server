@@ -1,0 +1,1 @@
+{"version":3,"file":"server-config.js","sourceRoot":"/Users/sergioruizdavila/Documents/Projects/Stylepills/stylepills-server/src/","sources":["config/server-config.ts"],"names":[],"mappings":";;AAWa,QAAA,YAAY,GAAiB;IACtC,IAAI,EAAE,IAAI;IACV,OAAO,EAAE;QACL,MAAM,EAAE,eAAe;QACvB,IAAI,EAAE,mBAAmB;QACzB,MAAM,EAAE,KAAK;QACb,iBAAiB,EAAE,KAAK;QACxB,KAAK,EAAE,KAAK;KACf;CACJ,CAAC"}

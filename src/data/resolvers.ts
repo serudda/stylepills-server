@@ -1,9 +1,9 @@
-import { UiComponent } from './connectors';
+import { models, sequelize } from "../models/index";
 
 const resolvers = {
     Query: {
         uiComponents() {
-            return UiComponent.findAll();
+            return models.UiComponent.findAll();
         },
         uiComponent(_: any, args: any) {
             return {
