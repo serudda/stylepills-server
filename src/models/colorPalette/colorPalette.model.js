@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = require("../index");
 /*****************************************/
 /*          COLOR PALETTE MODEL          */
 /*****************************************/
@@ -15,19 +16,15 @@ function default_1(sequelize, dataTypes) {
         }
     }, {
         indexes: [],
-        classMethods: {
-            associate: function (models) {
-                models.ColorPalette.belongsTo(models.UiComponent, {
-                    onDelete: "CASCADE",
-                    foreignKey: {
-                        allowNull: false
-                    }
-                });
-            }
-        },
         timestamps: false
     });
-    //ColorPalette.belongsTo(models.UiComponent);
+    // Create relationship
+    ColorPalette.belongsTo(index_1.models.UiComponent, {
+        onDelete: "CASCADE",
+        foreignKey: {
+            allowNull: false
+        }
+    });
     return ColorPalette;
 }
 exports.default = default_1;

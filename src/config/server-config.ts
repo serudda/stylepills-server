@@ -1,3 +1,6 @@
+/************************************/
+/*            INTERFACE             */
+/************************************/
 export interface ServerConfig {
     port: number;
     session: {
@@ -8,7 +11,11 @@ export interface ServerConfig {
         proxy: boolean
     };
 }
-  
+
+
+/****************************************/
+/*            SERVER CONFIG             */
+/****************************************/
 export const serverConfig: ServerConfig = {
     port: 3000,
     session: {

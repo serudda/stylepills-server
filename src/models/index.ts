@@ -86,6 +86,9 @@ class Database {
 }
 
 
+/* Create Database Instance */
 const database = new Database();
+
+/* Export models and sequelize objects */
 export const models = database.getModels();
 export const sequelize = database. getSequelize();

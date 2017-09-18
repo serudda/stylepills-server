@@ -45,17 +45,11 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
                 type: dataTypes.TEXT,
                 allowNull: true
             }
-        }, 
-        {
-            classMethods: {
-                associate: function(models: any) {
-                    models.UiComponent.hasMany(models.ColorPalette);
-                }
-            }
-        }
-    );
+    });
 
-    //UiComponent.hasMany(models.ColorPalette);
+    // Create relationship
+    UiComponent.hasMany(models.ColorPalette);
+
 
     return UiComponent;
     

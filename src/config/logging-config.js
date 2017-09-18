@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/****************************************/
+/*            LOGGING CONFIG            */
+/****************************************/
 exports.loggingConfig = {
     file: {
         level: 'error',

@@ -1,3 +1,6 @@
+/************************************/
+/*            INTERFACE             */
+/************************************/
 export interface LoggingConfig {
     file: {
         level: string,
@@ -15,9 +18,13 @@ export interface LoggingConfig {
         colorize: boolean
     };
     directory: string;
-  }
-  
-  export const loggingConfig: LoggingConfig = {
+}
+
+
+/****************************************/
+/*            LOGGING CONFIG            */
+/****************************************/
+export const loggingConfig: LoggingConfig = {
     file: {
         level: 'error',
         filename: 'stylepills_db.log',
@@ -34,4 +41,4 @@ export interface LoggingConfig {
         colorize: true
     },
     directory: __dirname
-  };
+};

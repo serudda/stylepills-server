@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = require("../index");
 /*****************************************/
 /*          COLOR PALETTE MODEL          */
 /*****************************************/
@@ -21,14 +22,9 @@ function default_1(sequelize, dataTypes) {
             type: dataTypes.TEXT,
             allowNull: true
         }
-    }, {
-        classMethods: {
-            associate: function (models) {
-                models.UiComponent.hasMany(models.ColorPalette);
-            }
-        }
     });
-    //UiComponent.hasMany(models.ColorPalette);
+    // Create relationship
+    UiComponent.hasMany(index_1.models.ColorPalette);
     return UiComponent;
 }
 exports.default = default_1;

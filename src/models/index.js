@@ -54,7 +54,9 @@ class Database {
         return this._sequelize;
     }
 }
+/* Create Database Instance */
 const database = new Database();
+/* Export models and sequelize objects */
 exports.models = database.getModels();
 exports.sequelize = database.getSequelize();
 //# sourceMappingURL=index.js.map

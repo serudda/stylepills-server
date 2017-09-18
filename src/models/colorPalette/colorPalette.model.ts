@@ -36,21 +36,17 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
             }
         }, {
             indexes: [],
-            classMethods: {
-                associate: function(models: any) {
-                    models.ColorPalette.belongsTo(models.UiComponent, {
-                        onDelete: "CASCADE",
-                        foreignKey: {
-                            allowNull: false
-                        }
-                    });
-                }
-            },
             timestamps: false
         }
     );
 
-    //ColorPalette.belongsTo(models.UiComponent);
+    // Create relationship
+    ColorPalette.belongsTo(models.UiComponent, {
+        onDelete: "CASCADE",
+        foreignKey: {
+            allowNull: false
+        }
+    });
 
     return ColorPalette;
 
