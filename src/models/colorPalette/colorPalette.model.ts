@@ -2,8 +2,8 @@
 /*           DEPENDENCIES           */
 /************************************/
 import * as SequelizeStatic from 'sequelize';
-import {Instance, DataTypes, Sequelize} from 'sequelize';
-import { models } from "../index";
+import { Instance, DataTypes, Sequelize } from 'sequelize';
+import { models } from '../index';
 
 /************************************/
 /*            INTERFACE             */
@@ -25,7 +25,7 @@ export default function(sequelize: Sequelize, dataTypes: DataTypes):
 SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
 
     let ColorPalette = sequelize.define<IColorPaletteInstance, IColorPaletteAttributes>(
-        "ColorPalette", {
+        'ColorPalette', {
             label: {
                 type: dataTypes.STRING,
                 allowNull: true
@@ -42,10 +42,8 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
 
     // Create relationship
     ColorPalette.belongsTo(models.UiComponent, {
-        onDelete: "CASCADE",
-        foreignKey: {
-            allowNull: false
-        }
+        foreignKey: 'uiComponentId',
+        onDelete: 'CASCADE'
     });
 
     return ColorPalette;

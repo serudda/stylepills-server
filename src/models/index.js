@@ -16,10 +16,11 @@ class Database {
     constructor() {
         this._basename = path.basename(module.filename);
         let dbConfig = config_1.config.getDatabaseConfig();
+        console.log('dbConfig: ', dbConfig);
         if (dbConfig.logging) {
             dbConfig.logging = logger_1.logger.info;
         }
-        SequelizeStatic.cls = cls.createNamespace("sequelize-transaction");
+        SequelizeStatic.cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
         this._models = {};
         /* Leemos nuestras carpeta 'models', encontrando e importando cada uno de
@@ -42,7 +43,7 @@ class Database {
         /* Aplicamos las relaciones entre los modelos, si tales relaciones
         existen. */
         Object.keys(this._models).forEach((modelName) => {
-            if (typeof this._models[modelName].associate === "function") {
+            if (typeof this._models[modelName].associate === 'function') {
                 this._models[modelName].associate(this._models);
             }
         });

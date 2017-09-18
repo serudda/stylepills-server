@@ -1,6 +1,6 @@
-import {databaseConfig, DatabaseConfig} from "./database-config";
-import {loggingConfig, LoggingConfig} from "./logging-config";
-import {serverConfig, ServerConfig} from "./server-config";
+import { databaseConfig, DatabaseConfig } from './database-config';
+import { loggingConfig, LoggingConfig } from './logging-config';
+import { serverConfig, ServerConfig } from './server-config';
 
 class Config {
     private _databaseConfig: DatabaseConfig;

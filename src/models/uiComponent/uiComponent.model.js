@@ -8,6 +8,7 @@ function default_1(sequelize, dataTypes) {
     let UiComponent = sequelize.define('UiComponent', {
         title: {
             type: dataTypes.STRING,
+            // defaultValue: false,
             allowNull: true
         },
         html: {
@@ -24,7 +25,10 @@ function default_1(sequelize, dataTypes) {
         }
     });
     // Create relationship
-    UiComponent.hasMany(index_1.models.ColorPalette);
+    UiComponent.hasMany(index_1.models.ColorPalette, {
+        foreignKey: 'uiComponentId',
+        as: 'colorPalette'
+    });
     return UiComponent;
 }
 exports.default = default_1;

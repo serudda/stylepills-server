@@ -40,7 +40,7 @@ class Database {
             dbConfig.logging = logger.info;
         }
 
-        (SequelizeStatic as any).cls = cls.createNamespace("sequelize-transaction");
+        (SequelizeStatic as any).cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username,
             dbConfig.password, dbConfig);
         this._models = ({} as any);
@@ -63,15 +63,15 @@ class Database {
 
             .forEach((file: string) => {
                 const model = this._sequelize.import(path.join(__dirname, file));
-                (<any>this._models)[(model as any).name] = model;
+                (<any> this._models)[(model as any).name] = model;
             });
 
 
         /* Aplicamos las relaciones entre los modelos, si tales relaciones 
         existen. */
         Object.keys(this._models).forEach((modelName: string) => {
-            if (typeof (<any>this._models)[modelName].associate === "function") {
-                (<any>this._models)[modelName].associate(this._models);
+            if (typeof (<any> this._models)[modelName].associate === 'function') {
+                (<any> this._models)[modelName].associate(this._models);
             }
         });
     }

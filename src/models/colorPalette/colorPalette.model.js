@@ -5,7 +5,7 @@ const index_1 = require("../index");
 /*          COLOR PALETTE MODEL          */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
-    let ColorPalette = sequelize.define("ColorPalette", {
+    let ColorPalette = sequelize.define('ColorPalette', {
         label: {
             type: dataTypes.STRING,
             allowNull: true
@@ -20,10 +20,8 @@ function default_1(sequelize, dataTypes) {
     });
     // Create relationship
     ColorPalette.belongsTo(index_1.models.UiComponent, {
-        onDelete: "CASCADE",
-        foreignKey: {
-            allowNull: false
-        }
+        foreignKey: 'uiComponentId',
+        onDelete: 'CASCADE'
     });
     return ColorPalette;
 }

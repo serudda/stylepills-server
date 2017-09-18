@@ -10,7 +10,7 @@ export interface DatabaseConfig {
     dialect: string;
     logging: boolean | Function;
 }
-  
+
 
 /****************************************/
 /*            DATABASE CONFIG           */
@@ -24,3 +24,11 @@ export const databaseConfig: DatabaseConfig = {
     dialect: 'postgres',
     logging: true
 };
+
+
+/* Esta linea es necesaria para poder correr el comando: 
+    sequelize db:migrate
+Ya que este comando busca en .sequelizerc la configuración que le hayamos
+establecido (database-config.js)
+*/
+module.exports = databaseConfig;

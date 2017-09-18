@@ -2,8 +2,8 @@
 /*           DEPENDENCIES           */
 /************************************/
 import * as SequelizeStatic from 'sequelize';
-import {Instance, DataTypes, Sequelize} from 'sequelize';
-import { models } from "../index";
+import { Instance, DataTypes, Sequelize } from 'sequelize';
+import { models } from '../index';
 
 
 /************************************/
@@ -31,6 +31,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         'UiComponent', {
             title: {
                 type: dataTypes.STRING,
+                // defaultValue: false,
                 allowNull: true
             },
             html: {
@@ -48,7 +49,10 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
     });
 
     // Create relationship
-    UiComponent.hasMany(models.ColorPalette);
+    UiComponent.hasMany(models.ColorPalette, {
+        foreignKey: 'uiComponentId',
+        as: 'colorPalette'
+    });
 
 
     return UiComponent;
