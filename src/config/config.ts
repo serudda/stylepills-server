@@ -1,11 +1,18 @@
-import { databaseConfig, DatabaseConfig } from './database-config';
-import { loggingConfig, LoggingConfig } from './logging-config';
-import { serverConfig, ServerConfig } from './server-config';
+/***************************************/
+/*            DEPENDENCIES             */
+/***************************************/
+import { databaseConfig, IDatabaseConfig } from './database-config';
+import { loggingConfig, ILoggingConfig } from './logging-config';
+import { serverConfig, IServerConfig } from './server-config';
 
+
+/***************************************/
+/*            CONFIG CLASS             */
+/***************************************/
 class Config {
-    private _databaseConfig: DatabaseConfig;
-    private _loggingConfig: LoggingConfig;
-    private _serverConfig: ServerConfig;
+    private _databaseConfig: IDatabaseConfig;
+    private _loggingConfig: ILoggingConfig;
+    private _serverConfig: IServerConfig;
 
     constructor() {
         this._databaseConfig = databaseConfig;
@@ -13,17 +20,18 @@ class Config {
         this._serverConfig = serverConfig;
     }
 
-    getDatabaseConfig(): DatabaseConfig {
+    getDatabaseConfig(): IDatabaseConfig {
         return this._databaseConfig;
     }
 
-    getLoggingConfig(): LoggingConfig {
+    getLoggingConfig(): ILoggingConfig {
         return this._loggingConfig;
     }
 
-    getServerConfig(): ServerConfig {
+    getServerConfig(): IServerConfig {
         return this._serverConfig;
     }
 }
 
+/* Export Config instance */
 export const config = new Config();

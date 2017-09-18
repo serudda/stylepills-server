@@ -16,7 +16,6 @@ class Database {
     constructor() {
         this._basename = path.basename(module.filename);
         let dbConfig = config_1.config.getDatabaseConfig();
-        console.log('dbConfig: ', dbConfig);
         if (dbConfig.logging) {
             dbConfig.logging = logger_1.logger.info;
         }

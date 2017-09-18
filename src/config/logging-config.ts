@@ -1,7 +1,7 @@
 /************************************/
 /*            INTERFACE             */
 /************************************/
-export interface LoggingConfig {
+export interface ILoggingConfig {
     file: {
         level: string,
         filename: string,
@@ -24,7 +24,7 @@ export interface LoggingConfig {
 /****************************************/
 /*            LOGGING CONFIG            */
 /****************************************/
-export const loggingConfig: LoggingConfig = {
+export const loggingConfig: ILoggingConfig = {
     file: {
         level: 'error',
         filename: 'stylepills_db.log',

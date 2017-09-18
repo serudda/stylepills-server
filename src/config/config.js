@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const database_config_1 = require("./database-config");
+const databaseConfig = require("./database-config");
 const logging_config_1 = require("./logging-config");
 const server_config_1 = require("./server-config");
 class Config {
     constructor() {
-        this._databaseConfig = database_config_1.databaseConfig;
+        this._databaseConfig = databaseConfig.default;
         this._loggingConfig = logging_config_1.loggingConfig;
         this._serverConfig = server_config_1.serverConfig;
     }

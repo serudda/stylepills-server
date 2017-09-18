@@ -1,7 +1,7 @@
 /************************************/
 /*            INTERFACE             */
 /************************************/
-export interface ServerConfig {
+export interface IServerConfig {
     port: number;
     session: {
         secret: string,
@@ -16,7 +16,7 @@ export interface ServerConfig {
 /****************************************/
 /*            SERVER CONFIG             */
 /****************************************/
-export const serverConfig: ServerConfig = {
+export const serverConfig: IServerConfig = {
     port: 3000,
     session: {
         secret: 'stylepills_db',
