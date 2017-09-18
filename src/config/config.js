@@ -1,11 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const databaseConfig = require("./database-config");
+/***************************************/
+/*            DEPENDENCIES             */
+/***************************************/
+const database_config_1 = require("./database-config");
 const logging_config_1 = require("./logging-config");
 const server_config_1 = require("./server-config");
+/***************************************/
+/*            CONFIG CLASS             */
+/***************************************/
 class Config {
     constructor() {
-        this._databaseConfig = databaseConfig.default;
+        this._databaseConfig = database_config_1.databaseConfig;
         this._loggingConfig = logging_config_1.loggingConfig;
         this._serverConfig = server_config_1.serverConfig;
     }
@@ -19,5 +25,6 @@ class Config {
         return this._serverConfig;
     }
 }
+/* Export Config instance */
 exports.config = new Config();
 //# sourceMappingURL=config.js.map

@@ -3,19 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /****************************************/
 /*            DATABASE CONFIG           */
 /****************************************/
-exports.default = {
-    username: null,
-    password: null,
+/* FIXME: El comando:
+    sequelize db:migrate
+No estaba funcionando si asignaba este archivo en '.sequelizerc' como
+configuracion de la base de datos. Lo correcto es que tome este mismo
+archivo como configuración, pero como arrojaba error, tuve que crear un
+'database-config.json', asi que cuando corro: npm run server, se configura
+enciende el server tomando este archivo como config de  la base, pero cuando
+quiero lanzar un migrate: sequelize db:migrate, toma la configuracion del .json.
+Buscar una solucion para sea el caso que sea siempre tome este archivo.*/
+exports.databaseConfig = {
+    username: 'sergioruizdavila',
+    password: 'admin',
     database: 'stylepills-dev',
     host: '127.0.0.1',
     port: 5432,
     dialect: 'postgres',
     logging: true
 };
-/* Esta linea es necesaria para poder correr el comando:
-    sequelize db:migrate
-Ya que este comando busca en .sequelizerc la configuración que le hayamos
-establecido (database-config.js)
-*/
-// module.exports = databaseConfig; 
 //# sourceMappingURL=database-config.js.map
