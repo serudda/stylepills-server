@@ -17,16 +17,40 @@ const typeDefs = [`
         query: Query
         mutation: Mutation
     }
+
+    type User {
+        id: ID!
+        username: String
+        firstName: String
+        lastName: String
+    }
+
+    # Input
+    input CreateUserInput {
+        username: String
+        firstName: String
+        lastName: String
+    }
+    
+    # Query
+    type Query {
+        getAllUsers: [User]
+    }
+
+    # Mutations
+    type Mutation {
+        createUser(input: CreateUserInput!): User
+    }
 `,
-    colorMutation.typeDef,
-    colorQuery.typeDef,
     colorTypes.typeDef,
-    colorPaletteMutation.typeDef,
-    colorPaletteQuery.typeDef,
+    colorQuery.typeDef,
+    colorMutation.typeDef,
     colorPaletteTypes.typeDef,
-    uiComponentMutation.typeDef,
-    uiComponentQuery.typeDef,
+    colorPaletteQuery.typeDef,
+    colorPaletteMutation.typeDef,
     uiComponentTypes.typeDef,
+    uiComponentQuery.typeDef,
+    uiComponentMutation.typeDef,
 ];
 // Merge all of the resolver objects together
 const resolvers = lodash_1.merge(colorMutation.resolver, colorQuery.resolver, colorPaletteMutation.resolver, colorPaletteQuery.resolver, uiComponentMutation.resolver, uiComponentQuery.resolver);

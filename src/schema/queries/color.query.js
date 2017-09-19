@@ -9,7 +9,7 @@ const index_1 = require("./../../models/index");
 /*************************************/
 exports.typeDef = `
     # Root Query
-    type Query {
+    extend type Query {
         getAllColors: [Color]
         getColorById(id: ID!): Color
     }

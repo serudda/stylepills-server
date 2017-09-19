@@ -10,7 +10,7 @@ import { models, sequelize } from './../../models/index';
 
 export const typeDef = `
     # Root Query
-    type Query {
+    extend type Query {
         getAllColors: [Color]
         getColorById(id: ID!): Color
     }

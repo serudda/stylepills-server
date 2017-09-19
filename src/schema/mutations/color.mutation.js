@@ -16,7 +16,7 @@ input CreateColorInput {
 }
 
 # Mutations
-type Mutation {
+extend type Mutation {
     addColor(input: CreateColorInput!): Color
 }
 
