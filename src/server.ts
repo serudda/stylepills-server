@@ -4,8 +4,7 @@
 import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
-import schema from './data/schema';
-
+import schema from './schema/index';
 
 // CONSTANTS
 const GRAPHQL_PORT = 3000;

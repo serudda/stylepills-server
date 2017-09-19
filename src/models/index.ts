@@ -9,8 +9,9 @@ import * as casual from 'casual';
 import * as _ from 'lodash';
 import { config } from '../config/config';
 import { logger } from '../utils/logger';
-import { IColorPaletteAttributes, IColorPaletteInstance } from './colorPalette/colorPalette.model';
-import { IUiComponentAttributes, IUiComponentInstance } from './uiComponent/uiComponent.model';
+import { IColorAttributes, IColorInstance } from './color.model';
+import { IColorPaletteAttributes, IColorPaletteInstance } from './colorPalette.model';
+import { IUiComponentAttributes, IUiComponentInstance } from './uiComponent.model';
 import { Sequelize } from 'sequelize';
 
 
@@ -18,6 +19,7 @@ import { Sequelize } from 'sequelize';
 /*            INTERFACES            */
 /************************************/
 export interface SequelizeModels {
+    Color: SequelizeStatic.Model<IColorInstance, IColorAttributes>;
     ColorPalette: SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes>;
     UiComponent: SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes>;
 }
@@ -45,24 +47,28 @@ class Database {
             dbConfig.password, dbConfig);
         this._models = ({} as any);
 
-        
         /* Leemos nuestras carpeta 'models', encontrando e importando cada uno de 
         nuestros modelos, agregandolos a la propiedad 'this._models' */
         fs
             .readdirSync(__dirname)
-            .filter((file: string) => 
-
+            .filter((file: string) => {
                 /* No devuelva los archivos que: 
                     - Sea este mismo - index.js
                     - Que no tenga un '.' al comienzo del nombre
                     - No contenga la extension '.js'
                 */
-                (file.indexOf('.') !== 0) && 
-                (file !== this._basename) && 
-                (file.slice(-3) === '.js'))
-
+                return (file.indexOf('.') !== 0) 
+                    && (file !== this._basename) 
+                    && (file.slice(-3) === '.js');
+            })
             .forEach((file: string) => {
-                const model = this._sequelize.import(path.join(__dirname, file));
+                let model = null;
+                try {
+                     model = this._sequelize.import(path.join(__dirname, file));
+                } catch (e) {
+                    throw e;
+                }
+                
                 (<any> this._models)[(model as any).name] = model;
             });
 
@@ -92,3 +98,5 @@ const database = new Database();
 /* Export models and sequelize objects */
 export const models = database.getModels();
 export const sequelize = database. getSequelize();
+
+// sequelize.sync({force: true});
