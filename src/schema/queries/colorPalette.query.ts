@@ -15,8 +15,7 @@ export const typeDef = `
         getColorPaletteById(id: ID!): ColorPalette
     }
 `;
-// FIXME: Tratar de no tener que usar: extend usando esta guia:
-// http://dev.apollodata.com/tools/graphql-tools/generate-schema.html#modularizing
+
 export const resolver = {
     Query: {
         getAllColorPalettes(root: any, args: any) {
@@ -24,6 +23,11 @@ export const resolver = {
         },
         getColorPaletteById(root: any, args: any) {
             return models.ColorPalette.findById(args.id);
+        },
+    },
+    ColorPalette: {
+        colors(colorPalette: any) {
+            return colorPalette.getColor();
         },
     },
 };

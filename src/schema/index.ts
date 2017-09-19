@@ -17,11 +17,8 @@ import * as uiComponentTypes from './types/uiComponent.type';
 
 
 const typeDefs = [`
-    schema {
-        query: Query
-        mutation: Mutation
-    }
 
+    # Type
     type User {
         id: ID!
         username: String
@@ -44,6 +41,12 @@ const typeDefs = [`
     # Mutations
     type Mutation {
         createUser(input: CreateUserInput!): User
+    }
+
+    # Main Schema
+    schema {
+        query: Query
+        mutation: Mutation
     }
 `,
     colorTypes.typeDef,

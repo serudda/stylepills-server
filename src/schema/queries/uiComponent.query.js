@@ -23,5 +23,45 @@ exports.resolver = {
             return index_1.models.UiComponent.findById(args.id);
         },
     },
+    UiComponent: {
+        colorPalette(uiComponent) {
+            return uiComponent.getColorPalette();
+        },
+    },
 };
+/*
+
+Query de ejemplo:
+
+
+query {
+  getUiComponentById(id: "1") {
+    id
+    css
+    scss
+    html
+    colorPalette {
+      id
+      colors {
+        id
+        hex
+        label
+      }
+      category
+      description
+    }
+  }
+  
+  getAllUiComponents {
+    id
+    css
+    scss
+    title
+    html
+    colorPalette {
+      id
+    }
+  }
+}
+*/ 
 //# sourceMappingURL=uiComponent.query.js.map

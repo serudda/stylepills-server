@@ -24,5 +24,5 @@ export const resolver = {
         getColorById(root: any, args: any) {
             return models.Color.findById(args.id);
         },
-    },
+    }
 };

@@ -25,4 +25,47 @@ export const resolver = {
             return models.UiComponent.findById(args.id);
         },
     },
+    UiComponent: {
+        colorPalette(uiComponent: any) {
+            return uiComponent.getColorPalette();
+        }, 
+    },
 };
+
+
+
+/* 
+
+Query de ejemplo:
+
+
+query {
+  getUiComponentById(id: "1") {
+    id
+    css
+    scss
+    html
+  	colorPalette {
+  	  id
+      colors {
+        id
+        hex
+        label
+      }
+      category
+      description
+  	}
+  }
+  
+  getAllUiComponents {
+    id
+    css
+    scss
+    title
+    html
+    colorPalette {
+      id
+    }
+  }
+}
+*/

@@ -22,6 +22,6 @@ exports.resolver = {
         getColorById(root, args) {
             return index_1.models.Color.findById(args.id);
         },
-    },
+    }
 };
 //# sourceMappingURL=color.query.js.map
