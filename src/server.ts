@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser';
 import schema from './schema/index';
 
 // CONSTANTS
-const GRAPHQL_PORT = 3000;
+const GRAPHQL_PORT = 3001;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 

@@ -8,7 +8,7 @@ const apollo_server_express_1 = require("apollo-server-express");
 const bodyParser = require("body-parser");
 const index_1 = require("./schema/index");
 // CONSTANTS
-const GRAPHQL_PORT = 3000;
+const GRAPHQL_PORT = 3001;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 const graphQLServer = express();
