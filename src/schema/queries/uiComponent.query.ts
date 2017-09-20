@@ -11,21 +11,21 @@ import { models, sequelize } from './../../models/index';
 export const typeDef = `
     # Root Query
     extend type Query {
-        getAllUiComponents: [UiComponent]
-        getUiComponentById(id: ID!): UiComponent
+        uiComponents: [UiComponent]
+        uiComponent(id: ID!): UiComponent
     }
 `;
 
 export const resolver = {
     Query: {
-        getAllUiComponents(root: any, args: any) {
+        uiComponents(root: any, args: any) {
             // TODO: Aqui deberia llamar a un Service o una Api donde contenga
             // cada unos de los Request alusivos a 'uiComponent', haciendo el
             // try, catch, el manejo de errores, parseando los datos que sean
             // necesarios, etc.
             return models.UiComponent.findAll();
         },
-        getUiComponentById(root: any, args: any) {
+        uiComponent(root: any, args: any) {
             return models.UiComponent.findById(args.id);
         },
     },
@@ -40,36 +40,28 @@ export const resolver = {
 
 /* 
 
-Query de ejemplo:
+Queries:
 
 
-query {
-  getUiComponentById(id: 1) {
-    id
-    css
-    scss
-    html
-  	colorPalette {
-  	  id
-      colors {
+query getUiComponentById($uiComponentId : ID!) {
+    uiComponent(id: $uiComponentId) {
         id
-        hex
-        label
-      }
-      category
-      description
-  	}
-  }
-  
-  getAllUiComponents {
-    id
-    css
-    scss
-    title
-    html
-    colorPalette {
-      id
+        css
+        scss
+        html
+        __typename
+        colorPalette {
+            id
+            colors {
+                id
+                hex
+                label
+                __typename
+            }
+            category
+            description
+            __typename
+        }
     }
-  }
 }
 */

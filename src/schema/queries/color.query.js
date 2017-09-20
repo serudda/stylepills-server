@@ -10,18 +10,32 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     # Root Query
     extend type Query {
-        getAllColors: [Color]
-        getColorById(id: ID!): Color
+        colors: [Color]
+        color(id: ID!): Color
     }
 `;
 exports.resolver = {
     Query: {
-        getAllColors(root, args) {
+        colors(root, args) {
             return index_1.models.Color.findAll();
         },
-        getColorById(root, args) {
+        color(root, args) {
             return index_1.models.Color.findById(args.id);
         },
     }
 };
+/*
+
+Queries:
+
+
+query getColorById($colorId : ID!) {
+    color(id: $colorId) {
+        id
+        hex
+        label
+        __typename
+    }
+}
+*/ 
 //# sourceMappingURL=color.query.js.map

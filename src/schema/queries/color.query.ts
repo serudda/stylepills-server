@@ -11,18 +11,34 @@ import { models, sequelize } from './../../models/index';
 export const typeDef = `
     # Root Query
     extend type Query {
-        getAllColors: [Color]
-        getColorById(id: ID!): Color
+        colors: [Color]
+        color(id: ID!): Color
     }
 `;
 
 export const resolver = {
     Query: {
-        getAllColors(root: any, args: any) {
+        colors(root: any, args: any) {
             return models.Color.findAll();
         },
-        getColorById(root: any, args: any) {
+        color(root: any, args: any) {
             return models.Color.findById(args.id);
         },
     }
 };
+
+
+/* 
+
+Queries:
+
+
+query getColorById($colorId : ID!) {
+    color(id: $colorId) {
+        id
+        hex
+        label
+        __typename
+    }
+}
+*/
