@@ -17,6 +17,10 @@ exports.typeDef = `
 exports.resolver = {
     Query: {
         getAllUiComponents(root, args) {
+            // TODO: Aqui deberia llamar a un Service o una Api donde contenga
+            // cada unos de los Request alusivos a 'uiComponent', haciendo el
+            // try, catch, el manejo de errores, parseando los datos que sean
+            // necesarios, etc.
             return index_1.models.UiComponent.findAll();
         },
         getUiComponentById(root, args) {
@@ -35,7 +39,7 @@ Query de ejemplo:
 
 
 query {
-  getUiComponentById(id: "1") {
+  getUiComponentById(id: 1) {
     id
     css
     scss
