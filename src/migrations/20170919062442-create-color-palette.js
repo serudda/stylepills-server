@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
 	up: (queryInterface, Sequelize) => {
-		return queryInterface.createTable('ColorPalettes', {
+		return queryInterface.createTable('ColorPalette', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
@@ -36,6 +36,6 @@ module.exports = {
 		});
 	},
 	down: (queryInterface /* , Sequelize */) => {
-		return queryInterface.dropTable('ColorPalettes');
+		return queryInterface.dropTable('ColorPalette');
 	}
 };

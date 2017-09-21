@@ -19,12 +19,9 @@ function default_1(sequelize, dataTypes) {
     });
     ColorPalette.associate = (models) => {
         // Create relationship
-        ColorPalette.hasMany(models.Color, {
-            foreignKey: 'colorPaletteId',
-            as: 'color'
-        });
+        ColorPalette.hasMany(models.Color, {});
         ColorPalette.belongsTo(models.UiComponent, {
-            foreignKey: 'uiComponentId',
+            // foreignKey: 'uiComponentId',
             onDelete: 'CASCADE'
         });
     };

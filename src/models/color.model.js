@@ -20,7 +20,7 @@ function default_1(sequelize, dataTypes) {
     Color.associate = (models) => {
         // Create relationship
         Color.belongsTo(models.ColorPalette, {
-            foreignKey: 'colorPaletteId',
+            // foreignKey: 'colorPaletteId',
             onDelete: 'CASCADE'
         });
     };

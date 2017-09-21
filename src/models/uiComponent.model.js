@@ -27,14 +27,7 @@ function default_1(sequelize, dataTypes) {
     });
     UiComponent.associate = (models) => {
         // Create relationship
-        UiComponent.hasMany(models.ColorPalette, {
-            foreignKey: 'uiComponentId',
-            /* Este campo es importante, ya que si lo cambio, tendria que cambiarlo
-            en el resolver: getColorPalettes', ya que sino al hacer el llamado de
-            en GraphIQL obtendriamos este error:
-            uiComponent.getColorPalette is not a function */
-            as: 'colorPalette'
-        });
+        UiComponent.hasOne(models.ColorPalette, {});
     };
     return UiComponent;
 }

@@ -43,12 +43,14 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
     ColorPalette.associate = (models: any) => {
         // Create relationship
         ColorPalette.hasMany(models.Color, {
-            foreignKey: 'colorPaletteId',
-            as: 'color'
+            /* Estas dos lineas las hace por defecto 
+            tomando el nombre del modelo */
+            // foreignKey: 'colorPaletteId',
+            // as: 'color'
         });
 
         ColorPalette.belongsTo(models.UiComponent, {
-            foreignKey: 'uiComponentId',
+            // foreignKey: 'uiComponentId',
             onDelete: 'CASCADE'
         });
     };
