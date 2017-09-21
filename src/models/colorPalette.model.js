@@ -14,12 +14,17 @@ function default_1(sequelize, dataTypes) {
             allowNull: true
         }
     }, {
-        indexes: [],
-        timestamps: true
+        timestamps: true,
+        // Avoid plural table name
+        tableName: 'colorPalette',
+        // Avoid plural table name
+        freezeTableName: true
     });
     ColorPalette.associate = (models) => {
         // Create relationship
         ColorPalette.hasMany(models.Color, {
+            /* Estas dos lineas las hace por defecto
+            tomando el nombre del modelo */
             foreignKey: 'colorPaletteId',
             as: 'color'
         });

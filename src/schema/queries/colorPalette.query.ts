@@ -11,17 +11,17 @@ import { models, sequelize } from './../../models/index';
 export const typeDef = `
     # Root Query
     extend type Query {
-        getAllColorPalettes: [ColorPalette]
-        getColorPaletteById(id: ID!): ColorPalette
+        colorPalettes: [ColorPalette]
+        colorPalette(id: ID!): ColorPalette
     }
 `;
 
 export const resolver = {
     Query: {
-        getAllColorPalettes(root: any, args: any) {
+        colorPalettes(root: any, args: any) {
             return models.ColorPalette.findAll();
         },
-        getColorPaletteById(root: any, args: any) {
+        colorPalette(root: any, args: any) {
             return models.ColorPalette.findById(args.id);
         },
     },
@@ -31,3 +31,27 @@ export const resolver = {
         },
     },
 };
+
+
+
+/* 
+
+Queries:
+
+
+query getColorPaletteById($colorPaletteId : ID!) {
+    colorPalette(id: $colorPaletteId) {
+        id
+        colors {
+            id
+            hex
+            label
+            __typename
+        }
+        category
+        description
+        __typename
+    }
+}
+
+*/

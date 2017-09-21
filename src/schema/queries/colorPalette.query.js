@@ -10,16 +10,16 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     # Root Query
     extend type Query {
-        getAllColorPalettes: [ColorPalette]
-        getColorPaletteById(id: ID!): ColorPalette
+        colorPalettes: [ColorPalette]
+        colorPalette(id: ID!): ColorPalette
     }
 `;
 exports.resolver = {
     Query: {
-        getAllColorPalettes(root, args) {
+        colorPalettes(root, args) {
             return index_1.models.ColorPalette.findAll();
         },
-        getColorPaletteById(root, args) {
+        colorPalette(root, args) {
             return index_1.models.ColorPalette.findById(args.id);
         },
     },
@@ -29,4 +29,25 @@ exports.resolver = {
         },
     },
 };
+/*
+
+Queries:
+
+
+query getColorPaletteById($colorPaletteId : ID!) {
+    colorPalette(id: $colorPaletteId) {
+        id
+        colors {
+            id
+            hex
+            label
+            __typename
+        }
+        category
+        description
+        __typename
+    }
+}
+
+*/ 
 //# sourceMappingURL=colorPalette.query.js.map

@@ -34,8 +34,11 @@ SequelizeStatic.Model<IColorInstance, IColorAttributes> {
                 allowNull: true
             }
         }, {
-            indexes: [],
-            timestamps: true
+            timestamps: true,
+            // Avoid plural table name
+            tableName: 'color',
+            // Avoid plural table name
+            freezeTableName: true
         }
     );
 
