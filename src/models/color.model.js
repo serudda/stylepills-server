@@ -14,13 +14,16 @@ function default_1(sequelize, dataTypes) {
             allowNull: true
         }
     }, {
-        indexes: [],
-        timestamps: true
+        timestamps: true,
+        // Avoid plural table name
+        tableName: 'color',
+        // Avoid plural table name
+        freezeTableName: true
     });
     Color.associate = (models) => {
         // Create relationship
         Color.belongsTo(models.ColorPalette, {
-            // foreignKey: 'colorPaletteId',
+            foreignKey: 'colorPaletteId',
             onDelete: 'CASCADE'
         });
     };

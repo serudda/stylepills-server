@@ -66,5 +66,6 @@ const database = new Database();
 /* Export models and sequelize objects */
 exports.models = database.getModels();
 exports.sequelize = database.getSequelize();
+/* Only on Develop: Recreate DataBase based on new migrations updates  */
 // sequelize.sync({force: true}); 
 //# sourceMappingURL=index.js.map

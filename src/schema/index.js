@@ -31,7 +31,7 @@ const typeDefs = [`
     
     # Query
     type Query {
-        getAllUsers: [User]
+        users: [User]
     }
 
     # Mutations
