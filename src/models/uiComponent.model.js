@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*          COLOR PALETTE MODEL          */
+/*           UI COMPONENT MODEL          */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     let UiComponent = sequelize.define('UiComponent', {
@@ -29,6 +29,8 @@ function default_1(sequelize, dataTypes) {
         // Avoid plural table name
         freezeTableName: true
     });
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
     UiComponent.associate = (models) => {
         // Create relationship
         UiComponent.hasOne(models.ColorPalette, {

@@ -1,5 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/*
+TODO: Este sistema de Log no recuerdo de donde lo saque, quedo incompleto
+Asi que cuando decida incluir un logger mas robusto podemos arrancar del punto
+de saber de donde saque este, para ver si lo continuamos
+ */
 const cluster = require("cluster");
 const mkdirp = require("mkdirp");
 const path = require("path");

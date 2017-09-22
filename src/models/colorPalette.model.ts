@@ -3,15 +3,26 @@
 /************************************/
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
-import { IColorAttributes } from './color.model';
+import { IColor } from './color.model';
+import { SequelizeModels } from './index';
+
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
+export interface IColorPalette {
+    id: number | null;
+    category: string;
+    description: string;
+    colors: Array<IColor>;
+}
+
+
 export interface IColorPaletteAttributes {
     category: string;
     description: string;
 }
+
 
 export interface IColorPaletteInstance extends Instance<IColorPaletteAttributes> {
     dataValues: IColorPaletteAttributes;
@@ -24,6 +35,7 @@ export interface IColorPaletteInstance extends Instance<IColorPaletteAttributes>
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
 
+    // NOTE: It was impossible to remove any here, because 'associate' does not exist.
     let ColorPalette: any = sequelize.define<IColorPaletteInstance, IColorPaletteAttributes>(
         'ColorPalette', {
             category: {
@@ -33,18 +45,20 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
             description: {
                 type: dataTypes.TEXT,
                 allowNull: true
-            }
+            },
         }, {
             timestamps: true,
             // Avoid plural table name
             tableName: 'colorPalette',
             // Avoid plural table name
-            freezeTableName: true
+            freezeTableName: true,
         }
     );
 
-    ColorPalette.associate = (models: any) => {
-        // Create relationship
+
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
+    ColorPalette.associate = (models: SequelizeModels) => {
         ColorPalette.hasMany(models.Color, {
             /* Estas dos lineas las hace por defecto 
             tomando el nombre del modelo */

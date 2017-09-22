@@ -7,13 +7,16 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import schema from './schema/index';
 
+
 // CONSTANTS
 const GRAPHQL_PORT = 4000;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 
+// EXPRESS INSTANCE
 const graphQLServer = express();
 
+// ADD CORS
 graphQLServer.use('*', cors());
 
 // INIT GRAPHQL SERVER

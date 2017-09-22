@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*          COLOR PALETTE MODEL          */
+/*              COLOR MODEL              */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
+    // NOTE: It was impossible to remove any here, because 'associate' does not exist.
     let Color = sequelize.define('Color', {
         label: {
             type: dataTypes.STRING,
@@ -18,10 +19,11 @@ function default_1(sequelize, dataTypes) {
         // Avoid plural table name
         tableName: 'color',
         // Avoid plural table name
-        freezeTableName: true
+        freezeTableName: true,
     });
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
     Color.associate = (models) => {
-        // Create relationship
         Color.belongsTo(models.ColorPalette, {
             foreignKey: 'colorPaletteId',
             onDelete: 'CASCADE'

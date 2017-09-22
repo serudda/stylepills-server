@@ -4,9 +4,23 @@
 import { models, sequelize } from './../../models/index';
 
 
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/************************************/
+/*            INTERFACES            */
+/************************************/
+
+/* NOTE: Todavia hay un lio aqui, ya que como no se muy bien como funciona 
+    el create mutation, no se que argumentos pasarles, ademas si tiene objetos
+    anidados como los manejo, le paso el objeto anidado? o lanzo la mutation del
+    objeto anidado?*/
+    
+interface IUiComponentArgs {
+    id: number;
+}
+
+
+/**************************************/
+/*     UI COMPONENT QUERY TYPEDEF     */
+/**************************************/
 
 export const typeDef = `
     # Root Query
@@ -16,20 +30,26 @@ export const typeDef = `
     }
 `;
 
+
+/*******************************************/
+/*       UI COMPONENT QUERY RESOLVER       */
+/*******************************************/
+
 export const resolver = {
     Query: {
-        uiComponents(root: any, args: any) {
+        uiComponents() {
             // TODO: Aqui deberia llamar a un Service o una Api donde contenga
             // cada unos de los Request alusivos a 'uiComponent', haciendo el
             // try, catch, el manejo de errores, parseando los datos que sean
             // necesarios, etc.
             return models.UiComponent.findAll();
         },
-        uiComponent(root: any, args: any) {
-            return models.UiComponent.findById(args.id);
+        uiComponent(root: any, { id }: IUiComponentArgs) {
+            return models.UiComponent.findById(id);
         },
     },
     UiComponent: {
+        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
         colorPalette(uiComponent: any) {
             return uiComponent.getColorPalette();
         }, 

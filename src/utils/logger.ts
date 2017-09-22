@@ -1,3 +1,8 @@
+/*
+TODO: Este sistema de Log no recuerdo de donde lo saque, quedo incompleto
+Asi que cuando decida incluir un logger mas robusto podemos arrancar del punto
+de saber de donde saque este, para ver si lo continuamos
+ */
 import * as cluster from 'cluster';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';

@@ -13,12 +13,16 @@ const logger_1 = require("../utils/logger");
 /*            DATABASE CLASS            */
 /****************************************/
 class Database {
+    /*     CONSTRUCTOR     */
+    /***********************/
     constructor() {
         this._basename = path.basename(module.filename);
         let dbConfig = config_1.config.getDatabaseConfig();
         if (dbConfig.logging) {
             dbConfig.logging = logger_1.logger.info;
         }
+        /* NOTE: Here we find a lot of 'any', because the models does not have a
+           especific type */
         SequelizeStatic.cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
         this._models = {};
@@ -54,6 +58,8 @@ class Database {
             }
         });
     }
+    /*       METHODS       */
+    /***********************/
     getModels() {
         return this._models;
     }
