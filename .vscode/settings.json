@@ -13,5 +13,12 @@
     },
     "tslint.ignoreDefinitionFiles": false,
     "tslint.autoFixOnSave": true,
-    "tslint.exclude": "**/node_modules/**/*"
+    "tslint.exclude": "**/node_modules/**/*",
+    "todohighlight.keywords": [
+        {
+            "text": "NOTE:",
+            "color": "#000000",
+            "backgroundColor": "#CCCCCC"
+        }
+    ]
 }

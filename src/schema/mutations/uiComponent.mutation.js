@@ -26,6 +26,7 @@ extend type Mutation {
 `;
 exports.resolver = {
     Mutation: {
+        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
         createUiComponent(root, args) {
             return index_1.models.UiComponent.create({
                 title: args.input.title,
