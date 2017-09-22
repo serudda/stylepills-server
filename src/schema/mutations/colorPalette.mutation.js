@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*            DEPENDENCIES            */
 /**************************************/
 const index_1 = require("./../../models/index");
-/****************************************/
-/*            COLOR MUTATION            */
-/****************************************/
+/************************************************/
+/*        COLOR PALETTE MUTATION TYPEDEF        */
+/************************************************/
 exports.typeDef = `
 
 # Input
@@ -22,8 +22,12 @@ extend type Mutation {
 }
 
 `;
+/************************************************/
+/*       COLOR PALETTE MUTATION RESOLVER        */
+/************************************************/
 exports.resolver = {
     Mutation: {
+        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
         createColorPalette(root, args) {
             return index_1.models.ColorPalette.create({
                 category: args.input.category,

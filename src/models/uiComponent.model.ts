@@ -3,11 +3,24 @@
 /************************************/
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
+import { SequelizeModels } from './index';
+import { IColorPalette } from './colorPalette.model';
 
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
+
+export interface IUiComponent {
+    id: number | null;
+    title: string;
+    html: string;
+    css: string;
+    scss: string;
+    colorPalette: IColorPalette;
+}
+
+
 export interface IUiComponentAttributes {
     title: string;
     html: string;
@@ -21,7 +34,7 @@ export interface IUiComponentInstance extends Instance<IUiComponentAttributes> {
 
 
 /*****************************************/
-/*          COLOR PALETTE MODEL          */
+/*           UI COMPONENT MODEL          */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
@@ -55,7 +68,10 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         }
     );
 
-    UiComponent.associate = (models: any) => {
+
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
+    UiComponent.associate = (models: SequelizeModels) => {
         // Create relationship
         UiComponent.hasOne(models.ColorPalette, {
             /* La asignación del foreignKey la hace por defecto, si quiero una

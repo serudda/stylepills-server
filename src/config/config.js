@@ -10,11 +10,15 @@ const server_config_1 = require("./server-config");
 /*            CONFIG CLASS             */
 /***************************************/
 class Config {
+    /*       CONSTRUCTOR      */
+    /**************************/
     constructor() {
         this._databaseConfig = database_config_1.databaseConfig;
         this._loggingConfig = logging_config_1.loggingConfig;
         this._serverConfig = server_config_1.serverConfig;
     }
+    /*       METHODS       */
+    /***********************/
     getDatabaseConfig() {
         return this._databaseConfig;
     }

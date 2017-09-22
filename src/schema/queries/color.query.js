@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const index_1 = require("./../../models/index");
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/****************************************/
+/*          COLOR QUERY TYPEDEF         */
+/****************************************/
 exports.typeDef = `
     # Root Query
     extend type Query {
@@ -14,13 +14,17 @@ exports.typeDef = `
         color(id: ID!): Color
     }
 `;
+/****************************************/
+/*         COLOR QUERY RESOLVER         */
+/****************************************/
 exports.resolver = {
     Query: {
-        colors(root, args) {
+        colors() {
             return index_1.models.Color.findAll();
         },
-        color(root, args) {
-            return index_1.models.Color.findById(args.id);
+        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
+        color(root, { id }) {
+            return index_1.models.Color.findById(id);
         },
     }
 };

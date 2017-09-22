@@ -4,9 +4,23 @@
 import { models, sequelize } from './../../models/index';
 
 
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/************************************/
+/*            INTERFACES            */
+/************************************/
+
+/* NOTE: Todavia hay un lio aqui, ya que como no se muy bien como funciona 
+    el create mutation, no se que argumentos pasarles, ademas si tiene objetos
+    anidados como los manejo, le paso el objeto anidado? o lanzo la mutation del
+    objeto anidado?*/
+    
+interface IColorArgs {
+    id: number;
+}
+
+
+/****************************************/
+/*          COLOR QUERY TYPEDEF         */
+/****************************************/
 
 export const typeDef = `
     # Root Query
@@ -16,13 +30,19 @@ export const typeDef = `
     }
 `;
 
+
+/****************************************/
+/*         COLOR QUERY RESOLVER         */
+/****************************************/
+
 export const resolver = {
     Query: {
-        colors(root: any, args: any) {
+        colors() {
             return models.Color.findAll();
         },
-        color(root: any, args: any) {
-            return models.Color.findById(args.id);
+        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
+        color(root: any, { id }: IColorArgs) {
+            return models.Color.findById(id);
         },
     }
 };

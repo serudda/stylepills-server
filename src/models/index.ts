@@ -30,11 +30,18 @@ export interface SequelizeModels {
 /****************************************/
 class Database {
 
+
+    /*     PROPERTIES     */
+    /**********************/
     private _basename: string;
     private _models: SequelizeModels;
     private _sequelize: Sequelize;
 
+
+    /*     CONSTRUCTOR     */
+    /***********************/
     constructor() {
+
         this._basename = path.basename(module.filename);
         let dbConfig = config.getDatabaseConfig();
 
@@ -42,6 +49,8 @@ class Database {
             dbConfig.logging = logger.info;
         }
 
+        /* NOTE: Here we find a lot of 'any', because the models does not have a
+           especific type */
         (SequelizeStatic as any).cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username,
             dbConfig.password, dbConfig);
@@ -82,6 +91,10 @@ class Database {
         });
     }
 
+
+    /*       METHODS       */
+    /***********************/
+
     getModels() {
         return this._models;
     }
@@ -89,6 +102,7 @@ class Database {
     getSequelize() {
         return this._sequelize;
     }
+    
 }
 
 
