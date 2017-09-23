@@ -3,11 +3,24 @@
 /************************************/
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
+import { SequelizeModels } from './index';
+import { IColorPalette } from './colorPalette.model';
 
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
+
+export interface IUiComponent {
+    id: number | null;
+    title: string;
+    html: string;
+    css: string;
+    scss: string;
+    colorPalette: IColorPalette;
+}
+
+
 export interface IUiComponentAttributes {
     title: string;
     html: string;
@@ -21,7 +34,7 @@ export interface IUiComponentInstance extends Instance<IUiComponentAttributes> {
 
 
 /*****************************************/
-/*          COLOR PALETTE MODEL          */
+/*           UI COMPONENT MODEL          */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
@@ -30,7 +43,6 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         'UiComponent', {
             title: {
                 type: dataTypes.STRING,
-                // defaultValue: false,
                 allowNull: true
             },
             html: {
@@ -47,18 +59,19 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
             }
         }, 
         {
-            timestamps: true
+            timestamps: true,
+            tableName: 'uiComponent',
+            freezeTableName: true
         }
     );
 
-    UiComponent.associate = (models: any) => {
+
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
+    UiComponent.associate = (models: SequelizeModels) => {
         // Create relationship
-        UiComponent.hasMany(models.ColorPalette, {
+        UiComponent.hasOne(models.ColorPalette, {
             foreignKey: 'uiComponentId',
-            /* Este campo es importante, ya que si lo cambio, tendria que cambiarlo
-            en el resolver: getColorPalettes', ya que sino al hacer el llamado de
-            en GraphIQL obtendriamos este error:
-            uiComponent.getColorPalette is not a function */
             as: 'colorPalette'
         });
     };

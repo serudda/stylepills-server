@@ -30,11 +30,18 @@ export interface SequelizeModels {
 /****************************************/
 class Database {
 
+
+    /*     PROPERTIES     */
+    /**********************/
     private _basename: string;
     private _models: SequelizeModels;
     private _sequelize: Sequelize;
 
+
+    /*     CONSTRUCTOR     */
+    /***********************/
     constructor() {
+
         this._basename = path.basename(module.filename);
         let dbConfig = config.getDatabaseConfig();
 
@@ -47,16 +54,9 @@ class Database {
             dbConfig.password, dbConfig);
         this._models = ({} as any);
 
-        /* Leemos nuestras carpeta 'models', encontrando e importando cada uno de 
-        nuestros modelos, agregandolos a la propiedad 'this._models' */
         fs
             .readdirSync(__dirname)
             .filter((file: string) => {
-                /* No devuelva los archivos que: 
-                    - Sea este mismo - index.js
-                    - Que no tenga un '.' al comienzo del nombre
-                    - No contenga la extension '.js'
-                */
                 return (file.indexOf('.') !== 0) 
                     && (file !== this._basename) 
                     && (file.slice(-3) === '.js');
@@ -73,14 +73,16 @@ class Database {
             });
 
 
-        /* Aplicamos las relaciones entre los modelos, si tales relaciones 
-        existen. */
         Object.keys(this._models).forEach((modelName: string) => {
             if (typeof (<any> this._models)[modelName].associate === 'function') {
                 (<any> this._models)[modelName].associate(this._models);
             }
         });
     }
+
+
+    /*       METHODS       */
+    /***********************/
 
     getModels() {
         return this._models;
@@ -89,6 +91,7 @@ class Database {
     getSequelize() {
         return this._sequelize;
     }
+    
 }
 
 
@@ -99,4 +102,5 @@ const database = new Database();
 export const models = database.getModels();
 export const sequelize = database. getSequelize();
 
+/* Only on Develop: Recreate DataBase based on new migrations updates  */
 // sequelize.sync({force: true});

@@ -3,15 +3,26 @@
 /************************************/
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
-import { IColorAttributes } from './color.model';
+import { IColor } from './color.model';
+import { SequelizeModels } from './index';
+
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
+export interface IColorPalette {
+    id: number | null;
+    category: string;
+    description: string;
+    colors: Array<IColor>;
+}
+
+
 export interface IColorPaletteAttributes {
     category: string;
     description: string;
 }
+
 
 export interface IColorPaletteInstance extends Instance<IColorPaletteAttributes> {
     dataValues: IColorPaletteAttributes;
@@ -33,15 +44,18 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
             description: {
                 type: dataTypes.TEXT,
                 allowNull: true
-            }
+            },
         }, {
-            indexes: [],
-            timestamps: true
+            timestamps: true,
+            tableName: 'colorPalette',
+            freezeTableName: true,
         }
     );
 
-    ColorPalette.associate = (models: any) => {
-        // Create relationship
+
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
+    ColorPalette.associate = (models: SequelizeModels) => {
         ColorPalette.hasMany(models.Color, {
             foreignKey: 'colorPaletteId',
             as: 'color'

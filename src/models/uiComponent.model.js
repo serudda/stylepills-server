@@ -1,13 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*          COLOR PALETTE MODEL          */
+/*           UI COMPONENT MODEL          */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     let UiComponent = sequelize.define('UiComponent', {
         title: {
             type: dataTypes.STRING,
-            // defaultValue: false,
             allowNull: true
         },
         html: {
@@ -23,16 +22,16 @@ function default_1(sequelize, dataTypes) {
             allowNull: true
         }
     }, {
-        timestamps: true
+        timestamps: true,
+        tableName: 'uiComponent',
+        freezeTableName: true
     });
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
     UiComponent.associate = (models) => {
         // Create relationship
-        UiComponent.hasMany(models.ColorPalette, {
+        UiComponent.hasOne(models.ColorPalette, {
             foreignKey: 'uiComponentId',
-            /* Este campo es importante, ya que si lo cambio, tendria que cambiarlo
-            en el resolver: getColorPalettes', ya que sino al hacer el llamado de
-            en GraphIQL obtendriamos este error:
-            uiComponent.getColorPalette is not a function */
             as: 'colorPalette'
         });
     };

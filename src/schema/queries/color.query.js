@@ -4,24 +4,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const index_1 = require("./../../models/index");
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/****************************************/
+/*          COLOR QUERY TYPEDEF         */
+/****************************************/
 exports.typeDef = `
     # Root Query
     extend type Query {
-        getAllColors: [Color]
-        getColorById(id: ID!): Color
+        colors: [Color]
+        color(id: ID!): Color
     }
 `;
+/****************************************/
+/*         COLOR QUERY RESOLVER         */
+/****************************************/
 exports.resolver = {
     Query: {
-        getAllColors(root, args) {
+        colors() {
             return index_1.models.Color.findAll();
         },
-        getColorById(root, args) {
-            return index_1.models.Color.findById(args.id);
+        color(root, { id }) {
+            return index_1.models.Color.findById(id);
         },
     }
 };
+/*
+
+Queries:
+
+
+query getColorById($colorId : ID!) {
+    color(id: $colorId) {
+        id
+        hex
+        label
+        __typename
+    }
+}
+*/ 
 //# sourceMappingURL=color.query.js.map

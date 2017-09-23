@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**************************************/
 const index_1 = require("./../../models/index");
 /****************************************/
-/*            COLOR MUTATION            */
+/*        COLOR MUTATION TYPEDEF        */
 /****************************************/
 exports.typeDef = `
 
@@ -21,6 +21,9 @@ extend type Mutation {
 }
 
 `;
+/*****************************************/
+/*        COLOR MUTATION RESOLVER        */
+/*****************************************/
 exports.resolver = {
     Mutation: {
         addColor(root, args) {

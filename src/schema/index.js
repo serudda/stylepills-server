@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// index.ts
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
 const lodash_1 = require("lodash");
 const graphql_tools_1 = require("graphql-tools");
 const colorMutation = require("./mutations/color.mutation");
@@ -12,6 +14,9 @@ const colorPaletteTypes = require("./types/colorPalette.type");
 const uiComponentMutation = require("./mutations/uiComponent.mutation");
 const uiComponentQuery = require("./queries/uiComponent.query");
 const uiComponentTypes = require("./types/uiComponent.type");
+/**********************************/
+/*           ROOT TYPES           */
+/**********************************/
 const typeDefs = [`
 
     # Type
@@ -31,7 +36,7 @@ const typeDefs = [`
     
     # Query
     type Query {
-        getAllUsers: [User]
+        users: [User]
     }
 
     # Mutations
@@ -55,10 +60,20 @@ const typeDefs = [`
     uiComponentQuery.typeDef,
     uiComponentMutation.typeDef,
 ];
-// Merge all of the resolver objects together
+/*****************************************/
+/*             ROOT RESOLVERS            */
+/*****************************************/
 const resolvers = lodash_1.merge(colorMutation.resolver, colorQuery.resolver, colorPaletteMutation.resolver, colorPaletteQuery.resolver, uiComponentMutation.resolver, uiComponentQuery.resolver);
+/*****************************************/
+/*         SIMPLE LOGGER SYSTEM          */
+/*****************************************/
+// TODO: Agregar un simple de log mas robusto para que me facilite ver los errores del server
+const logger = { log: (error) => console.log(error) };
+/*****************************************/
+/*                SCHEMA                 */
+/*****************************************/
 const schema = graphql_tools_1.makeExecutableSchema({
-    logger: console,
+    logger,
     resolvers: resolvers,
     typeDefs: typeDefs,
 });

@@ -4,28 +4,46 @@
 import { models, sequelize } from './../../models/index';
 
 
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/************************************/
+/*            INTERFACES            */
+/************************************/    
+interface IUiComponentArgs {
+    id: number;
+}
+
+
+/**************************************/
+/*     UI COMPONENT QUERY TYPEDEF     */
+/**************************************/
 
 export const typeDef = `
     # Root Query
     extend type Query {
-        getAllUiComponents: [UiComponent]
-        getUiComponentById(id: ID!): UiComponent
+        uiComponents: [UiComponent]
+        uiComponent(id: ID!): UiComponent
     }
 `;
 
+
+/*******************************************/
+/*       UI COMPONENT QUERY RESOLVER       */
+/*******************************************/
+
 export const resolver = {
     Query: {
-        getAllUiComponents(root: any, args: any) {
+        uiComponents() {
+            // TODO: Aqui deberia llamar a un Service o una Api donde contenga
+            // cada unos de los Request alusivos a 'uiComponent', haciendo el
+            // try, catch, el manejo de errores, parseando los datos que sean
+            // necesarios, etc.
             return models.UiComponent.findAll();
         },
-        getUiComponentById(root: any, args: any) {
-            return models.UiComponent.findById(args.id);
+        uiComponent(root: any, { id }: IUiComponentArgs) {
+            return models.UiComponent.findById(id);
         },
     },
     UiComponent: {
+        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
         colorPalette(uiComponent: any) {
             return uiComponent.getColorPalette();
         }, 
@@ -36,36 +54,28 @@ export const resolver = {
 
 /* 
 
-Query de ejemplo:
+Queries:
 
 
-query {
-  getUiComponentById(id: "1") {
-    id
-    css
-    scss
-    html
-  	colorPalette {
-  	  id
-      colors {
+query getUiComponentById($uiComponentId : ID!) {
+    uiComponent(id: $uiComponentId) {
         id
-        hex
-        label
-      }
-      category
-      description
-  	}
-  }
-  
-  getAllUiComponents {
-    id
-    css
-    scss
-    title
-    html
-    colorPalette {
-      id
+        css
+        scss
+        html
+        __typename
+        colorPalette {
+            id
+            colors {
+                id
+                hex
+                label
+                __typename
+            }
+            category
+            description
+            __typename
+        }
     }
-  }
 }
 */

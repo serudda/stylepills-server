@@ -1,27 +1,19 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('UiComponents', {
+        return queryInterface.createTable('Color', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            title: {
+            label: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
-            html: {
+            hex: {
                 type: Sequelize.STRING,
-                allowNull: true
-            },
-            css: {
-                type: Sequelize.TEXT,
-                allowNull: true
-            },
-            scss: {
-                type: Sequelize.TEXT,
                 allowNull: true
             },
             createdAt: {
@@ -31,10 +23,19 @@ module.exports = {
             updatedAt: {
                 allowNull: false,
                 type: Sequelize.DATE
+            },
+            colorPaletteId: {
+                type: Sequelize.INTEGER,
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'ColorPalette',
+                    key: 'id',
+                    as: 'colorPaletteId',
+                }
             }
         });
     },
     down: (queryInterface /* , Sequelize */) => {
-        return queryInterface.dropTable('UiComponents');
+        return queryInterface.dropTable('Color');
     }
 };

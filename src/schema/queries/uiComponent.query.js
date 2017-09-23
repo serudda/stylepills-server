@@ -4,26 +4,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const index_1 = require("./../../models/index");
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/**************************************/
+/*     UI COMPONENT QUERY TYPEDEF     */
+/**************************************/
 exports.typeDef = `
     # Root Query
     extend type Query {
-        getAllUiComponents: [UiComponent]
-        getUiComponentById(id: ID!): UiComponent
+        uiComponents: [UiComponent]
+        uiComponent(id: ID!): UiComponent
     }
 `;
+/*******************************************/
+/*       UI COMPONENT QUERY RESOLVER       */
+/*******************************************/
 exports.resolver = {
     Query: {
-        getAllUiComponents(root, args) {
+        uiComponents() {
+            // TODO: Aqui deberia llamar a un Service o una Api donde contenga
+            // cada unos de los Request alusivos a 'uiComponent', haciendo el
+            // try, catch, el manejo de errores, parseando los datos que sean
+            // necesarios, etc.
             return index_1.models.UiComponent.findAll();
         },
-        getUiComponentById(root, args) {
-            return index_1.models.UiComponent.findById(args.id);
+        uiComponent(root, { id }) {
+            return index_1.models.UiComponent.findById(id);
         },
     },
     UiComponent: {
+        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
         colorPalette(uiComponent) {
             return uiComponent.getColorPalette();
         },
@@ -31,37 +39,29 @@ exports.resolver = {
 };
 /*
 
-Query de ejemplo:
+Queries:
 
 
-query {
-  getUiComponentById(id: "1") {
-    id
-    css
-    scss
-    html
-    colorPalette {
-      id
-      colors {
+query getUiComponentById($uiComponentId : ID!) {
+    uiComponent(id: $uiComponentId) {
         id
-        hex
-        label
-      }
-      category
-      description
+        css
+        scss
+        html
+        __typename
+        colorPalette {
+            id
+            colors {
+                id
+                hex
+                label
+                __typename
+            }
+            category
+            description
+            __typename
+        }
     }
-  }
-  
-  getAllUiComponents {
-    id
-    css
-    scss
-    title
-    html
-    colorPalette {
-      id
-    }
-  }
 }
 */ 
 //# sourceMappingURL=uiComponent.query.js.map

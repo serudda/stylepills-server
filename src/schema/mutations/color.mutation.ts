@@ -2,10 +2,20 @@
 /*            DEPENDENCIES            */
 /**************************************/
 import { models } from './../../models/index';
+import { IColor } from './../../models/color.model';
+
+
+/************************************/
+/*            INTERFACES            */
+/************************************/
+    
+interface ICreateColorArgs {
+    input: IColor;
+}
 
 
 /****************************************/
-/*            COLOR MUTATION            */
+/*        COLOR MUTATION TYPEDEF        */
 /****************************************/
 
 export const typeDef = `
@@ -23,13 +33,18 @@ extend type Mutation {
 
 `;
 
+
+/*****************************************/
+/*        COLOR MUTATION RESOLVER        */
+/*****************************************/
+
 export const resolver = {
-  Mutation: {
-    addColor(root: any, args: any) {
-        return models.Color.create({
-            label: args.input.label,
-            hex: args.input.hex 
-        });
+    Mutation: {
+        addColor(root: any, args: ICreateColorArgs) {
+            return models.Color.create({
+                label: args.input.label,
+                hex: args.input.hex 
+            });
+        },
     },
-  },
 };

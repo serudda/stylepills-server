@@ -12,13 +12,15 @@ function default_1(sequelize, dataTypes) {
         description: {
             type: dataTypes.TEXT,
             allowNull: true
-        }
+        },
     }, {
-        indexes: [],
-        timestamps: true
+        timestamps: true,
+        tableName: 'colorPalette',
+        freezeTableName: true,
     });
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
     ColorPalette.associate = (models) => {
-        // Create relationship
         ColorPalette.hasMany(models.Color, {
             foreignKey: 'colorPaletteId',
             as: 'color'

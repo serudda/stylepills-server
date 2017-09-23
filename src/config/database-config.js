@@ -15,7 +15,7 @@ Buscar una solucion para sea el caso que sea siempre tome este archivo.*/
 exports.databaseConfig = {
     username: 'sergioruizdavila',
     password: 'admin',
-    database: 'stylepills-dev',
+    database: 'stylepills_dev',
     host: '127.0.0.1',
     port: 5432,
     dialect: 'postgres',

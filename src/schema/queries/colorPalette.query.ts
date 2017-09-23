@@ -4,25 +4,38 @@
 import { models, sequelize } from './../../models/index';
 
 
-/*************************************/
-/*            COLOR QUERY            */
-/*************************************/
+/************************************/
+/*            INTERFACES            */
+/************************************/
+interface IColorPaletteArgs {
+    id: number;
+}
+
+
+/**************************************/
+/*     COLOR PALETTE QUERY TYPEDEF    */
+/**************************************/
 
 export const typeDef = `
     # Root Query
     extend type Query {
-        getAllColorPalettes: [ColorPalette]
-        getColorPaletteById(id: ID!): ColorPalette
+        colorPalettes: [ColorPalette]
+        colorPalette(id: ID!): ColorPalette
     }
 `;
 
+
+/********************************************/
+/*       COLOR PALETTE QUERY RESOLVER       */
+/********************************************/
+
 export const resolver = {
     Query: {
-        getAllColorPalettes(root: any, args: any) {
+        colorPalettes() {
             return models.ColorPalette.findAll();
         },
-        getColorPaletteById(root: any, args: any) {
-            return models.ColorPalette.findById(args.id);
+        colorPalette(root: any, { id }: IColorPaletteArgs) {
+            return models.ColorPalette.findById(id);
         },
     },
     ColorPalette: {
@@ -31,3 +44,27 @@ export const resolver = {
         },
     },
 };
+
+
+
+/* 
+
+Queries:
+
+
+query getColorPaletteById($colorPaletteId : ID!) {
+    colorPalette(id: $colorPaletteId) {
+        id
+        colors {
+            id
+            hex
+            label
+            __typename
+        }
+        category
+        description
+        __typename
+    }
+}
+
+*/
