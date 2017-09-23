@@ -22,7 +22,6 @@ exports.resolver = {
         colors() {
             return index_1.models.Color.findAll();
         },
-        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
         color(root, { id }) {
             return index_1.models.Color.findById(id);
         },

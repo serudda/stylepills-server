@@ -34,7 +34,6 @@ export interface IColorInstance extends Instance<IColorAttributes> {
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IColorInstance, IColorAttributes> {
     
-    // NOTE: It was impossible to remove any here, because 'associate' does not exist.
     let Color: any = sequelize.define<IColorInstance, IColorAttributes>(
         'Color', {
             label: {
@@ -47,9 +46,7 @@ SequelizeStatic.Model<IColorInstance, IColorAttributes> {
             }
         }, {
             timestamps: true,
-            // Avoid plural table name
             tableName: 'color',
-            // Avoid plural table name
             freezeTableName: true,
         }
     );

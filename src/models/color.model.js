@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*              COLOR MODEL              */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
-    // NOTE: It was impossible to remove any here, because 'associate' does not exist.
     let Color = sequelize.define('Color', {
         label: {
             type: dataTypes.STRING,
@@ -16,9 +15,7 @@ function default_1(sequelize, dataTypes) {
         }
     }, {
         timestamps: true,
-        // Avoid plural table name
         tableName: 'color',
-        // Avoid plural table name
         freezeTableName: true,
     });
     /*      CREATE RELATIONSHIP      */

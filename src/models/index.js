@@ -21,21 +21,12 @@ class Database {
         if (dbConfig.logging) {
             dbConfig.logging = logger_1.logger.info;
         }
-        /* NOTE: Here we find a lot of 'any', because the models does not have a
-           especific type */
         SequelizeStatic.cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
         this._models = {};
-        /* Leemos nuestras carpeta 'models', encontrando e importando cada uno de
-        nuestros modelos, agregandolos a la propiedad 'this._models' */
         fs
             .readdirSync(__dirname)
             .filter((file) => {
-            /* No devuelva los archivos que:
-                - Sea este mismo - index.js
-                - Que no tenga un '.' al comienzo del nombre
-                - No contenga la extension '.js'
-            */
             return (file.indexOf('.') !== 0)
                 && (file !== this._basename)
                 && (file.slice(-3) === '.js');
@@ -50,8 +41,6 @@ class Database {
             }
             this._models[model.name] = model;
         });
-        /* Aplicamos las relaciones entre los modelos, si tales relaciones
-        existen. */
         Object.keys(this._models).forEach((modelName) => {
             if (typeof this._models[modelName].associate === 'function') {
                 this._models[modelName].associate(this._models);

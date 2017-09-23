@@ -35,7 +35,6 @@ export interface IColorPaletteInstance extends Instance<IColorPaletteAttributes>
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
 
-    // NOTE: It was impossible to remove any here, because 'associate' does not exist.
     let ColorPalette: any = sequelize.define<IColorPaletteInstance, IColorPaletteAttributes>(
         'ColorPalette', {
             category: {
@@ -48,9 +47,7 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
             },
         }, {
             timestamps: true,
-            // Avoid plural table name
             tableName: 'colorPalette',
-            // Avoid plural table name
             freezeTableName: true,
         }
     );
@@ -60,8 +57,6 @@ SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes> {
     /*********************************/
     ColorPalette.associate = (models: SequelizeModels) => {
         ColorPalette.hasMany(models.Color, {
-            /* Estas dos lineas las hace por defecto 
-            tomando el nombre del modelo */
             foreignKey: 'colorPaletteId',
             as: 'color'
         });

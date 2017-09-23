@@ -8,12 +8,6 @@ import { IColorPalette } from './../../models/colorPalette.model';
 /************************************/
 /*            INTERFACES            */
 /************************************/
-
-/* NOTE: Todavia hay un lio aqui, ya que como no se muy bien como funciona 
-    el create mutation, no se que argumentos pasarles, ademas si tiene objetos
-    anidados como los manejo, le paso el objeto anidado? o lanzo la mutation del
-    objeto anidado?*/
-
 interface ICreateColorPaletteArgs {
     input: IColorPalette;
 }
@@ -46,7 +40,6 @@ extend type Mutation {
 
 export const resolver = {
     Mutation: {
-        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
         createColorPalette(root: any, args: ICreateColorPaletteArgs) {
             return models.ColorPalette.create({
                 category: args.input.category,

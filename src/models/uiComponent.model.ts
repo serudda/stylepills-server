@@ -43,7 +43,6 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         'UiComponent', {
             title: {
                 type: dataTypes.STRING,
-                // defaultValue: false,
                 allowNull: true
             },
             html: {
@@ -61,9 +60,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         }, 
         {
             timestamps: true,
-            // Avoid plural table name
             tableName: 'uiComponent',
-            // Avoid plural table name
             freezeTableName: true
         }
     );
@@ -74,15 +71,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
     UiComponent.associate = (models: SequelizeModels) => {
         // Create relationship
         UiComponent.hasOne(models.ColorPalette, {
-            /* La asignación del foreignKey la hace por defecto, si quiero una
-            llave personalizada uso la linea de abajo */
             foreignKey: 'uiComponentId',
-            /* Este campo es importante, ya que si lo cambio, tendria que cambiarlo
-            en el resolver: getColorPalettes', ya que sino al hacer el llamado de
-            en GraphIQL obtendriamos este error:
-            uiComponent.getColorPalette is not a function */
-            /* Estas linea las hace por defecto 
-            tomando el nombre del modelo */
             as: 'colorPalette'
         });
     };

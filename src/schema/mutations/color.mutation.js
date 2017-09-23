@@ -26,7 +26,6 @@ extend type Mutation {
 /*****************************************/
 exports.resolver = {
     Mutation: {
-        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipo
         addColor(root, args) {
             return index_1.models.Color.create({
                 label: args.input.label,

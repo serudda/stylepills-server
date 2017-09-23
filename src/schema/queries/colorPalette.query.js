@@ -22,13 +22,11 @@ exports.resolver = {
         colorPalettes() {
             return index_1.models.ColorPalette.findAll();
         },
-        // NOTE: Cuando sepa bien como funciona el 'root' asignarle un tipos
         colorPalette(root, { id }) {
             return index_1.models.ColorPalette.findById(id);
         },
     },
     ColorPalette: {
-        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
         colors(colorPalette) {
             return colorPalette.getColor();
         },
