@@ -42,7 +42,7 @@ function default_1(sequelize, dataTypes) {
     /*********************************/
     User.associate = (models) => {
         User.hasMany(models.UiComponent, {
-            foreignKey: 'userId',
+            foreignKey: 'authorId',
             as: 'uiComponent'
         });
         User.hasOne(models.Social, {

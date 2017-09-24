@@ -92,7 +92,7 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
     User.associate = (models: SequelizeModels) => {
         
         User.hasMany(models.UiComponent, {
-            foreignKey: 'userId',
+            foreignKey: 'authorId',
             as: 'uiComponent'
         });
 

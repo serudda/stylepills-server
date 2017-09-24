@@ -38,7 +38,7 @@ function default_1(sequelize, dataTypes) {
             as: 'colorPalette'
         });
         UiComponent.belongsTo(models.User, {
-            foreignKey: 'userId',
+            foreignKey: 'authorId',
             onDelete: 'CASCADE'
         });
     };

@@ -86,7 +86,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
         });
 
         UiComponent.belongsTo(models.User, {
-            foreignKey: 'userId',
+            foreignKey: 'authorId',
             onDelete: 'CASCADE'
         });
 
