@@ -52,4 +52,8 @@ Volvera a ejecutar todos los migrations que no estan registrados en la tabla 'Se
 Si todo esta OK, listo queda un registro de todos los migrations corridos, y deberia verse reflejados los cambios en 
 cada una de las tablas afectadas.
 
+NOTA: Cuidado con el comando:
+sequelize db:migrate:undo:all
 
+Ya que hace rollback de todos los migrations que esten registrados en la tabla 'SequelizeSchema'
+y se perderian todos los datos.
