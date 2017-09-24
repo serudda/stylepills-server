@@ -1,48 +1,40 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*           UI COMPONENT MODEL          */
+/*             SOCIAL MODEL              */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
-    let UiComponent = sequelize.define('UiComponent', {
-        name: {
+    let Social = sequelize.define('Social', {
+        twitter: {
             type: dataTypes.STRING,
             allowNull: true
         },
-        html: {
+        facebook: {
             type: dataTypes.STRING,
             allowNull: true
         },
-        css: {
-            type: dataTypes.TEXT,
-            allowNull: true
-        },
-        scss: {
-            type: dataTypes.TEXT,
-            allowNull: true
-        },
-        background: {
+        github: {
             type: dataTypes.STRING,
             allowNull: true
-        }
+        },
+        linkedin: {
+            type: dataTypes.STRING,
+            allowNull: true
+        },
     }, {
         timestamps: true,
-        tableName: 'uiComponent',
-        freezeTableName: true
+        tableName: 'social',
+        freezeTableName: true,
     });
     /*      CREATE RELATIONSHIP      */
     /*********************************/
-    UiComponent.associate = (models) => {
-        UiComponent.hasOne(models.ColorPalette, {
-            foreignKey: 'uiComponentId',
-            as: 'colorPalette'
-        });
-        UiComponent.belongsTo(models.User, {
+    Social.associate = (models) => {
+        Social.belongsTo(models.User, {
             foreignKey: 'userId',
             onDelete: 'CASCADE'
         });
     };
-    return UiComponent;
+    return Social;
 }
 exports.default = default_1;
-//# sourceMappingURL=uiComponent.model.js.map
+//# sourceMappingURL=social.model.js.map

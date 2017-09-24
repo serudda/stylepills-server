@@ -13,19 +13,20 @@ interface ICreateUiComponentArgs {
 }
 
 
-/****************************************/
-/*            COLOR MUTATION            */
-/****************************************/
+/*****************************************/
+/*         UI COMPONENT MUTATION         */
+/*****************************************/
 
 export const typeDef = `
 
 # Input
 input CreateUiComponentInput {
-    title: String
+    name: String
     colorPalette: [CreateColorPaletteInput]
     css: String
     scss: String
     html: String
+    background: String
 }
 
 # Mutations
@@ -39,10 +40,11 @@ export const resolver = {
     Mutation: {
         createUiComponent(root: any, args: ICreateUiComponentArgs) {
             return models.UiComponent.create({
-                title: args.input.title,
+                name: args.input.name,
                 html: args.input.html,
                 css: args.input.css,
-                scss: args.input.scss
+                scss: args.input.scss,
+                background: args.input.background
             });
         },
     },

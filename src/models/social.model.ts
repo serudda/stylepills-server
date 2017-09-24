@@ -1,0 +1,78 @@
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
+import * as SequelizeStatic from 'sequelize';
+import { Instance, DataTypes, Sequelize } from 'sequelize';
+import { SequelizeModels } from './index';
+
+
+/************************************/
+/*            INTERFACE             */
+/************************************/
+export interface ISocial {
+    id: number | null;
+    twitter: string;
+    facebook: string;
+    github: string;
+    linkedin: string;
+}
+
+
+export interface ISocialAttributes {
+    twitter: string;
+    facebook: string;
+    github: string;
+    linkedin: string;
+}
+
+
+export interface ISocialInstance extends Instance<ISocialAttributes> {
+    dataValues: ISocialAttributes;
+}
+
+
+/*****************************************/
+/*             SOCIAL MODEL              */
+/*****************************************/
+export default function(sequelize: Sequelize, dataTypes: DataTypes): 
+SequelizeStatic.Model<ISocialInstance, ISocialAttributes> {
+
+    let Social: any = sequelize.define<ISocialInstance, ISocialAttributes>(
+        'Social', {
+            twitter: {
+                type: dataTypes.STRING,
+                allowNull: true
+            },
+            facebook: {
+                type: dataTypes.STRING,
+                allowNull: true
+            },
+            github: {
+                type: dataTypes.STRING,
+                allowNull: true
+            },
+            linkedin: {
+                type: dataTypes.STRING,
+                allowNull: true
+            },
+        }, {
+            timestamps: true,
+            tableName: 'social',
+            freezeTableName: true,
+        }
+    );
+
+
+    /*      CREATE RELATIONSHIP      */
+    /*********************************/
+    Social.associate = (models: SequelizeModels) => {
+        Social.belongsTo(models.User, {
+            foreignKey: 'userId',
+            onDelete: 'CASCADE'
+        });
+    };
+
+
+    return Social;
+
+}

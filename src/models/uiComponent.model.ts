@@ -4,6 +4,8 @@
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { SequelizeModels } from './index';
+
+import { IUser } from './user.model';
 import { IColorPalette } from './colorPalette.model';
 
 
@@ -13,20 +15,24 @@ import { IColorPalette } from './colorPalette.model';
 
 export interface IUiComponent {
     id: number | null;
-    title: string;
+    name: string;
     html: string;
     css: string;
     scss: string;
+    background: string;
     colorPalette: IColorPalette;
+    author: IUser;
 }
 
 
 export interface IUiComponentAttributes {
-    title: string;
+    name: string;
     html: string;
     css: string;
     scss: string;
+    background: string;
 }
+
 
 export interface IUiComponentInstance extends Instance<IUiComponentAttributes> {
     dataValues: IUiComponentAttributes;
@@ -41,7 +47,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
 
     let UiComponent: any = sequelize.define<IUiComponentInstance, IUiComponentAttributes>(
         'UiComponent', {
-            title: {
+            name: {
                 type: dataTypes.STRING,
                 allowNull: true
             },
@@ -56,6 +62,10 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
             scss: {
                 type: dataTypes.TEXT,
                 allowNull: true
+            },
+            background: {
+                type: dataTypes.STRING,
+                allowNull: true
             }
         }, 
         {
@@ -69,11 +79,17 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
     /*      CREATE RELATIONSHIP      */
     /*********************************/
     UiComponent.associate = (models: SequelizeModels) => {
-        // Create relationship
+
         UiComponent.hasOne(models.ColorPalette, {
             foreignKey: 'uiComponentId',
             as: 'colorPalette'
         });
+
+        UiComponent.belongsTo(models.User, {
+            foreignKey: 'userId',
+            onDelete: 'CASCADE'
+        });
+
     };
 
 

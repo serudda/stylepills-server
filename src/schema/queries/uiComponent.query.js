@@ -45,21 +45,23 @@ Queries:
 query getUiComponentById($uiComponentId : ID!) {
     uiComponent(id: $uiComponentId) {
         id
+        name
         css
         scss
         html
+        background
         __typename
         colorPalette {
             id
+            category
+            description
+            __typename
             colors {
                 id
                 hex
                 label
                 __typename
             }
-            category
-            description
-            __typename
         }
     }
 }

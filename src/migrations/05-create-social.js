@@ -1,27 +1,27 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('uiComponent', {
+        return queryInterface.createTable('social', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            title: {
+            twitter: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
-            html: {
+            facebook: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
-            css: {
-                type: Sequelize.TEXT,
+            github: {
+                type: Sequelize.STRING,
                 allowNull: true
             },
-            scss: {
-                type: Sequelize.TEXT,
+            linkedin: {
+                type: Sequelize.STRING,
                 allowNull: true
             },
             createdAt: {
@@ -31,13 +31,22 @@ module.exports = {
             updatedAt: {
                 allowNull: false,
                 type: Sequelize.DATE
+            },
+            userId: {
+                type: Sequelize.INTEGER,
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'user',
+                    key: 'id',
+                    as: 'userId',
+                }
             }
         }, {
-            tableName: 'uiComponent',
+            tableName: 'social',
             freezeTableName: true,
         });
     },
     down: (queryInterface /* , Sequelize */) => {
-        return queryInterface.dropTable('uiComponent');
+        return queryInterface.dropTable('social');
     }
 };
