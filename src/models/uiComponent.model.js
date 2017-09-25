@@ -10,7 +10,7 @@ function default_1(sequelize, dataTypes) {
             allowNull: true
         },
         html: {
-            type: dataTypes.STRING,
+            type: dataTypes.TEXT,
             allowNull: true
         },
         css: {
