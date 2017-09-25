@@ -4,18 +4,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*            DEPENDENCIES            */
 /**************************************/
 const index_1 = require("./../../models/index");
-/****************************************/
-/*            COLOR MUTATION            */
-/****************************************/
+/*****************************************/
+/*         UI COMPONENT MUTATION         */
+/*****************************************/
 exports.typeDef = `
 
 # Input
 input CreateUiComponentInput {
-    title: String
+    name: String
     colorPalette: [CreateColorPaletteInput]
     css: String
     scss: String
     html: String
+    background: String
 }
 
 # Mutations
@@ -28,10 +29,11 @@ exports.resolver = {
     Mutation: {
         createUiComponent(root, args) {
             return index_1.models.UiComponent.create({
-                title: args.input.title,
+                name: args.input.name,
                 html: args.input.html,
                 css: args.input.css,
-                scss: args.input.scss
+                scss: args.input.scss,
+                background: args.input.background
             });
         },
     },

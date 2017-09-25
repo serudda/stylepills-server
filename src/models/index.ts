@@ -4,21 +4,26 @@
 import * as cls from 'continuation-local-storage';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Sequelize } from 'sequelize';
 import * as SequelizeStatic from 'sequelize';
-import * as casual from 'casual';
 import * as _ from 'lodash';
+
 import { config } from '../config/config';
 import { logger } from '../utils/logger';
+
+import { IUserAttributes, IUserInstance } from './user.model';
+import { ISocialInstance, ISocialAttributes } from './social.model';
 import { IColorAttributes, IColorInstance } from './color.model';
 import { IColorPaletteAttributes, IColorPaletteInstance } from './colorPalette.model';
 import { IUiComponentAttributes, IUiComponentInstance } from './uiComponent.model';
-import { Sequelize } from 'sequelize';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
 export interface SequelizeModels {
+    User: SequelizeStatic.Model<IUserInstance, IUserAttributes>;
+    Social: SequelizeStatic.Model<ISocialInstance, ISocialAttributes>;
     Color: SequelizeStatic.Model<IColorInstance, IColorAttributes>;
     ColorPalette: SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes>;
     UiComponent: SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes>;

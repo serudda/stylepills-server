@@ -1,18 +1,26 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('color', {
+        return queryInterface.createTable('social', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            label: {
+            twitter: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
-            hex: {
+            facebook: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+            github: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+            linkedin: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
@@ -24,21 +32,21 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DATE
             },
-            colorPaletteId: {
+            userId: {
                 type: Sequelize.INTEGER,
                 onDelete: 'CASCADE',
                 references: {
-                    model: 'ColorPalette',
+                    model: 'user',
                     key: 'id',
-                    as: 'colorPaletteId',
+                    as: 'userId',
                 }
             }
         }, {
-            tableName: 'color',
+            tableName: 'social',
             freezeTableName: true,
         });
     },
     down: (queryInterface /* , Sequelize */) => {
-        return queryInterface.dropTable('color');
+        return queryInterface.dropTable('social');
     }
 };

@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     let UiComponent = sequelize.define('UiComponent', {
-        title: {
+        name: {
             type: dataTypes.STRING,
             allowNull: true
         },
@@ -20,6 +20,10 @@ function default_1(sequelize, dataTypes) {
         scss: {
             type: dataTypes.TEXT,
             allowNull: true
+        },
+        background: {
+            type: dataTypes.STRING,
+            allowNull: true
         }
     }, {
         timestamps: true,
@@ -29,10 +33,13 @@ function default_1(sequelize, dataTypes) {
     /*      CREATE RELATIONSHIP      */
     /*********************************/
     UiComponent.associate = (models) => {
-        // Create relationship
         UiComponent.hasOne(models.ColorPalette, {
             foreignKey: 'uiComponentId',
             as: 'colorPalette'
+        });
+        UiComponent.belongsTo(models.User, {
+            foreignKey: 'authorId',
+            onDelete: 'CASCADE'
         });
     };
     return UiComponent;

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('UiComponent', {
+        return queryInterface.createTable('uiComponent', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
@@ -13,7 +13,7 @@ module.exports = {
                 allowNull: true
             },
             html: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: true
             },
             css: {
@@ -32,9 +32,12 @@ module.exports = {
                 allowNull: false,
                 type: Sequelize.DATE
             }
+        }, {
+            tableName: 'uiComponent',
+            freezeTableName: true,
         });
     },
     down: (queryInterface /* , Sequelize */) => {
-        return queryInterface.dropTable('UiComponent');
+        return queryInterface.dropTable('uiComponent');
     }
 };

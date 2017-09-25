@@ -6,6 +6,14 @@ import { makeExecutableSchema } from 'graphql-tools';
 
 import { loggingConfig } from './../config/logging-config';
 
+import * as userMutation from './mutations/user.mutation';
+import * as userQuery from './queries/user.query';
+import * as userTypes from './types/user.type';
+
+import * as socialMutation from './mutations/social.mutation';
+import * as socialQuery from './queries/social.query';
+import * as socialTypes from './types/social.type';
+
 import * as colorMutation from './mutations/color.mutation';
 import * as colorQuery from './queries/color.query';
 import * as colorTypes from './types/color.type';
@@ -25,28 +33,24 @@ import * as uiComponentTypes from './types/uiComponent.type';
 const typeDefs = [`
 
     # Type
-    type User {
+    type Base {
         id: ID!
-        username: String
-        firstName: String
-        lastName: String
+        base: String
     }
 
     # Input
-    input CreateUserInput {
-        username: String
-        firstName: String
-        lastName: String
+    input CreateBaseInput {
+        base: String
     }
     
     # Query
     type Query {
-        users: [User]
+        base: [Base]
     }
 
     # Mutations
     type Mutation {
-        createUser(input: CreateUserInput!): User
+        createBase(input: CreateBaseInput!): Base
     }
 
     # Main Schema
@@ -55,6 +59,14 @@ const typeDefs = [`
         mutation: Mutation
     }
 `,
+    userTypes.typeDef,
+    userQuery.typeDef,
+    userMutation.typeDef,
+
+    socialTypes.typeDef,
+    socialQuery.typeDef,
+    socialMutation.typeDef,
+
     colorTypes.typeDef,
     colorQuery.typeDef,
     colorMutation.typeDef,
@@ -74,6 +86,10 @@ const typeDefs = [`
 /*             ROOT RESOLVERS            */
 /*****************************************/
 const resolvers: any = merge(
+    userMutation.resolver,
+    userQuery.resolver,
+    socialMutation.resolver,
+    socialQuery.resolver,
     colorMutation.resolver, 
     colorQuery.resolver, 
     colorPaletteMutation.resolver,
