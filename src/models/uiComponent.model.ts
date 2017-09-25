@@ -52,7 +52,7 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
                 allowNull: true
             },
             html: {
-                type: dataTypes.STRING,
+                type: dataTypes.TEXT,
                 allowNull: true
             },
             css: {
