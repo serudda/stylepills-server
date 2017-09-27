@@ -24,6 +24,10 @@ function default_1(sequelize, dataTypes) {
         background: {
             type: dataTypes.STRING,
             allowNull: true
+        },
+        download: {
+            type: dataTypes.TEXT,
+            allowNull: true
         }
     }, {
         timestamps: true,
