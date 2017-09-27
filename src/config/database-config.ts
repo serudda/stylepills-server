@@ -6,7 +6,7 @@ export interface IDatabaseConfig {
     password: string;
     database: string;
     host: string;
-    port: number;
+    port: number | string;
     dialect: string;
     logging: boolean | Function;
 }
@@ -28,9 +28,9 @@ export const databaseConfig: IDatabaseConfig = {
     username: 'sergioruizdavila',
     password: 'admin',
     database: 'stylepills_db',
-    // host: '127.0.0.1',  DEV
-    host: 'stylepills-server.herokuapp.com', // PRD
-    port: 5432,
+    host: '127.0.0.1',  // DEV
+    // host: 'stylepills-server.herokuapp.com', // PRD
+    port: process.env.PORT || 5432,
     dialect: 'postgres',
     logging: true
 };
