@@ -1,0 +1,7 @@
+### DATABASE POSTGRES
+
+Para obtener la ruta de la base de datos en Heroku:
+- heroku config:get DATABASE_URL
+
+DATABASE_URL - Es una variable de ambiente que genera Heroku donde esta guardada la
+ruta de la base. Con el anterior comando obtenemos el valor que esta en DATABASE_URL
