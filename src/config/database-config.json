@@ -2,7 +2,7 @@
     "username": "sergioruizdavila",
     "password": "admin",
     "database": "stylepills_db",
-    "host": "stylepills-server.herokuapp.com",
+    "host": "127.0.0.1",
     "port": 5432,
     "dialect": "postgres",
     "logging": true
