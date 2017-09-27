@@ -27,9 +27,9 @@ enciende el server tomando este archivo como config de  la base, pero cuando
 quiero lanzar un migrate: sequelize db:migrate, toma la configuracion del .json.
 Buscar una solucion para sea el caso que sea siempre tome este archivo.*/
 export const databaseConfig: IDatabaseConfig = {
-    username: 'sergioruizdavila',
-    password: 'admin',
-    database: 'stylepills_db',
+    username: 'lgitfxqxcmmqox',
+    password: 'dbd65a1bc01384d08aa148ecb8e0e937b2ed15214c15e09c9a79f6e4f87661d1',
+    database: 'd6g22ske5oult0',
     // host: '127.0.0.1',  // DEV
     // host: 'stylepills-server.herokuapp.com', // PRD
     port:     match[4],
