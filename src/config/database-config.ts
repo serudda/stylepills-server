@@ -12,6 +12,8 @@ export interface IDatabaseConfig {
 }
 
 
+var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+
 /****************************************/
 /*            DATABASE CONFIG           */
 /****************************************/
@@ -28,9 +30,11 @@ export const databaseConfig: IDatabaseConfig = {
     username: 'sergioruizdavila',
     password: 'admin',
     database: 'stylepills_db',
-    host: '127.0.0.1',  // DEV
+    // host: '127.0.0.1',  // DEV
     // host: 'stylepills-server.herokuapp.com', // PRD
-    port: process.env.PORT || 5432,
+    port:     match[4],
+    host:     match[3],
+    // port: process.env.PORT || 5432,
     dialect: 'postgres',
     logging: true
 };

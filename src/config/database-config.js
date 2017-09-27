@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
 /****************************************/
 /*            DATABASE CONFIG           */
 /****************************************/
@@ -16,9 +17,11 @@ exports.databaseConfig = {
     username: 'sergioruizdavila',
     password: 'admin',
     database: 'stylepills_db',
-    host: '127.0.0.1',
+    // host: '127.0.0.1',  // DEV
     // host: 'stylepills-server.herokuapp.com', // PRD
-    port: process.env.PORT || 5432,
+    port: match[4],
+    host: match[3],
+    // port: process.env.PORT || 5432,
     dialect: 'postgres',
     logging: true
 };
