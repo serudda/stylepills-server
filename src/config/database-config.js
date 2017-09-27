@@ -16,7 +16,8 @@ exports.databaseConfig = {
     username: 'sergioruizdavila',
     password: 'admin',
     database: 'stylepills_db',
-    host: '127.0.0.1',
+    // host: '127.0.0.1',  DEV
+    host: 'stylepills-server.herokuapp.com',
     port: 5432,
     dialect: 'postgres',
     logging: true
