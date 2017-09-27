@@ -18,7 +18,7 @@ exports.databaseConfig = {
     database: 'stylepills_db',
     host: '127.0.0.1',
     // host: 'stylepills-server.herokuapp.com', // PRD
-    port: 5432,
+    port: process.env.PORT || 5432,
     dialect: 'postgres',
     logging: true
 };

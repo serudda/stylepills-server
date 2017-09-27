@@ -6,7 +6,7 @@ export interface IDatabaseConfig {
     password: string;
     database: string;
     host: string;
-    port: number | string;
+    port: any;
     dialect: string;
     logging: boolean | Function;
 }
