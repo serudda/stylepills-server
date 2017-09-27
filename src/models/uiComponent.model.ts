@@ -22,6 +22,7 @@ export interface IUiComponent {
     background: string;
     colorPalette: IColorPalette;
     author: IUser;
+    download: string;
 }
 
 
@@ -31,6 +32,7 @@ export interface IUiComponentAttributes {
     css: string;
     scss: string;
     background: string;
+    download: string;
 }
 
 
@@ -65,6 +67,10 @@ SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes> {
             },
             background: {
                 type: dataTypes.STRING,
+                allowNull: true
+            },
+            download: {
+                type: dataTypes.TEXT,
                 allowNull: true
             }
         }, 

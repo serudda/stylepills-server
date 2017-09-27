@@ -65,6 +65,7 @@ query getUiComponentById($uiComponentId : ID!) {
         scss
         html
         background
+        download
         __typename
         colorPalette {
             id

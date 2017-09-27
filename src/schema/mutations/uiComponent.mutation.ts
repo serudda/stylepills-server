@@ -27,6 +27,7 @@ input CreateUiComponentInput {
     scss: String
     html: String
     background: String
+    download: String
 }
 
 # Mutations
@@ -44,7 +45,8 @@ export const resolver = {
                 html: args.input.html,
                 css: args.input.css,
                 scss: args.input.scss,
-                background: args.input.background
+                background: args.input.background,
+                download: args.input.download
             });
         },
     },

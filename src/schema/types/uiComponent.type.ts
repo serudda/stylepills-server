@@ -11,5 +11,6 @@ type UiComponent {
     scss: String
     html: String
     background: String
+    download: String
 }
 `;
