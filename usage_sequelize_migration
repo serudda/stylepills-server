@@ -32,20 +32,25 @@ y de 'migrate:undo', ya que sino lo que lograriamos con esto es que se desincron
 nuestras tablas, con los migrations files.
 
 5. Correr el comando:
-sequelize db:migrate
+npm run sequelize db:migrate
+(el comando original es sin 'npm run', pero como se agrego Babel en el medio,
+para no tener que usar un database-config.json y un config.ts separados.
+Fue necesario hacer unos cambios en la configuración, para que solo tuvieramos
+que cambiar: src/config/database-config.ts, y ya migrations/config/config.js 
+estaria ligado a los cambios que hagamos en database-config.ts)
 
 Este correra los migrations files que no se encuentren aun registrados en la tabla 'SequelizeSchema'.
 
 6. Si por algun motivo hubo un error en los migrations files, o los escribimos con algun error del
 cual no nos dimos cuenta, podemos hacer rollback con el siguiente comando:
-sequelize db:migrate:undo
+npm run sequelize db:migrate:undo
 
 Este comando hara rollback del ultimo migration ejecutado, disparando la funcion 'down' del archivo migration,
 y eliminando su registro en la tabla 'SequelizeSchema', asi podemos ejecutar este comando cuantas veces querramos,
 hasta llegar al migration file que fallo.
 
 Despues de hacer rollback, vamos al migration file que tiene el error, lo modificamos, y volvemos a ejecutar el comando:
-sequelize db:migrate
+npm run sequelize db:migrate
 
 Volvera a ejecutar todos los migrations que no estan registrados en la tabla 'SequelizeSchema'.
 
@@ -53,7 +58,7 @@ Si todo esta OK, listo queda un registro de todos los migrations corridos, y deb
 cada una de las tablas afectadas.
 
 NOTA: Cuidado con el comando:
-sequelize db:migrate:undo:all
+npm run sequelize db:migrate:undo:all
 
 Ya que hace rollback de todos los migrations que esten registrados en la tabla 'SequelizeSchema'
 y se perderian todos los datos.

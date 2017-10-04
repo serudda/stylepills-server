@@ -2,6 +2,7 @@
 /*            INTERFACE             */
 /************************************/
 export interface IDatabaseConfig {
+    use_env_variable?: string;
     username: string;
     password: string;
     database: string;
@@ -11,30 +12,56 @@ export interface IDatabaseConfig {
     logging: boolean | Function;
 }
 
+export interface IEnvironmentConfig {
+    [key: string]: IDatabaseConfig;
+    local: IDatabaseConfig;
+    development: IDatabaseConfig;
+    production: IDatabaseConfig;
+}
 
-var match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+
+// Get Port and Host from DATABASE_URL config var
+let match = null;
+let host = null;
+let port = null;
+if (process.env.NODE_ENV === 'production' && 
+    process.env.NODE_ENV === 'development') {
+    match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+    host = match[3];
+    port = match[4];
+}
 
 /****************************************/
 /*            DATABASE CONFIG           */
 /****************************************/
-/* FIXME: El comando: 
-    sequelize db:migrate 
-No estaba funcionando si asignaba este archivo en '.sequelizerc' como
-configuracion de la base de datos. Lo correcto es que tome este mismo
-archivo como configuración, pero como arrojaba error, tuve que crear un
-'database-config.json', asi que cuando corro: npm run server, se configura
-enciende el server tomando este archivo como config de  la base, pero cuando
-quiero lanzar un migrate: sequelize db:migrate, toma la configuracion del .json.
-Buscar una solucion para sea el caso que sea siempre tome este archivo.*/
-export const databaseConfig: IDatabaseConfig = {
-    username: 'lgitfxqxcmmqox',
-    password: 'dbd65a1bc01384d08aa148ecb8e0e937b2ed15214c15e09c9a79f6e4f87661d1',
-    database: 'd6g22ske5oult0',
-    // host: '127.0.0.1',  // DEV
-    // host: 'stylepills-server.herokuapp.com', // PRD
-    port:     match[4],
-    host:     match[3],
-    // port: process.env.PORT || 5432,
-    dialect: 'postgres',
-    logging: true
+export const databaseConfig: IEnvironmentConfig = {
+    local: {
+        username: 'sergioruizdavila',
+        password: 'admin',
+        database: 'stylepills_dev',
+        host: '127.0.0.1',
+        port: process.env.PORT || 5432,
+        dialect: 'postgres',
+        logging: true
+    },
+    development: {
+        use_env_variable: 'DATABASE_URL',
+        username: 'ucltubusynwrsu',
+        password: 'f14c4838c1b7af63fbf45f25799e8c45f319a1f4c618142f19d09fb019a8eb60',
+        database: 'dcgfiqehd78k6c',
+        port:     port,
+        host:     host,
+        dialect: 'postgres',
+        logging: true
+    },
+    production: {
+        use_env_variable: 'DATABASE_URL',
+        username: 'lgitfxqxcmmqox',
+        password: 'dbd65a1bc01384d08aa148ecb8e0e937b2ed15214c15e09c9a79f6e4f87661d1',
+        database: 'd6g22ske5oult0',
+        port:     port,
+        host:     host,
+        dialect: 'postgres',
+        logging: true
+    }
 };

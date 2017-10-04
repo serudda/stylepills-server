@@ -10,6 +10,7 @@ import { serverConfig, IServerConfig } from './server-config';
 /*            CONFIG CLASS             */
 /***************************************/
 class Config {
+    private _env: string;
     private _databaseConfig: IDatabaseConfig;
     private _loggingConfig: ILoggingConfig;
     private _serverConfig: IServerConfig;
@@ -18,7 +19,8 @@ class Config {
     /*       CONSTRUCTOR      */
     /**************************/
     constructor() {
-        this._databaseConfig = databaseConfig;
+        this._env = process.env.NODE_ENV || 'local';
+        this._databaseConfig = databaseConfig[this._env];
         this._loggingConfig = loggingConfig;
         this._serverConfig = serverConfig;
     }
