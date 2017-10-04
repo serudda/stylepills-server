@@ -1,5 +1,4 @@
 {
-    "use_env_variable": "DATABASE_URL",
     "username": "sergioruizdavila",
     "password": "admin",
     "database": "stylepills_db",

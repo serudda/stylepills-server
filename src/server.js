@@ -9,7 +9,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const index_1 = require("./schema/index");
 // CONSTANTS
-const GRAPHQL_PORT = 4000;
+const GRAPHQL_PORT = process.env.PORT || 4000;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 // EXPRESS INSTANCE

@@ -9,7 +9,7 @@ import schema from './schema/index';
 
 
 // CONSTANTS
-const GRAPHQL_PORT = 4000;
+const GRAPHQL_PORT = process.env.PORT || 4000;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 
