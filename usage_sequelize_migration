@@ -62,3 +62,14 @@ npm run sequelize db:migrate:undo:all
 
 Ya que hace rollback de todos los migrations que esten registrados en la tabla 'SequelizeSchema'
 y se perderian todos los datos.
+
+
+------------------------------------------------------------------------------
+
+USE SEQUELIZE MIGRATION REMOTELY
+
+1. Correr el comando: 
+heroku run bash
+
+2. Para correr las migraciones pendientes, correr el comando:
+npm run sequelize db:migrate
