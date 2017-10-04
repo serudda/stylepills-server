@@ -15,7 +15,7 @@ class Config {
     constructor() {
         this._env = process.env.NODE_ENV || 'local';
         console.log('LOG - ENV: ', this._env);
-        this._databaseConfig = database_config_1.databaseConfig[this._env];
+        this._databaseConfig = database_config_1.databaseConfig(this._env);
         console.log('LOG - DATABASECONFIG: ', this._databaseConfig);
         this._loggingConfig = logging_config_1.loggingConfig;
         this._serverConfig = server_config_1.serverConfig;
