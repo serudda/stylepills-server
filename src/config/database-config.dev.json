@@ -1,9 +1,0 @@
-{
-    "username": "sergioruizdavila",
-    "password": "admin",
-    "database": "stylepills_db",
-    "host": "127.0.0.1",
-    "port": 5432,
-    "dialect": "postgres",
-    "logging": true
-}

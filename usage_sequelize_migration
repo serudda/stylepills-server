@@ -69,7 +69,7 @@ y se perderian todos los datos.
 USE SEQUELIZE MIGRATION REMOTELY
 
 1. Correr el comando: 
-heroku run bash
+heroku run bash --app <nombre_de_la_app>
 
 2. Para correr las migraciones pendientes, correr el comando:
 npm run sequelize db:migrate
