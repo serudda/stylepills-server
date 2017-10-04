@@ -26,9 +26,15 @@ let host = null;
 let port = null;
 if (process.env.NODE_ENV === 'production' && 
     process.env.NODE_ENV === 'development') {
+    console.log('IF');    
     match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
+    console.log('MATCH: ', match);
     host = match[3];
     port = match[4];
+    console.log('HOST: ', match[3]);
+    console.log('PORT: ', match[4]);
+} else {
+    console.log('ELSE');
 }
 
 /****************************************/
