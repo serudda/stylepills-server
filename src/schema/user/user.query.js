@@ -9,7 +9,7 @@ const index_1 = require("./../../models/index");
 /**************************************/
 exports.typeDef = `
     extend type Query {
-        user(id: ID!): User!
+        userById(id: ID!): User!
         users: [User!]!
     }
 `;
@@ -18,12 +18,12 @@ exports.typeDef = `
 /*******************************************/
 exports.resolver = {
     Query: {
-        users() {
-            return index_1.models.User.findAll();
-        },
-        user(root, { id }) {
+        userById(source, { id }) {
             return index_1.models.User.findById(id);
         },
+        users() {
+            return index_1.models.User.findAll();
+        }
     },
     User: {
         atoms(user) {
@@ -37,24 +37,16 @@ Queries:
 
 
 query getUserById($userId : ID!) {
-    user(id: $userId) {
+    userById(id: $userId) {
         id
-        username
         firstname
         lastname
+        username
         email
         avatar
         about
         website
         __typename
-        social {
-            id
-            twitter
-            facebook
-            github
-            linkedin
-            __typename
-        }
         atoms {
             id
             name

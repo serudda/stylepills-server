@@ -18,7 +18,7 @@ interface IUserArgs {
 
 export const typeDef = `
     extend type Query {
-        user(id: ID!): User!
+        userById(id: ID!): User!
         users: [User!]!
     }
 `;
@@ -30,12 +30,12 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
-        users() {
-            return models.User.findAll();
-        },
-        user(root: any, { id }: IUserArgs) {
+        userById(source: any, { id }: IUserArgs) {
             return models.User.findById(id);
         },
+        users() {
+            return models.User.findAll();
+        }
     },
     User: {
         atoms(user: any) {
@@ -52,24 +52,16 @@ Queries:
 
 
 query getUserById($userId : ID!) {
-    user(id: $userId) {
+    userById(id: $userId) {
         id
-        username
         firstname
         lastname
+        username
         email
         avatar
         about
         website
         __typename
-        social {
-            id
-            twitter
-            facebook
-            github
-            linkedin
-            __typename
-        }
         atoms {
             id
             name

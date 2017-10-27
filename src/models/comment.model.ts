@@ -65,7 +65,7 @@ SequelizeStatic.Model<ICommentInstance, ICommentAttributes> {
     Comment.associate = (models: ISequelizeModels) => {
 
         // one Comment belongs to one Atom (1:M)
-        // NOTE: 1 - constraints theory
+        // NOTE: (1) constraints theory
         Comment.belongsTo(models.Atom, {
             foreignKey: {
                 name: 'commentableId',
@@ -73,6 +73,11 @@ SequelizeStatic.Model<ICommentInstance, ICommentAttributes> {
             },
             constraints: false,
             as: 'atom'
+        });
+
+        // one Comment belongs to one author (1:M)
+        Comment.belongsTo(models.User, {
+            foreignKey: 'author' 
         });
 
     };

@@ -5,26 +5,34 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const index_1 = require("./../../models/index");
 /**************************************/
-/*     UI COMPONENT QUERY TYPEDEF     */
+/*         ATOM QUERY TYPEDEF         */
 /**************************************/
 exports.typeDef = `
     # Root Query
     extend type Query {
+        atomById(id: ID!): Atom
         atoms: [Atom]
-        atom(id: ID!): Atom
     }
 `;
 /*******************************************/
-/*       UI COMPONENT QUERY RESOLVER       */
+/*            ATOM QUERY RESOLVER          */
 /*******************************************/
 exports.resolver = {
     Query: {
         atoms() {
             return index_1.models.Atom.findAll();
         },
-        atom(root, { id }) {
+        atomById(source, { id }) {
             return index_1.models.Atom.findById(id);
+        }
+    },
+    Atom: {
+        comments(atom) {
+            return atom.getComment();
         },
+        author(atom) {
+            return atom.getAuthor();
+        }
     }
 };
 /*
@@ -36,23 +44,26 @@ query getAtomById($atomId : ID!) {
     atom(id: $atomId) {
         id
         name
-        css
-        scss
         html
-        background
+        css
+        contextualBg
+        stores
+        views
+        likes
         download
         __typename
-        colorPalette {
+        comments {
             id
-            category
-            description
+            content
             __typename
-            colors {
-                id
-                hex
-                label
-                __typename
-            }
+        }
+        author {
+            id
+            firstname
+            lastname
+            username
+            avatar
+            __typename
         }
     }
 }

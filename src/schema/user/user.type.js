@@ -16,4 +16,5 @@ type User {
     atoms: [Atom]
 }
 `;
+// NOTE: El usuario no deberia ver la propiedad 'active' 
 //# sourceMappingURL=user.type.js.map

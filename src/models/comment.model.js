@@ -27,7 +27,7 @@ function default_1(sequelize, dataTypes) {
     /*********************************/
     Comment.associate = (models) => {
         // one Comment belongs to one Atom (1:M)
-        // NOTE: 1 - constraints theory
+        // NOTE: (1) constraints theory
         Comment.belongsTo(models.Atom, {
             foreignKey: {
                 name: 'commentableId',
@@ -35,6 +35,10 @@ function default_1(sequelize, dataTypes) {
             },
             constraints: false,
             as: 'atom'
+        });
+        // one Comment belongs to one author (1:M)
+        Comment.belongsTo(models.User, {
+            foreignKey: 'author'
         });
     };
     return Comment;

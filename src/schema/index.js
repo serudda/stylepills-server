@@ -5,13 +5,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const lodash_1 = require("lodash");
 const graphql_tools_1 = require("graphql-tools");
-const userMutation = require("./user/user.mutation");
-const userQuery = require("./user/user.query");
 const userTypes = require("./user/user.type");
+const userQuery = require("./user/user.query");
+const userMutation = require("./user/user.mutation");
 const commentTypes = require("./comment/comment.type");
-const atomMutation = require("./atom/atom.mutation");
-const atomQuery = require("./atom/atom.query");
+const commentQuery = require("./comment/comment.query");
+const atomCategoryTypes = require("./atomCategory/atomCategory.type");
+const atomCategoryQuery = require("./atomCategory/atomCategory.query");
 const atomTypes = require("./atom/atom.type");
+const atomQuery = require("./atom/atom.query");
+const atomMutation = require("./atom/atom.mutation");
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
@@ -49,6 +52,9 @@ const typeDefs = [`
     userQuery.typeDef,
     userMutation.typeDef,
     commentTypes.typeDef,
+    commentQuery.typeDef,
+    atomCategoryTypes.typeDef,
+    atomCategoryQuery.typeDef,
     atomTypes.typeDef,
     atomQuery.typeDef,
     atomMutation.typeDef,
@@ -56,7 +62,7 @@ const typeDefs = [`
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, atomMutation.resolver, atomQuery.resolver);
+const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

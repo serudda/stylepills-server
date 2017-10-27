@@ -1,18 +1,23 @@
+import { typeDef } from './atom/atom.type';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import * as userMutation from './user/user.mutation';
-import * as userQuery from './user/user.query';
 import * as userTypes from './user/user.type';
+import * as userQuery from './user/user.query';
+import * as userMutation from './user/user.mutation';
 
 import * as commentTypes from './comment/comment.type';
+import * as commentQuery from './comment/comment.query';
 
-import * as atomMutation from './atom/atom.mutation';
-import * as atomQuery from './atom/atom.query';
+import * as atomCategoryTypes from './atomCategory/atomCategory.type';
+import * as atomCategoryQuery from './atomCategory/atomCategory.query';
+
 import * as atomTypes from './atom/atom.type';
+import * as atomQuery from './atom/atom.query';
+import * as atomMutation from './atom/atom.mutation';
 
 
 /**********************************/
@@ -53,6 +58,10 @@ const typeDefs = [`
     userMutation.typeDef,
     
     commentTypes.typeDef,
+    commentQuery.typeDef,
+
+    atomCategoryTypes.typeDef,
+    atomCategoryQuery.typeDef,
 
     atomTypes.typeDef,
     atomQuery.typeDef,
@@ -67,6 +76,11 @@ const typeDefs = [`
 const resolvers: any = merge(
     userMutation.resolver,
     userQuery.resolver,
+
+    commentQuery.resolver,
+
+    atomCategoryQuery.resolver,
+
     atomMutation.resolver,
     atomQuery.resolver
 );

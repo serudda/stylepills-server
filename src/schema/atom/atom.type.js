@@ -15,9 +15,8 @@ type Atom {
     likes: Int
     comments: [Comment]
     download: String
-    private: Boolean
     author: User!
-    active: Boolean
 }
 `;
+// NOTE: El usuario no deberia ver la propiedad 'active' ni 'private' 
 //# sourceMappingURL=atom.type.js.map

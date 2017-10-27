@@ -13,20 +13,20 @@ interface IAtomArgs {
 
 
 /**************************************/
-/*     UI COMPONENT QUERY TYPEDEF     */
+/*         ATOM QUERY TYPEDEF         */
 /**************************************/
 
 export const typeDef = `
     # Root Query
     extend type Query {
+        atomById(id: ID!): Atom
         atoms: [Atom]
-        atom(id: ID!): Atom
     }
 `;
 
 
 /*******************************************/
-/*       UI COMPONENT QUERY RESOLVER       */
+/*            ATOM QUERY RESOLVER          */
 /*******************************************/
 
 export const resolver = {
@@ -34,9 +34,17 @@ export const resolver = {
         atoms() {
             return models.Atom.findAll();
         },
-        atom(root: any, { id }: IAtomArgs) {
+        atomById(source: any, { id }: IAtomArgs) {
             return models.Atom.findById(id);
+        }
+    },
+    Atom: {
+        comments(atom: any) {
+            return atom.getComment();
         },
+        author(atom: any) {
+            return atom.getAuthor();
+        }
     }
 };
 
@@ -51,23 +59,26 @@ query getAtomById($atomId : ID!) {
     atom(id: $atomId) {
         id
         name
-        css
-        scss
         html
-        background
+        css
+        contextualBg
+        stores
+        views
+        likes
         download
         __typename
-        colorPalette {
+        comments {
             id
-            category
-            description
+            content
             __typename
-            colors {
-                id
-                hex
-                label
-                __typename
-            }
+        }
+        author {
+            id
+            firstname
+            lastname
+            username
+            avatar
+            __typename
         }
     }
 }

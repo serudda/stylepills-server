@@ -82,6 +82,10 @@ function default_1(sequelize, dataTypes) {
         User.hasMany(models.Atom, {
             foreignKey: 'author'
         });
+        // One user is author of many Comments (1:M)
+        User.hasMany(models.Comment, {
+            foreignKey: 'author'
+        });
     };
     return User;
 }

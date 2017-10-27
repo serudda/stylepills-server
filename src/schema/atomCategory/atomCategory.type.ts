@@ -9,3 +9,5 @@ type AtomCategory {
     description: String
 }
 `;
+
+// NOTE: El usuario no deberia ver la propiedad 'active'

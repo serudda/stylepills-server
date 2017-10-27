@@ -15,3 +15,5 @@ type User {
     atoms: [Atom]
 }
 `;
+
+// NOTE: El usuario no deberia ver la propiedad 'active'

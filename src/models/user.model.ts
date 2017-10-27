@@ -132,6 +132,11 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
             foreignKey: 'author'
         });
 
+        // One user is author of many Comments (1:M)
+        User.hasMany(models.Comment, {
+            foreignKey: 'author'
+        });
+
     };
 
 
