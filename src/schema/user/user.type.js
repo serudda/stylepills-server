@@ -1,16 +1,19 @@
+"use strict";
 /********************************/
 /*           USER TYPE          */
 /********************************/
-
-export const typeDef = `
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.typeDef = `
 type User {
     id: ID!
     firstname: String
     lastname: String
+    username: String!
+    email: String!
     avatar: String
     about: String
-    email: String
     website: String
     atoms: [Atom]
 }
 `;
+//# sourceMappingURL=user.type.js.map

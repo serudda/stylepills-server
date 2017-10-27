@@ -17,10 +17,9 @@ interface IUserArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        users: [User]
-        user(id: ID!): User
+        user(id: ID!): User!
+        users: [User!]!
     }
 `;
 

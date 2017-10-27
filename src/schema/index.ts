@@ -4,18 +4,21 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import * as userMutation from './mutations/user.mutation';
-import * as userQuery from './queries/user.query';
-import * as userTypes from './types/user.type';
+import * as userMutation from './user/user.mutation';
+import * as userQuery from './user/user.query';
+import * as userTypes from './user/user.type';
 
-import * as atomMutation from './mutations/atom.mutation';
-import * as atomQuery from './queries/atom.query';
-import * as atomTypes from './types/atom.type';
+import * as commentTypes from './comment/comment.type';
+
+import * as atomMutation from './atom/atom.mutation';
+import * as atomQuery from './atom/atom.query';
+import * as atomTypes from './atom/atom.type';
 
 
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
+// TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
 
     # Type
@@ -49,6 +52,8 @@ const typeDefs = [`
     userQuery.typeDef,
     userMutation.typeDef,
     
+    commentTypes.typeDef,
+
     atomTypes.typeDef,
     atomQuery.typeDef,
     atomMutation.typeDef,

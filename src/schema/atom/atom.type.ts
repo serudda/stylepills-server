@@ -1,14 +1,21 @@
 /************************************/
-/*        UI COMPONENT TYPE         */
+/*             ATOM TYPE            */
 /************************************/
 
 export const typeDef = `
 type Atom {
     id: ID!
     name: String
-    css: String    
     html: String
+    css: String
     contextualBg: String
+    stores: Int
+    views: Int
+    likes: Int
+    comments: [Comment]
     download: String
+    private: Boolean
+    author: User!
+    active: Boolean
 }
 `;

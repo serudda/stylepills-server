@@ -29,10 +29,9 @@ export interface IAtom {
     stores: number;
     views: number;
     likes: number;
-    authorId: IUser;
     download: string;
-    active: boolean;
     private: boolean;
+    author: IUser;
 }
 
 
@@ -55,7 +54,7 @@ export interface IAtomInstance extends Instance<IAtomAttributes> {
 
 
 /*****************************************/
-/*           UI COMPONENT MODEL          */
+/*               ATOM MODEL              */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
@@ -118,10 +117,7 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
 
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
-            foreignKey: {
-                name: 'authorId',
-                field: 'author_id'
-            }
+            foreignKey: 'author' 
         });
 
         // one Atom belongs to one category (1:M)

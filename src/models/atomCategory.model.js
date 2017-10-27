@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*           UI COMPONENT MODEL          */
+/*           ATOM CATEGORY MODEL         */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     let AtomCategory = sequelize.define('AtomCategory', {
@@ -22,7 +22,7 @@ function default_1(sequelize, dataTypes) {
     /*      CREATE RELATIONSHIP      */
     /*********************************/
     AtomCategory.associate = (models) => {
-        // One category has many Atoms (1:M)
+        // One Category has many Atoms (1:M)
         AtomCategory.hasMany(models.Atom, {
             foreignKey: {
                 name: 'atomCategoryId',

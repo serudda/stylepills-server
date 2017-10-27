@@ -17,10 +17,10 @@ export interface IUser {
     firstname: string;
     lastname: string;
     username: string;
-    email: string;
+    email: string; 
+    website: string;
     avatar: string;
     about: string;
-    website: string;
     atoms: Array<IAtom>;
 }
 
@@ -129,10 +129,7 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
         
         // One user is author of many Atoms (1:M)
         User.hasMany(models.Atom, {
-            foreignKey: {
-                name: 'authorId',
-                field: 'author_id'
-            }
+            foreignKey: 'author'
         });
 
     };

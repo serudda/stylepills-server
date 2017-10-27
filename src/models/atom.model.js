@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /*****************************************/
-/*           UI COMPONENT MODEL          */
+/*               ATOM MODEL              */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     /* NOTE: No change 'Atom' to 'atom', it throws an error: called with something that's not
@@ -56,10 +56,7 @@ function default_1(sequelize, dataTypes) {
         });
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
-            foreignKey: {
-                name: 'authorId',
-                field: 'author_id'
-            }
+            foreignKey: 'author'
         });
         // one Atom belongs to one category (1:M)
         Atom.belongsTo(models.AtomCategory, {

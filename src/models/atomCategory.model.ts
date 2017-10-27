@@ -32,7 +32,7 @@ export interface IAtomCategoryInstance extends Instance<IAtomCategoryAttributes>
 
 
 /*****************************************/
-/*           UI COMPONENT MODEL          */
+/*           ATOM CATEGORY MODEL         */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes> {
@@ -61,7 +61,7 @@ SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes> {
     /*********************************/
     AtomCategory.associate = (models: ISequelizeModels) => {
 
-        // One category has many Atoms (1:M)
+        // One Category has many Atoms (1:M)
         AtomCategory.hasMany(models.Atom, {
             foreignKey: {
                 name: 'atomCategoryId',

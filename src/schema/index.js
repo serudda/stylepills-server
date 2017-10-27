@@ -5,15 +5,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const lodash_1 = require("lodash");
 const graphql_tools_1 = require("graphql-tools");
-const userMutation = require("./mutations/user.mutation");
-const userQuery = require("./queries/user.query");
-const userTypes = require("./types/user.type");
-const atomMutation = require("./mutations/atom.mutation");
-const atomQuery = require("./queries/atom.query");
-const atomTypes = require("./types/atom.type");
+const userMutation = require("./user/user.mutation");
+const userQuery = require("./user/user.query");
+const userTypes = require("./user/user.type");
+const commentTypes = require("./comment/comment.type");
+const atomMutation = require("./atom/atom.mutation");
+const atomQuery = require("./atom/atom.query");
+const atomTypes = require("./atom/atom.type");
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
+// TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
 
     # Type
@@ -46,6 +48,7 @@ const typeDefs = [`
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
+    commentTypes.typeDef,
     atomTypes.typeDef,
     atomQuery.typeDef,
     atomMutation.typeDef,

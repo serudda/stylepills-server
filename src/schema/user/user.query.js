@@ -8,10 +8,9 @@ const index_1 = require("./../../models/index");
 /*         USER QUERY TYPEDEF         */
 /**************************************/
 exports.typeDef = `
-    # Root Query
     extend type Query {
-        users: [User]
-        user(id: ID!): User
+        user(id: ID!): User!
+        users: [User!]!
     }
 `;
 /*******************************************/
