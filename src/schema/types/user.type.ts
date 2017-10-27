@@ -8,10 +8,9 @@ type User {
     firstname: String
     lastname: String
     avatar: String
-    social: Social
     about: String
     email: String
     website: String
-    uiComponents: [UiComponent]
+    atoms: [Atom]
 }
 `;

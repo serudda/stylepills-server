@@ -3,14 +3,12 @@
 /************************************/
 
 export const typeDef = `
-type UiComponent {
+type Atom {
     id: ID!
     name: String
-    colorPalette: ColorPalette
-    css: String
-    scss: String
+    css: String    
     html: String
-    background: String
+    contextualBg: String
     download: String
 }
 `;

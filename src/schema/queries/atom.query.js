@@ -10,8 +10,8 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     # Root Query
     extend type Query {
-        uiComponents: [UiComponent]
-        uiComponent(id: ID!): UiComponent
+        atoms: [Atom]
+        atom(id: ID!): Atom
     }
 `;
 /*******************************************/
@@ -19,31 +19,21 @@ exports.typeDef = `
 /*******************************************/
 exports.resolver = {
     Query: {
-        uiComponents() {
-            // TODO: Aqui deberia llamar a un Service o una Api donde contenga
-            // cada unos de los Request alusivos a 'uiComponent', haciendo el
-            // try, catch, el manejo de errores, parseando los datos que sean
-            // necesarios, etc.
-            return index_1.models.UiComponent.findAll();
+        atoms() {
+            return index_1.models.Atom.findAll();
         },
-        uiComponent(root, { id }) {
-            return index_1.models.UiComponent.findById(id);
+        atom(root, { id }) {
+            return index_1.models.Atom.findById(id);
         },
-    },
-    UiComponent: {
-        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
-        colorPalette(uiComponent) {
-            return uiComponent.getColorPalette();
-        },
-    },
+    }
 };
 /*
 
 Queries:
 
 
-query getUiComponentById($uiComponentId : ID!) {
-    uiComponent(id: $uiComponentId) {
+query getAtomById($atomId : ID!) {
+    atom(id: $atomId) {
         id
         name
         css
@@ -67,4 +57,4 @@ query getUiComponentById($uiComponentId : ID!) {
     }
 }
 */ 
-//# sourceMappingURL=uiComponent.query.js.map
+//# sourceMappingURL=atom.query.js.map

@@ -18,8 +18,7 @@ input CreateUserInput {
     email: String
     about: String
     website: String
-    social: [CreateSocialInput]
-    uiComponents: [CreateUiComponentInput]
+    atoms: [CreateAtomInput]
 }
 
 # Mutations
@@ -30,7 +29,7 @@ extend type Mutation {
 `;
 exports.resolver = {
     Mutation: {
-        createUiComponent(root, args) {
+        createAtom(root, args) {
             return index_1.models.User.create({
                 firstname: args.input.firstname,
                 lastname: args.input.lastname,

@@ -27,12 +27,9 @@ exports.resolver = {
         },
     },
     User: {
-        uiComponents(user) {
-            return user.getUiComponent();
-        },
-        social(user) {
-            return user.getSocial();
-        },
+        atoms(user) {
+            return user.getAtom();
+        }
     },
 };
 /*
@@ -59,7 +56,7 @@ query getUserById($userId : ID!) {
             linkedin
             __typename
         }
-        uiComponents {
+        atoms {
             id
             name
             __typename

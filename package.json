@@ -24,7 +24,7 @@
     "@types/lodash": "^4.14.74",
     "@types/mkdirp": "^0.5.1",
     "@types/pg": "^7.1.1",
-    "@types/sequelize": "^4.0.73",
+    "@types/sequelize": "^4.0.78",
     "@types/winston": "^2.3.5",
     "apollo-server-express": "^1.0.2",
     "body-parser": "^1.17.2",
@@ -36,7 +36,7 @@
     "mkdirp": "^0.5.1",
     "pg": "^7.3.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.8.4",
+    "sequelize": "^4.19.0",
     "sequelize-cli": "^3.0.0",
     "sqlite": "^2.8.0",
     "winston": "^2.3.1"

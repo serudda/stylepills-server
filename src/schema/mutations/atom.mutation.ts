@@ -2,29 +2,27 @@
 /*            DEPENDENCIES            */
 /**************************************/
 import { models } from './../../models/index';
-import { IUiComponent } from './../../models/uiComponent.model';
+import { IAtom } from './../../models/atom.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
-interface ICreateUiComponentArgs {
-    input: IUiComponent;
+interface ICreateAtomArgs {
+    input: IAtom;
 }
 
 
 /*****************************************/
 /*         UI COMPONENT MUTATION         */
 /*****************************************/
-
+// TODO: Asignar las propiedades reales
 export const typeDef = `
 
 # Input
-input CreateUiComponentInput {
-    name: String
-    colorPalette: [CreateColorPaletteInput]
+input CreateAtomInput {
+    name: String 
     css: String
-    scss: String
     html: String
     background: String
     download: String
@@ -32,20 +30,23 @@ input CreateUiComponentInput {
 
 # Mutations
 extend type Mutation {
-    createUiComponent(input: CreateUiComponentInput!): UiComponent
+    createAtom(input: CreateAtomInput!): Atom
 }
 
 `;
 
 export const resolver = {
     Mutation: {
-        createUiComponent(root: any, args: ICreateUiComponentArgs) {
-            return models.UiComponent.create({
+        createAtom(root: any, args: ICreateAtomArgs) {
+            return models.Atom.create({
                 name: args.input.name,
                 html: args.input.html,
                 css: args.input.css,
-                scss: args.input.scss,
-                background: args.input.background,
+                otherCode: args.input.otherCode,
+                contextualBg: args.input.contextualBg,
+                stores: args.input.stores,
+                views: args.input.views,
+                likes: args.input.likes,
                 download: args.input.download
             });
         },

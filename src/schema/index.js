@@ -8,18 +8,9 @@ const graphql_tools_1 = require("graphql-tools");
 const userMutation = require("./mutations/user.mutation");
 const userQuery = require("./queries/user.query");
 const userTypes = require("./types/user.type");
-const socialMutation = require("./mutations/social.mutation");
-const socialQuery = require("./queries/social.query");
-const socialTypes = require("./types/social.type");
-const colorMutation = require("./mutations/color.mutation");
-const colorQuery = require("./queries/color.query");
-const colorTypes = require("./types/color.type");
-const colorPaletteMutation = require("./mutations/colorPalette.mutation");
-const colorPaletteQuery = require("./queries/colorPalette.query");
-const colorPaletteTypes = require("./types/colorPalette.type");
-const uiComponentMutation = require("./mutations/uiComponent.mutation");
-const uiComponentQuery = require("./queries/uiComponent.query");
-const uiComponentTypes = require("./types/uiComponent.type");
+const atomMutation = require("./mutations/atom.mutation");
+const atomQuery = require("./queries/atom.query");
+const atomTypes = require("./types/atom.type");
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
@@ -55,23 +46,14 @@ const typeDefs = [`
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
-    socialTypes.typeDef,
-    socialQuery.typeDef,
-    socialMutation.typeDef,
-    colorTypes.typeDef,
-    colorQuery.typeDef,
-    colorMutation.typeDef,
-    colorPaletteTypes.typeDef,
-    colorPaletteQuery.typeDef,
-    colorPaletteMutation.typeDef,
-    uiComponentTypes.typeDef,
-    uiComponentQuery.typeDef,
-    uiComponentMutation.typeDef,
+    atomTypes.typeDef,
+    atomQuery.typeDef,
+    atomMutation.typeDef,
 ];
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, socialMutation.resolver, socialQuery.resolver, colorMutation.resolver, colorQuery.resolver, colorPaletteMutation.resolver, colorPaletteQuery.resolver, uiComponentMutation.resolver, uiComponentQuery.resolver);
+const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, atomMutation.resolver, atomQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

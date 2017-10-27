@@ -66,10 +66,10 @@ SequelizeStatic.Model<ISocialInstance, ISocialAttributes> {
     /*      CREATE RELATIONSHIP      */
     /*********************************/
     Social.associate = (models: SequelizeModels) => {
-        Social.belongsTo(models.User, {
+        /*Social.belongsTo(models.User, {
             foreignKey: 'userId',
             onDelete: 'CASCADE'
-        });
+        });*/
     };
 
 

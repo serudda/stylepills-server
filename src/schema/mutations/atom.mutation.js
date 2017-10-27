@@ -7,14 +7,13 @@ const index_1 = require("./../../models/index");
 /*****************************************/
 /*         UI COMPONENT MUTATION         */
 /*****************************************/
+// TODO: Asignar las propiedades reales
 exports.typeDef = `
 
 # Input
-input CreateUiComponentInput {
-    name: String
-    colorPalette: [CreateColorPaletteInput]
+input CreateAtomInput {
+    name: String 
     css: String
-    scss: String
     html: String
     background: String
     download: String
@@ -22,22 +21,25 @@ input CreateUiComponentInput {
 
 # Mutations
 extend type Mutation {
-    createUiComponent(input: CreateUiComponentInput!): UiComponent
+    createAtom(input: CreateAtomInput!): Atom
 }
 
 `;
 exports.resolver = {
     Mutation: {
-        createUiComponent(root, args) {
-            return index_1.models.UiComponent.create({
+        createAtom(root, args) {
+            return index_1.models.Atom.create({
                 name: args.input.name,
                 html: args.input.html,
                 css: args.input.css,
-                scss: args.input.scss,
-                background: args.input.background,
+                otherCode: args.input.otherCode,
+                contextualBg: args.input.contextualBg,
+                stores: args.input.stores,
+                views: args.input.views,
+                likes: args.input.likes,
                 download: args.input.download
             });
         },
     },
 };
-//# sourceMappingURL=uiComponent.mutation.js.map
+//# sourceMappingURL=atom.mutation.js.map

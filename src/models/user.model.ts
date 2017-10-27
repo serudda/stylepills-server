@@ -3,10 +3,9 @@
 /************************************/
 import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
-import { SequelizeModels } from './index';
+import { ISequelizeModels } from './index';
 
-import { IUiComponent } from './uiComponent.model';
-import { ISocial } from './social.model';
+import { IAtom } from './atom.model';
 
 
 
@@ -22,8 +21,7 @@ export interface IUser {
     avatar: string;
     about: string;
     website: string;
-    social: ISocial;
-    uiComponents: Array<IUiComponent>;
+    atoms: Array<IAtom>;
 }
 
 
@@ -32,9 +30,9 @@ export interface IUserAttributes {
     lastname: string;
     username: string;
     email: string;
+    website: string;
     avatar: string;
     about: string;
-    website: string;
 }
 
 
@@ -53,52 +51,88 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
         'User', {
             username: {
                 type: dataTypes.STRING,
-                allowNull: false
+                unique: true,
+                validate: {
+                    isAlphanumeric: {
+                      args: true,
+                      msg: 'The username can only contain letters and numbers',
+                    },
+                    len: {
+                      args: [3, 25],
+                      msg: 'The username needs to be between 3 and 25 characters long',
+                    }
+                }
             },
             firstname: {
-                type: dataTypes.STRING,
-                allowNull: true
+                type: dataTypes.STRING
             },
             lastname: {
-                type: dataTypes.STRING,
-                allowNull: true
+                type: dataTypes.STRING
             },
             email: {
                 type: dataTypes.STRING,
-                allowNull: true
+                unique: true,
+                validate: {
+                    isEmail: {
+                        args: true,
+                        msg: 'Invalid email',
+                    }  
+                }
+            },
+            password: {
+                type: dataTypes.STRING,
+                validate: {
+                    len: {
+                        args: [5, 100],
+                        msg: 'The password needs to be between 5 and 100 characters long',
+                    }
+                }
             },
             website: {
                 type: dataTypes.STRING,
-                allowNull: true
+                validate: {
+                    isUrl: {
+                        args: true,
+                        msg: 'Invalid url',
+                    }
+                }
             },
             avatar: {
-                type: dataTypes.STRING,
-                allowNull: true
+                type: dataTypes.TEXT
             },
             about: {
-                type: dataTypes.TEXT,
-                allowNull: true
+                type: dataTypes.TEXT
+            },
+            active: {
+                type: dataTypes.BOOLEAN
             },
         }, {
             timestamps: true,
             tableName: 'user',
-            freezeTableName: true,
+            freezeTableName: true
         }
     );
 
 
     /*      CREATE RELATIONSHIP      */
     /*********************************/
-    User.associate = (models: SequelizeModels) => {
-        
-        User.hasMany(models.UiComponent, {
-            foreignKey: 'authorId',
-            as: 'uiComponent'
-        });
+    User.associate = (models: ISequelizeModels) => {
 
-        User.hasOne(models.Social, {
-            foreignKey: 'userId',
-            as: 'social'
+        // one User belongs to many Atoms (N:M)
+        User.belongsToMany(models.Atom, {
+            through: 'owner',
+            foreignKey: {
+                name: 'userId',
+                field: 'user_id'
+            }
+        });
+        
+        // One user is author of many Atoms (1:M)
+        User.hasMany(models.Atom, {
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
         });
 
     };

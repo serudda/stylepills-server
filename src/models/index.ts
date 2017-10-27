@@ -12,21 +12,19 @@ import { config } from '../config/config';
 import { logger } from '../utils/logger';
 
 import { IUserAttributes, IUserInstance } from './user.model';
-import { ISocialInstance, ISocialAttributes } from './social.model';
-import { IColorAttributes, IColorInstance } from './color.model';
-import { IColorPaletteAttributes, IColorPaletteInstance } from './colorPalette.model';
-import { IUiComponentAttributes, IUiComponentInstance } from './uiComponent.model';
+import { IAtomAttributes, IAtomInstance } from './atom.model';
+import { IAtomCategoryAttributes, IAtomCategoryInstance } from './atomCategory.model';
+import { ICommentAttributes, ICommentInstance } from './comment.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
-export interface SequelizeModels {
+export interface ISequelizeModels {
     User: SequelizeStatic.Model<IUserInstance, IUserAttributes>;
-    Social: SequelizeStatic.Model<ISocialInstance, ISocialAttributes>;
-    Color: SequelizeStatic.Model<IColorInstance, IColorAttributes>;
-    ColorPalette: SequelizeStatic.Model<IColorPaletteInstance, IColorPaletteAttributes>;
-    UiComponent: SequelizeStatic.Model<IUiComponentInstance, IUiComponentAttributes>;
+    Atom: SequelizeStatic.Model<IAtomInstance, IAtomAttributes>;
+    AtomCategory: SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes>;
+    Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;
 }
 
 
@@ -39,7 +37,7 @@ class Database {
     /*     PROPERTIES     */
     /**********************/
     private _basename: string;
-    private _models: SequelizeModels;
+    private _models: ISequelizeModels;
     private _sequelize: Sequelize;
 
 
@@ -108,4 +106,4 @@ export const models = database.getModels();
 export const sequelize = database. getSequelize();
 
 /* Only on Develop: Recreate DataBase based on new migrations updates  */
-// sequelize.sync({force: true});
+sequelize.sync({force: true});

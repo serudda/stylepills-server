@@ -7,7 +7,7 @@ import { models, sequelize } from './../../models/index';
 /************************************/
 /*            INTERFACES            */
 /************************************/    
-interface IUiComponentArgs {
+interface IAtomArgs {
     id: number;
 }
 
@@ -19,8 +19,8 @@ interface IUiComponentArgs {
 export const typeDef = `
     # Root Query
     extend type Query {
-        uiComponents: [UiComponent]
-        uiComponent(id: ID!): UiComponent
+        atoms: [Atom]
+        atom(id: ID!): Atom
     }
 `;
 
@@ -31,23 +31,13 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
-        uiComponents() {
-            // TODO: Aqui deberia llamar a un Service o una Api donde contenga
-            // cada unos de los Request alusivos a 'uiComponent', haciendo el
-            // try, catch, el manejo de errores, parseando los datos que sean
-            // necesarios, etc.
-            return models.UiComponent.findAll();
+        atoms() {
+            return models.Atom.findAll();
         },
-        uiComponent(root: any, { id }: IUiComponentArgs) {
-            return models.UiComponent.findById(id);
+        atom(root: any, { id }: IAtomArgs) {
+            return models.Atom.findById(id);
         },
-    },
-    UiComponent: {
-        // TODO: Investigar mas a fondo los types de apollo graph server para poder quitar este any
-        colorPalette(uiComponent: any) {
-            return uiComponent.getColorPalette();
-        }, 
-    },
+    }
 };
 
 
@@ -57,8 +47,8 @@ export const resolver = {
 Queries:
 
 
-query getUiComponentById($uiComponentId : ID!) {
-    uiComponent(id: $uiComponentId) {
+query getAtomById($atomId : ID!) {
+    atom(id: $atomId) {
         id
         name
         css

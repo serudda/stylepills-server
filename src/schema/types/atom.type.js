@@ -1,14 +1,16 @@
 "use strict";
 /************************************/
-/*        COLOR PALETTE TYPE        */
+/*        UI COMPONENT TYPE         */
 /************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
-type ColorPalette {
+type Atom {
     id: ID!
-    category: String
-    description: String
-    colors: [Color]
+    name: String
+    css: String    
+    html: String
+    contextualBg: String
+    download: String
 }
 `;
-//# sourceMappingURL=colorPalette.type.js.map
+//# sourceMappingURL=atom.type.js.map

@@ -8,21 +8,9 @@ import * as userMutation from './mutations/user.mutation';
 import * as userQuery from './queries/user.query';
 import * as userTypes from './types/user.type';
 
-import * as socialMutation from './mutations/social.mutation';
-import * as socialQuery from './queries/social.query';
-import * as socialTypes from './types/social.type';
-
-import * as colorMutation from './mutations/color.mutation';
-import * as colorQuery from './queries/color.query';
-import * as colorTypes from './types/color.type';
-
-import * as colorPaletteMutation from './mutations/colorPalette.mutation';
-import * as colorPaletteQuery from './queries/colorPalette.query';
-import * as colorPaletteTypes from './types/colorPalette.type';
-
-import * as uiComponentMutation from './mutations/uiComponent.mutation';
-import * as uiComponentQuery from './queries/uiComponent.query';
-import * as uiComponentTypes from './types/uiComponent.type';
+import * as atomMutation from './mutations/atom.mutation';
+import * as atomQuery from './queries/atom.query';
+import * as atomTypes from './types/atom.type';
 
 
 /**********************************/
@@ -60,22 +48,10 @@ const typeDefs = [`
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
-
-    socialTypes.typeDef,
-    socialQuery.typeDef,
-    socialMutation.typeDef,
-
-    colorTypes.typeDef,
-    colorQuery.typeDef,
-    colorMutation.typeDef,
     
-    colorPaletteTypes.typeDef,
-    colorPaletteQuery.typeDef,
-    colorPaletteMutation.typeDef,
-    
-    uiComponentTypes.typeDef,
-    uiComponentQuery.typeDef,
-    uiComponentMutation.typeDef,
+    atomTypes.typeDef,
+    atomQuery.typeDef,
+    atomMutation.typeDef,
     
 ];
 
@@ -86,14 +62,8 @@ const typeDefs = [`
 const resolvers: any = merge(
     userMutation.resolver,
     userQuery.resolver,
-    socialMutation.resolver,
-    socialQuery.resolver,
-    colorMutation.resolver, 
-    colorQuery.resolver, 
-    colorPaletteMutation.resolver,
-    colorPaletteQuery.resolver,
-    uiComponentMutation.resolver,
-    uiComponentQuery.resolver
+    atomMutation.resolver,
+    atomQuery.resolver
 );
 
 

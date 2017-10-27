@@ -39,12 +39,9 @@ export const resolver = {
         },
     },
     User: {
-        uiComponents(user: any) {
-            return user.getUiComponent();
-        }, 
-        social(user: any) {
-            return user.getSocial();
-        },
+        atoms(user: any) {
+            return user.getAtom();
+        }
     },
 };
 
@@ -74,7 +71,7 @@ query getUserById($userId : ID!) {
             linkedin
             __typename
         }
-        uiComponents {
+        atoms {
             id
             name
             __typename
