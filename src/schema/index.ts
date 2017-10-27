@@ -4,8 +4,6 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { loggingConfig } from './../config/logging-config';
-
 import * as userMutation from './mutations/user.mutation';
 import * as userQuery from './queries/user.query';
 import * as userTypes from './types/user.type';
