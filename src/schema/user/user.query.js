@@ -18,7 +18,7 @@ exports.typeDef = `
 /*******************************************/
 exports.resolver = {
     Query: {
-        userById(source, { id }) {
+        userById(parent, { id }) {
             return index_1.models.User.findById(id);
         },
         users() {

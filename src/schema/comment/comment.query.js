@@ -19,11 +19,11 @@ exports.typeDef = `
 /*******************************************/
 exports.resolver = {
     Query: {
+        commentById(parent, { id }) {
+            return index_1.models.Comment.findById(id);
+        },
         comments() {
             return index_1.models.Comment.findAll();
-        },
-        commentById(source, { id }) {
-            return index_1.models.Comment.findById(id);
         }
     }
 };

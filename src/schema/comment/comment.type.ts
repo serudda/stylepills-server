@@ -6,6 +6,7 @@ export const typeDef = `
 type Comment {
     id: ID!
     content: String
+    author: User!
 }
 `;
 

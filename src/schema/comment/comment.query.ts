@@ -31,11 +31,11 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
+        commentById(parent: any, { id }: ICommentArgs) {
+            return models.Comment.findById(id);
+        },
         comments() {
             return models.Comment.findAll();
-        },
-        commentById(source: any, { id }: ICommentArgs) {
-            return models.Comment.findById(id);
         }
     }
 };

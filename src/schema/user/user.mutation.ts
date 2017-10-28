@@ -21,35 +21,59 @@ export const typeDef = `
 
 # Input
 input CreateUserInput {
-    firstname: String
-    lastname: String
+    firstname: String!
+    lastname: String!
+    username: String!
+    email: String!
     avatar: String
-    username: String
-    email: String
     about: String
     website: String
     atoms: [CreateAtomInput]
 }
 
+type Error {
+    path: String!
+    message: String
+}
+
+# Register Mutation response
+type RegisterResponse {
+    ok: Boolean!
+    user: User
+    errors: [Error!]
+}
+
+# Login Mutation response
+type LoginResponse {
+    ok: Boolean!
+    token: String
+    refreshToken: String
+    errors: [Error!]
+}
+
 # Mutations
 extend type Mutation {
-    createUser(input: CreateUserInput!): User
+    register(input: CreateUserInput): RegisterResponse!
+    login(email: String!, password: String!): LoginResponse!
 }
 
 `;
 
 export const resolver = {
     Mutation: {
-        createAtom(root: any, args: ICreateUserArgs) {
-            return models.User.create({
-                firstname: args.input.firstname,
-                lastname: args.input.lastname,
-                username: args.input.username,
-                avatar: args.input.avatar,
-                email: args.input.email,
-                website: args.input.website,
-                about: args.input.about,
-            });
+        register(parent: any, args: ICreateUserArgs) {
+            return models.User.create(
+                args.input
+            )
+            .then(
+                (result) => {
+                    return result;
+                }
+            ).catch(
+                (err: Error) => {
+                    return err;
+                }
+            );
         },
     },
 };

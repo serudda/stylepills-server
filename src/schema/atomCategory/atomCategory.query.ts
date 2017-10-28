@@ -31,11 +31,11 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
+        atomCategoryById(parent: any, { id }: IAtomCategoryArgs) {
+            return models.AtomCategory.findById(id);
+        },
         atomCategories() {
             return models.AtomCategory.findAll();
-        },
-        atomCategoryById(source: any, { id }: IAtomCategoryArgs) {
-            return models.AtomCategory.findById(id);
         }
     }
 };

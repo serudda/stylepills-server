@@ -19,11 +19,11 @@ exports.typeDef = `
 /*******************************************/
 exports.resolver = {
     Query: {
+        atomById(parent, { id }) {
+            return index_1.models.Atom.findById(id);
+        },
         atoms() {
             return index_1.models.Atom.findAll();
-        },
-        atomById(source, { id }) {
-            return index_1.models.Atom.findById(id);
         }
     },
     Atom: {

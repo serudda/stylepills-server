@@ -30,7 +30,7 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
-        userById(source: any, { id }: IUserArgs) {
+        userById(parent: any, { id }: IUserArgs) {
             return models.User.findById(id);
         },
         users() {

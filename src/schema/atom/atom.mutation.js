@@ -28,16 +28,11 @@ extend type Mutation {
 exports.resolver = {
     Mutation: {
         createAtom(root, args) {
-            return index_1.models.Atom.create({
-                name: args.input.name,
-                html: args.input.html,
-                css: args.input.css,
-                otherCode: args.input.otherCode,
-                contextualBg: args.input.contextualBg,
-                stores: args.input.stores,
-                views: args.input.views,
-                likes: args.input.likes,
-                download: args.input.download
+            return index_1.models.Atom.create(args.input)
+                .then((result) => {
+                return result;
+            }).catch((err) => {
+                return err;
             });
         },
     },

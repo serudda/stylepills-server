@@ -31,11 +31,11 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
+        atomById(parent: any, { id }: IAtomArgs) {
+            return models.Atom.findById(id);
+        },
         atoms() {
             return models.Atom.findAll();
-        },
-        atomById(source: any, { id }: IAtomArgs) {
-            return models.Atom.findById(id);
         }
     },
     Atom: {
