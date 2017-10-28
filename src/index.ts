@@ -3,4 +3,5 @@ It seems that we fixed the issue added: babel-register module
 reference: https://github.com/katopz/vscode-debug-nodejs-es6
 */
 require('babel-register');
+require('babel-polyfill');
 require('./server.js');

@@ -9,6 +9,7 @@ export interface IDatabaseConfig {
     host: string;
     port: any;
     dialect: string;
+    define: {underscored: boolean};
     logging: boolean | Function;
 }
 
@@ -38,6 +39,9 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
+                define: {
+                    underscored: true // NOTE: 1
+                },
                 logging: true
             };
 
@@ -50,6 +54,9 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 port:     port,
                 host:     host,
                 dialect: 'postgres',
+                define: {
+                    underscored: true
+                },
                 logging: true
             };
     
@@ -62,6 +69,9 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 port:     port,
                 host:     host,
                 dialect: 'postgres',
+                define: {
+                    underscored: true
+                },
                 logging: true
             };
     
@@ -73,8 +83,19 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
+                define: {
+                    underscored: true
+                },
                 logging: true
             };
     }
 
 }
+
+
+/* 
+(1) Es necesario agregar este define.underscored, ya que si lo remuevo, todas las propiedades auto
+generadas por Sequelize e.g. created_at, updated_at, user_id, etc. se generarian camelCase, y no es 
+recomendable ese Naming Conventions
+references: https://www.youtube.com/watch?v=Q-hyZDW8S0E
+*/
