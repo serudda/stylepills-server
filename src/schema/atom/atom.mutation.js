@@ -5,9 +5,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**************************************/
 const index_1 = require("./../../models/index");
 /*****************************************/
-/*         UI COMPONENT MUTATION         */
+/*             ATOM MUTATION             */
 /*****************************************/
-// TODO: Asignar las propiedades reales
 exports.typeDef = `
 
 # Input
@@ -15,13 +14,13 @@ input CreateAtomInput {
     name: String 
     css: String
     html: String
-    background: String
+    contextualBg: String
     download: String
 }
 
 # Mutations
 extend type Mutation {
-    createAtom(input: CreateAtomInput!): Atom
+    createAtom(input: CreateAtomInput!): Atom!
 }
 
 `;

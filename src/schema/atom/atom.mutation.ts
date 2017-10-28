@@ -14,9 +14,8 @@ interface ICreateAtomArgs {
 
 
 /*****************************************/
-/*         UI COMPONENT MUTATION         */
+/*             ATOM MUTATION             */
 /*****************************************/
-// TODO: Asignar las propiedades reales
 export const typeDef = `
 
 # Input
@@ -24,13 +23,13 @@ input CreateAtomInput {
     name: String 
     css: String
     html: String
-    background: String
+    contextualBg: String
     download: String
 }
 
 # Mutations
 extend type Mutation {
-    createAtom(input: CreateAtomInput!): Atom
+    createAtom(input: CreateAtomInput!): Atom!
 }
 
 `;

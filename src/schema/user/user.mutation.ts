@@ -31,30 +31,10 @@ input CreateUserInput {
     atoms: [CreateAtomInput]
 }
 
-type Error {
-    path: String!
-    message: String
-}
-
-# Register Mutation response
-type RegisterResponse {
-    ok: Boolean!
-    user: User
-    errors: [Error!]
-}
-
-# Login Mutation response
-type LoginResponse {
-    ok: Boolean!
-    token: String
-    refreshToken: String
-    errors: [Error!]
-}
-
 # Mutations
 extend type Mutation {
-    register(input: CreateUserInput): RegisterResponse!
-    login(email: String!, password: String!): LoginResponse!
+    register(input: CreateUserInput): User!
+    login(email: String!, password: String!): User!
 }
 
 `;
