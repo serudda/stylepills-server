@@ -23,28 +23,23 @@ input RegiterInput {
 
 # Mutations
 extend type Mutation {
+    
     register(
         input: RegiterInput
     ): User!
+    
     login(
         email: String!, password: String!
     ): User!
-}
+    
+    activeUser(
+        id: ID!
+    ): User!
 
-# Nuestras mutaciones que definen como interactuar con los datos
-type Mutation {
-  # Crear un nuevo TODO pasando el contenido
-  createTodo(
-    content: String!
-  ): Todo
-  # Borrar un TODO existente mediante el ID
-  deleteTodo(
-    id: String!
-  ): Todo
-  # Marcar como completo un TODO existente mediante el ID
-  completeTodo(
-    id: String!
-  ): Todo
+    deactivateUser(
+        id: ID!
+    ): User!
+
 }
 
 `;

@@ -7,7 +7,7 @@ type Comment {
     id: ID!
     content: String
     commentable: String
-    commentableId: Number
+    commentableId: Int
     active: Boolean
     author: User!
     createdAt: String
