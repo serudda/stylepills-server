@@ -22,8 +22,11 @@ exports.resolver = {
         atomById(parent, { id }) {
             return index_1.models.Atom.findById(id);
         },
-        atoms() {
+        allAtoms() {
             return index_1.models.Atom.findAll();
+        },
+        activeAtoms() {
+            return index_1.models.Atom.findAll({ where: { active: true } });
         }
     },
     Atom: {

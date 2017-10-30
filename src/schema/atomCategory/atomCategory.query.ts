@@ -34,8 +34,11 @@ export const resolver = {
         atomCategoryById(parent: any, { id }: IAtomCategoryArgs) {
             return models.AtomCategory.findById(id);
         },
-        atomCategories() {
+        allAtomCategories() {
             return models.AtomCategory.findAll();
+        },
+        activeAtomCategories() {
+            return models.AtomCategory.findAll({ where: { active: true } });
         }
     }
 };

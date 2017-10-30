@@ -22,8 +22,11 @@ exports.resolver = {
         userById(parent, { id }) {
             return index_1.models.User.findById(id);
         },
-        users() {
+        allUsers() {
             return index_1.models.User.findAll();
+        },
+        activeUsers() {
+            return index_1.models.User.findAll({ where: { active: true } });
         }
     },
     User: {

@@ -22,8 +22,11 @@ exports.resolver = {
         atomCategoryById(parent, { id }) {
             return index_1.models.AtomCategory.findById(id);
         },
-        atomCategories() {
+        allAtomCategories() {
             return index_1.models.AtomCategory.findAll();
+        },
+        activeAtomCategories() {
+            return index_1.models.AtomCategory.findAll({ where: { active: true } });
         }
     }
 };

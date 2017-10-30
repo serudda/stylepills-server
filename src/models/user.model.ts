@@ -37,6 +37,7 @@ export interface IUserAttributes {
     website: string;
     avatar: string;
     about: string;
+    active: boolean;
 }
 
 

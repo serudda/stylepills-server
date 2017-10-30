@@ -49,6 +49,7 @@ export interface IAtomAttributes {
     stores: number;
     views: number;
     likes: number;
+    active: boolean;
 }
 
 

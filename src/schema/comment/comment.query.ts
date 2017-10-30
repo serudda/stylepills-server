@@ -34,8 +34,11 @@ export const resolver = {
         commentById(parent: any, { id }: ICommentArgs) {
             return models.Comment.findById(id);
         },
-        comments() {
+        allComments() {
             return models.Comment.findAll();
+        },
+        activeComments() {
+            return models.Comment.findAll({ where: { active: true } });
         }
     }
 };

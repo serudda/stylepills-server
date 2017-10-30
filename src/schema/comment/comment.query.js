@@ -22,8 +22,11 @@ exports.resolver = {
         commentById(parent, { id }) {
             return index_1.models.Comment.findById(id);
         },
-        comments() {
+        allComments() {
             return index_1.models.Comment.findAll();
+        },
+        activeComments() {
+            return index_1.models.Comment.findAll({ where: { active: true } });
         }
     }
 };

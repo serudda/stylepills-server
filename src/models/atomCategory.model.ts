@@ -25,6 +25,7 @@ export interface IAtomCategory {
 export interface IAtomCategoryAttributes {
     name: string;
     description: string;
+    active: boolean;
 }
 
 

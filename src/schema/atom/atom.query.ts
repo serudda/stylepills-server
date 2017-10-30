@@ -34,8 +34,11 @@ export const resolver = {
         atomById(parent: any, { id }: IAtomArgs) {
             return models.Atom.findById(id);
         },
-        atoms() {
+        allAtoms() {
             return models.Atom.findAll();
+        },
+        activeAtoms() {
+            return models.Atom.findAll({ where: { active: true } });
         }
     },
     Atom: {

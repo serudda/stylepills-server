@@ -9,6 +9,7 @@ import { models, sequelize } from './../../models/index';
 /************************************/    
 interface IUserArgs {
     id: number;
+    active: boolean;
 }
 
 
@@ -34,8 +35,11 @@ export const resolver = {
         userById(parent: any, { id }: IUserArgs) {
             return models.User.findById(id);
         },
-        users() {
+        allUsers() {
             return models.User.findAll();
+        },
+        activeUsers() {
+            return models.User.findAll({ where: { active: true } });
         }
     },
     User: {

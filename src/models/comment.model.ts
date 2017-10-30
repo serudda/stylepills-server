@@ -27,6 +27,7 @@ export interface IComment {
 
 export interface ICommentAttributes {
     content: string;
+    active: boolean;
 }
 
 
