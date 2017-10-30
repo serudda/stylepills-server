@@ -7,14 +7,14 @@ exports.typeDef = `
 type Comment {
     id: ID!
     content: String
+    commentable: String
+    commentableId: Number
+    active: Boolean
     author: User!
+    createdAt: String
+    updatedAt: String
 }
 `;
-/* NOTE:
-    - El usuario no deberia ver la propiedad 'active'
-    - No necesito traer commentable y commentableId ya que por
-    ejemplo, si me estoy trayendo un Atom, de una vez voy a traer
-    sus comments, para que traerme commentableId si ya se que este
-    comentario pertenece a este Atom.
-*/ 
+/* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).
+    al final cuando voy a hacer la Query, ahi omito las propiedades que no necesito, ejemplo: active, createdAt, etc */ 
 //# sourceMappingURL=comment.type.js.map

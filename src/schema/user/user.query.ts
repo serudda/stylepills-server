@@ -19,7 +19,8 @@ interface IUserArgs {
 export const typeDef = `
     extend type Query {
         userById(id: ID!): User!
-        users: [User!]!
+        allUsers: [User!]!
+        activeUsers: [User!]!
     }
 `;
 

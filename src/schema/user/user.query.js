@@ -10,7 +10,8 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     extend type Query {
         userById(id: ID!): User!
-        users: [User!]!
+        allUsers: [User!]!
+        activeUsers: [User!]!
     }
 `;
 /*******************************************/

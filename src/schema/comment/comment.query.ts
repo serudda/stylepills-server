@@ -17,10 +17,10 @@ interface ICommentArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        commentById(id: ID!): Comment
-        comments: [Comment]
+        commentById(id: ID!): Comment!
+        allComments: [Comment!]!
+        activeComments: [Comment!]!
     }
 `;
 

@@ -17,10 +17,10 @@ interface IAtomArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        atomById(id: ID!): Atom
-        atoms: [Atom]
+        atomById(id: ID!): Atom!
+        allAtoms: [Atom!]!
+        activeAtoms: [Atom!]!
     }
 `;
 

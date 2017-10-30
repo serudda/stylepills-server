@@ -20,7 +20,7 @@ interface ICreateUserArgs {
 export const typeDef = `
 
 # Input
-input CreateUserInput {
+input RegiterInput {
     firstname: String!
     lastname: String!
     username: String!
@@ -33,8 +33,28 @@ input CreateUserInput {
 
 # Mutations
 extend type Mutation {
-    register(input: CreateUserInput): User!
-    login(email: String!, password: String!): User!
+    register(
+        input: RegiterInput
+    ): User!
+    login(
+        email: String!, password: String!
+    ): User!
+}
+
+# Nuestras mutaciones que definen como interactuar con los datos
+type Mutation {
+  # Crear un nuevo TODO pasando el contenido
+  createTodo(
+    content: String!
+  ): Todo
+  # Borrar un TODO existente mediante el ID
+  deleteTodo(
+    id: String!
+  ): Todo
+  # Marcar como completo un TODO existente mediante el ID
+  completeTodo(
+    id: String!
+  ): Todo
 }
 
 `;

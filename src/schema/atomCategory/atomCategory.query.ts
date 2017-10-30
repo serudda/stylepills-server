@@ -17,10 +17,10 @@ interface IAtomCategoryArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        atomCategoryById(id: ID!): AtomCategory
-        atomCategories: [AtomCategory]
+        atomCategoryById(id: ID!): AtomCategory!
+        allAtomCategories: [AtomCategory!]!
+        activeAtomCategories: [AtomCategory!]!
     }
 `;
 

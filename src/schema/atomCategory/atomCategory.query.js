@@ -8,10 +8,10 @@ const index_1 = require("./../../models/index");
 /*     ATOM CATEGORY QUERY TYPEDEF    */
 /**************************************/
 exports.typeDef = `
-    # Root Query
     extend type Query {
-        atomCategoryById(id: ID!): AtomCategory
-        atomCategories: [AtomCategory]
+        atomCategoryById(id: ID!): AtomCategory!
+        allAtomCategories: [AtomCategory!]!
+        activeAtomCategories: [AtomCategory!]!
     }
 `;
 /*******************************************/
