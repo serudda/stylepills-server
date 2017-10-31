@@ -10,8 +10,13 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     extend type Query {
         atomById(id: ID!): Atom!
-        allAtoms: [Atom!]!
+        allAtoms(filter: AtomFilter): [Atom!]!
         activeAtoms: [Atom!]!
+    }
+
+    input AtomFilter {
+        OR: [AtomFilter!]
+        private: Boolean
     }
 `;
 /*******************************************/
@@ -22,8 +27,8 @@ exports.resolver = {
         atomById(parent, { id }) {
             return index_1.models.Atom.findById(id);
         },
-        allAtoms() {
-            return index_1.models.Atom.findAll();
+        allAtoms(parent, { filter }) {
+            return index_1.models.Atom.findAll({ where: filter });
         },
         activeAtoms() {
             return index_1.models.Atom.findAll({ where: { active: true } });
@@ -31,10 +36,13 @@ exports.resolver = {
     },
     Atom: {
         comments(atom) {
-            return atom.getComment();
+            return atom.getComments();
         },
         author(atom) {
-            return atom.getAuthor();
+            return atom.getUser();
+        },
+        category(atom) {
+            return atom.getAtomCategory();
         }
     }
 };

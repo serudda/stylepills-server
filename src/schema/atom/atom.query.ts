@@ -9,6 +9,7 @@ import { models, sequelize } from './../../models/index';
 /************************************/    
 interface IAtomArgs {
     id: number;
+    filter: any;
 }
 
 
@@ -19,8 +20,13 @@ interface IAtomArgs {
 export const typeDef = `
     extend type Query {
         atomById(id: ID!): Atom!
-        allAtoms: [Atom!]!
+        allAtoms(filter: AtomFilter): [Atom!]!
         activeAtoms: [Atom!]!
+    }
+
+    input AtomFilter {
+        OR: [AtomFilter!]
+        private: Boolean
     }
 `;
 
@@ -34,8 +40,8 @@ export const resolver = {
         atomById(parent: any, { id }: IAtomArgs) {
             return models.Atom.findById(id);
         },
-        allAtoms() {
-            return models.Atom.findAll();
+        allAtoms(parent: any, { filter }: IAtomArgs) {
+            return models.Atom.findAll({ where: filter });
         },
         activeAtoms() {
             return models.Atom.findAll({ where: { active: true } });
@@ -43,10 +49,13 @@ export const resolver = {
     },
     Atom: {
         comments(atom: any) {
-            return atom.getComment();
+            return atom.getComments();
         },
         author(atom: any) {
-            return atom.getAuthor();
+            return atom.getUser();
+        },
+        category(atom: any) {
+            return atom.getAtomCategory();
         }
     }
 };

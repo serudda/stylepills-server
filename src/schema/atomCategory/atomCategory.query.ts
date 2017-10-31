@@ -20,7 +20,7 @@ export const typeDef = `
     extend type Query {
         atomCategoryById(id: ID!): AtomCategory!
         allAtomCategories: [AtomCategory!]!
-        activeAtomCategories: [AtomCategory!]!
+        activeAtomCategories(filter: String): [AtomCategory!]!
     }
 `;
 

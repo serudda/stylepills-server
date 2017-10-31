@@ -28,6 +28,11 @@ exports.resolver = {
         activeComments() {
             return index_1.models.Comment.findAll({ where: { active: true } });
         }
+    },
+    Comment: {
+        author(comment) {
+            return comment.getUser();
+        }
     }
 };
 /*
