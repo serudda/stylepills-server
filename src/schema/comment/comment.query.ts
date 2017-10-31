@@ -40,6 +40,11 @@ export const resolver = {
         activeComments() {
             return models.Comment.findAll({ where: { active: true } });
         }
+    },
+    Comment: {
+        author(comment: any) {
+            return comment.getUser();
+        }
     }
 };
 

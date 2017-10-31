@@ -44,7 +44,7 @@ export const resolver = {
     },
     User: {
         atoms(user: any) {
-            return user.getAtom();
+            return user.getAtoms();
         }
     },
 };

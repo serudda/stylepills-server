@@ -31,7 +31,7 @@ exports.resolver = {
     },
     User: {
         atoms(user) {
-            return user.getAtom();
+            return user.getAtoms();
         }
     },
 };

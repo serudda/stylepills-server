@@ -14,7 +14,7 @@ type User {
     avatar: String
     about: String
     active: Boolean
-    atoms: [Atom]
+    atoms: [Atom] 
     createdAt: String
     updatedAt: String
 }
