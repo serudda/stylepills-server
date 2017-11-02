@@ -8,8 +8,12 @@ import { IAtom } from './../../models/atom.model';
 /************************************/
 /*            INTERFACES            */
 /************************************/
+/* TODO: Analizar muy bien la asignación de la Interface, ya que no estoy seguro como 
+gestionar los objetos anidados (categoria, author, comments, etc) */
+
 interface ICreateAtomArgs {
-    input: IAtom;
+    /*input: IAtom;*/
+    input: any;
 }
 
 
