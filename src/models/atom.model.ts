@@ -7,6 +7,7 @@ import { ISequelizeModels } from './index';
 
 import { IUser } from './user.model';
 import { IComment } from './comment.model';
+import { IAtomCategory } from './atomCategory.model';
 
 
 /************************************/
@@ -24,14 +25,18 @@ export interface IAtom {
     name: string;
     html: string;
     css: string;
-    otherCode: Array<ISourceCode>;
     contextualBg: string;
     stores: number;
     views: number;
     likes: number;
+    comments: Array<IComment>;
     download: string;
+    active: boolean;
     private: boolean;
     author: IUser;
+    category: IAtomCategory;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
@@ -39,12 +44,13 @@ export interface IAtomAttributes {
     name: string;
     html: string;
     css: string;
-    otherCode: Array<ISourceCode>;
     contextualBg: string;
     download: string;
     stores: number;
     views: number;
     likes: number;
+    atomCategoryId: number;
+    active: boolean;
 }
 
 

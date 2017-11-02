@@ -16,12 +16,18 @@ import { IAtom } from './atom.model';
 export interface IComment {
     id: number | null;
     content: string;
-    commentable: string; 
+    commentable: string;
+    commentableId: number;
+    active: boolean;
+    author: IUser;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
 export interface ICommentAttributes {
     content: string;
+    active: boolean;
 }
 
 

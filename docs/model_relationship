@@ -1,0 +1,12 @@
+RELACION ENTRE MODELOS (SEQUELIZE)
+
+One to Many
+-----------
+
+Album.belongsTo(Artist) => album.getArtist()
+Comment.belongsTo(User) => comment.getUser()
+
+Artist.hasMany(Album) => artist.getAlbums()
+User.hasMany(Comment) => user.getComments()
+
+

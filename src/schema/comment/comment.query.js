@@ -8,10 +8,10 @@ const index_1 = require("./../../models/index");
 /*        COMMENT QUERY TYPEDEF       */
 /**************************************/
 exports.typeDef = `
-    # Root Query
     extend type Query {
-        commentById(id: ID!): Comment
-        comments: [Comment]
+        commentById(id: ID!): Comment!
+        allComments: [Comment!]!
+        activeComments: [Comment!]!
     }
 `;
 /*******************************************/
@@ -22,8 +22,16 @@ exports.resolver = {
         commentById(parent, { id }) {
             return index_1.models.Comment.findById(id);
         },
-        comments() {
+        allComments() {
             return index_1.models.Comment.findAll();
+        },
+        activeComments() {
+            return index_1.models.Comment.findAll({ where: { active: true } });
+        }
+    },
+    Comment: {
+        author(comment) {
+            return comment.getUser();
         }
     }
 };

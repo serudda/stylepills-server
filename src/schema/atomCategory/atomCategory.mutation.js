@@ -10,7 +10,7 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
 
 # Input
-input CreateAtomInput {
+input CreateAtomCategoryInput {
     name: String 
     css: String
     html: String
@@ -21,22 +21,23 @@ input CreateAtomInput {
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Atom!
+    createAtomCategory(input: CreateAtomCategoryInput!): AtomCategory!
 
-    activeAtom(
+    activeAtomCategory(
         id: ID!
-    ): Atom!
+    ): AtomCategory!
 
-    deactivateAtom(
+    deactivateAtomCategory(
         id: ID!
-    ): Atom!
+    ): AtomCategory!
+    
 }
 
 `;
 exports.resolver = {
     Mutation: {
-        createAtom(root, args) {
-            return index_1.models.Atom.create(args.input)
+        createAtomCategory(root, args) {
+            return index_1.models.AtomCategory.create(args.input)
                 .then((result) => {
                 return result;
             }).catch((err) => {
@@ -45,4 +46,4 @@ exports.resolver = {
         },
     },
 };
-//# sourceMappingURL=atom.mutation.js.map
+//# sourceMappingURL=atomCategory.mutation.js.map

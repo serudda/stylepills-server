@@ -1,3 +1,4 @@
+import * as SequelizeStatic from 'sequelize';
 /************************************/
 /*            INTERFACE             */
 /************************************/
@@ -9,6 +10,7 @@ export interface IDatabaseConfig {
     host: string;
     port: any;
     dialect: string;
+    operatorsAliases: any;
     define: {underscored: boolean};
     logging: boolean | Function;
 }
@@ -30,6 +32,11 @@ export function databaseConfig(env: string): IDatabaseConfig {
         port = match[4];
     }
 
+    const Op = SequelizeStatic.Op;
+    const operatorsAliases = {
+      $like: Op.like
+    };
+
     switch (env) {
         case 'local':            
             return {
@@ -39,6 +46,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
+                operatorsAliases: operatorsAliases,
                 define: {
                     underscored: true // NOTE: 1
                 },
@@ -54,6 +62,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 port:     port,
                 host:     host,
                 dialect: 'postgres',
+                operatorsAliases: operatorsAliases,
                 define: {
                     underscored: true
                 },
@@ -69,6 +78,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 port:     port,
                 host:     host,
                 dialect: 'postgres',
+                operatorsAliases: operatorsAliases,
                 define: {
                     underscored: true
                 },
@@ -83,6 +93,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
+                operatorsAliases: operatorsAliases,
                 define: {
                     underscored: true
                 },

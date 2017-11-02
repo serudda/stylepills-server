@@ -2,18 +2,14 @@
 /*            DEPENDENCIES            */
 /**************************************/
 import { models } from './../../models/index';
-import { IAtom } from './../../models/atom.model';
+import { IAtomCategory } from './../../models/atomCategory.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
-/* TODO: Analizar muy bien la asignación de la Interface, ya que no estoy seguro como 
-gestionar los objetos anidados (categoria, author, comments, etc) */
-
-interface ICreateAtomArgs {
-    /*input: IAtom;*/
-    input: any;
+interface ICreateAtomCategoryArgs {
+    input: IAtomCategory;
 }
 
 
@@ -23,7 +19,7 @@ interface ICreateAtomArgs {
 export const typeDef = `
 
 # Input
-input CreateAtomInput {
+input CreateAtomCategoryInput {
     name: String 
     css: String
     html: String
@@ -34,23 +30,24 @@ input CreateAtomInput {
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Atom!
+    createAtomCategory(input: CreateAtomCategoryInput!): AtomCategory!
 
-    activeAtom(
+    activeAtomCategory(
         id: ID!
-    ): Atom!
+    ): AtomCategory!
 
-    deactivateAtom(
+    deactivateAtomCategory(
         id: ID!
-    ): Atom!
+    ): AtomCategory!
+    
 }
 
 `;
 
 export const resolver = {
     Mutation: {
-        createAtom(root: any, args: ICreateAtomArgs) {
-            return models.Atom.create(args.input)
+        createAtomCategory(root: any, args: ICreateAtomCategoryArgs) {
+            return models.AtomCategory.create(args.input)
             .then(
                 (result) => {
                     return result;

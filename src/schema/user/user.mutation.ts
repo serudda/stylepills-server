@@ -20,7 +20,7 @@ interface ICreateUserArgs {
 export const typeDef = `
 
 # Input
-input CreateUserInput {
+input RegiterInput {
     firstname: String!
     lastname: String!
     username: String!
@@ -33,8 +33,23 @@ input CreateUserInput {
 
 # Mutations
 extend type Mutation {
-    register(input: CreateUserInput): User!
-    login(email: String!, password: String!): User!
+    
+    register(
+        input: RegiterInput
+    ): User!
+    
+    login(
+        email: String!, password: String!
+    ): User!
+    
+    activeUser(
+        id: ID!
+    ): User!
+
+    deactivateUser(
+        id: ID!
+    ): User!
+
 }
 
 `;

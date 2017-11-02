@@ -17,10 +17,10 @@ interface IAtomCategoryArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        atomCategoryById(id: ID!): AtomCategory
-        atomCategories: [AtomCategory]
+        atomCategoryById(id: ID!): AtomCategory!
+        allAtomCategories: [AtomCategory!]!
+        activeAtomCategories(filter: String): [AtomCategory!]!
     }
 `;
 
@@ -34,8 +34,11 @@ export const resolver = {
         atomCategoryById(parent: any, { id }: IAtomCategoryArgs) {
             return models.AtomCategory.findById(id);
         },
-        atomCategories() {
+        allAtomCategories() {
             return models.AtomCategory.findAll();
+        },
+        activeAtomCategories() {
+            return models.AtomCategory.findAll({ where: { active: true } });
         }
     }
 };

@@ -14,14 +14,18 @@ import { IAtom } from './atom.model';
 /************************************/
 export interface IUser {
     id: number | null;
+    username: string;
     firstname: string;
     lastname: string;
-    username: string;
     email: string; 
+    password: string;
     website: string;
     avatar: string;
     about: string;
+    active: boolean;
     atoms: Array<IAtom>;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
@@ -33,6 +37,7 @@ export interface IUserAttributes {
     website: string;
     avatar: string;
     about: string;
+    active: boolean;
 }
 
 

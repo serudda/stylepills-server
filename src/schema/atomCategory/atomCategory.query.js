@@ -8,10 +8,10 @@ const index_1 = require("./../../models/index");
 /*     ATOM CATEGORY QUERY TYPEDEF    */
 /**************************************/
 exports.typeDef = `
-    # Root Query
     extend type Query {
-        atomCategoryById(id: ID!): AtomCategory
-        atomCategories: [AtomCategory]
+        atomCategoryById(id: ID!): AtomCategory!
+        allAtomCategories: [AtomCategory!]!
+        activeAtomCategories(filter: String): [AtomCategory!]!
     }
 `;
 /*******************************************/
@@ -22,8 +22,11 @@ exports.resolver = {
         atomCategoryById(parent, { id }) {
             return index_1.models.AtomCategory.findById(id);
         },
-        atomCategories() {
+        allAtomCategories() {
             return index_1.models.AtomCategory.findAll();
+        },
+        activeAtomCategories() {
+            return index_1.models.AtomCategory.findAll({ where: { active: true } });
         }
     }
 };

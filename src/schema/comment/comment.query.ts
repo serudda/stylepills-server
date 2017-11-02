@@ -17,10 +17,10 @@ interface ICommentArgs {
 /**************************************/
 
 export const typeDef = `
-    # Root Query
     extend type Query {
-        commentById(id: ID!): Comment
-        comments: [Comment]
+        commentById(id: ID!): Comment!
+        allComments: [Comment!]!
+        activeComments: [Comment!]!
     }
 `;
 
@@ -34,8 +34,16 @@ export const resolver = {
         commentById(parent: any, { id }: ICommentArgs) {
             return models.Comment.findById(id);
         },
-        comments() {
+        allComments() {
             return models.Comment.findAll();
+        },
+        activeComments() {
+            return models.Comment.findAll({ where: { active: true } });
+        }
+    },
+    Comment: {
+        author(comment: any) {
+            return comment.getUser();
         }
     }
 };
