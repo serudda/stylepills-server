@@ -16,6 +16,7 @@ export interface IAtomCategory {
     id: number | null;
     name: string;
     description: string;
+    atoms: Array<IAtom>;
     active: boolean;
     createdAt: string;
     updatedAt: string;

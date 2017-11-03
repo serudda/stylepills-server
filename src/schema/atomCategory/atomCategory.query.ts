@@ -20,7 +20,6 @@ export const typeDef = `
     extend type Query {
         atomCategoryById(id: ID!): AtomCategory!
         allAtomCategories: [AtomCategory!]!
-        activeAtomCategories(filter: String): [AtomCategory!]!
     }
 `;
 
@@ -31,14 +30,24 @@ export const typeDef = `
 
 export const resolver = {
     Query: {
-        atomCategoryById(parent: any, { id }: IAtomCategoryArgs) {
-            return models.AtomCategory.findById(id);
-        },
+        
+        /**
+         * @desc Get all Atom's categories
+         * @method Method allAtomCategories
+         * @public
+         * @returns {Array<IAtomCategory>} Atom's categories list
+         */
         allAtomCategories() {
-            return models.AtomCategory.findAll();
-        },
-        activeAtomCategories() {
-            return models.AtomCategory.findAll({ where: { active: true } });
+            return models.AtomCategory.findAll({
+                where: {
+                    active: true
+                }
+            });
+        }
+    },
+    AtomCategory: {
+        atoms(atomCategory: any) {
+            return atomCategory.getAtoms();
         }
     }
 };

@@ -2,7 +2,6 @@
 /*           DEPENDENCIES           */
 /************************************/
 import { models, sequelize } from './../../models/index';
-import * as SequelizeStatic from 'sequelize';
 
 
 /************************************/
@@ -11,6 +10,7 @@ import * as SequelizeStatic from 'sequelize';
 interface IAtomArgs {
     id: number;
     filter: IFilterArgs;
+    limit: number;
 }
 
 interface IFilterArgs {
@@ -25,19 +25,20 @@ interface IFilterArgs {
 /**************************************/
 
 export const typeDef = `
-    extend type Query {
-        atomById(id: ID!): Atom!
-        allAtoms(filter: AtomFilter): [Atom!]!
-        atomsByCategory(filter: AtomFilter): [Atom!]!
-        searchAtoms(filter: AtomFilter): [Atom!]!
-        activeAtoms(filter: AtomFilter): [Atom!]!
-    }
 
     input AtomFilter {
         private: Boolean        
         atomCategoryId: Int
         text: String
     }
+
+    extend type Query {
+        atomById(id: ID!): Atom!
+        allAtoms(limit: Int): [Atom!]!
+        atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
+        searchAtoms(filter: AtomFilter, limit: Int): [Atom!]!
+    }
+
 `;
 
 
@@ -48,19 +49,52 @@ export const typeDef = `
 export const resolver = {
     Query: {
 
-        // Get Atom by Id
+        /**
+         * @desc Get Atom by Id
+         * @method Method atomById
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomArgs} args - destructuring: id
+         * @param {number} id - Atom id
+         * @returns {IAtom} Atom entity
+         */
         atomById(parent: any, { id }: IAtomArgs) {
             return models.Atom.findById(id);
         },
 
-        // Get all Atoms
-        allAtoms(parent: any, { filter }: IAtomArgs) {
-            return models.Atom.findAll({ where: filter });
+
+        /**
+         * @desc Get all Atoms
+         * @method Method allAtoms
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomArgs} args - destructuring: limit
+         * @param {Int} limit - limit number of results returned
+         * @returns {Array<IAtom>} Atoms list
+         */
+        allAtoms(parent: any, { limit }: IAtomArgs) {
+            return models.Atom.findAll({
+                limit,
+                where: {
+                    active: true
+                } 
+            });
         },
 
-        // Get all Atoms by category
-        atomsByCategory(parent: any, { filter }: IAtomArgs) {
+        
+        /**
+         * @desc Get Atoms by Category
+         * @method Method atomsByCategory
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomArgs} args - destructuring: filter, limit 
+         * @param {IFilterArgs} filter - a set of filters
+         * @param {number} limit - limit number of results returned
+         * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
+         */
+        atomsByCategory(parent: any, { filter, limit }: IAtomArgs) {
             return models.Atom.findAll({
+                limit,
                 where: {
                     active: true,
                     atomCategoryId: filter.atomCategoryId
@@ -68,8 +102,18 @@ export const resolver = {
             });
         },
 
-        // Get all Atoms by name and category
-        searchAtoms(parent: any, { filter }: IAtomArgs) {
+        
+        /**
+         * @desc Get Atoms by an user's input text (including category filter)
+         * @method Method searchAtoms
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomArgs} args - destructuring: filter, limit 
+         * @param {IFilterArgs} filter - a set of filters
+         * @param {number} limit - limit number of results returned
+         * @returns {Array<Atom>} Atoms List based on a filter parameters: e.g category, user's input text
+         */
+        searchAtoms(parent: any, { filter, limit }: IAtomArgs) {
             // Init Filter
             // TODO: Leer nuestros apuntos de como se debe inicializar una funcion con valores "default"
             // en el cuaderno donde anotamos todo sobre ES6
@@ -89,15 +133,10 @@ export const resolver = {
             }
 
             return models.Atom.findAll({
-                limit: 10,
+                limit,
                 where: filters
             });
 
-        },
-
-        // Get all active Atoms
-        activeAtoms() {
-            return models.Atom.findAll({ where: {active: true} });
         }
 
     },

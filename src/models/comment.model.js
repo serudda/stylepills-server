@@ -38,7 +38,10 @@ function default_1(sequelize, dataTypes) {
         });
         // one Comment belongs to one author (1:M)
         Comment.belongsTo(models.User, {
-            foreignKey: 'author'
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
         });
     };
     return Comment;

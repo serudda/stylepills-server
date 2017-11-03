@@ -14,8 +14,8 @@ type User {
     website: String
     avatar: String
     about: String
+    atoms: [Atom]
     active: Boolean
-    atoms: [Atom] 
     createdAt: String
     updatedAt: String
 }

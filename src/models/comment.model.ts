@@ -83,7 +83,10 @@ SequelizeStatic.Model<ICommentInstance, ICommentAttributes> {
 
         // one Comment belongs to one author (1:M)
         Comment.belongsTo(models.User, {
-            foreignKey: 'author' 
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
         });
 
     };

@@ -12,6 +12,7 @@ import { IAtom } from './atom.model';
 /************************************/
 /*            INTERFACE             */
 /************************************/
+
 export interface IUser {
     id: number | null;
     username: string;
@@ -22,8 +23,8 @@ export interface IUser {
     website: string;
     avatar: string;
     about: string;
-    active: boolean;
     atoms: Array<IAtom>;
+    active: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -124,22 +125,23 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
     User.associate = (models: ISequelizeModels) => {
 
         // one User belongs to many Atoms (N:M)
-        User.belongsToMany(models.Atom, {
+        /* TODO: Cuando se vaya a agregar el 'owner' analizar muy bien, ya que si descomento esto, 
+        la relacion User.hasMany.Atom de abajo, deja de funcionar y me trae atoms: [] */
+
+        /*User.belongsToMany(models.Atom, {
             through: 'owner',
             foreignKey: {
                 name: 'userId',
                 field: 'user_id'
             }
-        });
+        });*/
         
         // One user is author of many Atoms (1:M)
         User.hasMany(models.Atom, {
-            foreignKey: 'author'
-        });
-
-        // One user is author of many Comments (1:M)
-        User.hasMany(models.Comment, {
-            foreignKey: 'author'
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
         });
 
     };
