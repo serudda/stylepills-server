@@ -18,25 +18,31 @@ function default_1(sequelize, dataTypes) {
         },
         contextualBg: {
             type: dataTypes.STRING,
-            field: 'contextual_bg'
+            field: 'contextual_bg',
+            defaultValue: '#FFFFFF'
         },
         stores: {
-            type: dataTypes.INTEGER
+            type: dataTypes.INTEGER,
+            defaultValue: 0
         },
         views: {
-            type: dataTypes.INTEGER
+            type: dataTypes.INTEGER,
+            defaultValue: 0 // TODO: Validar al correr los migration files, que si se asigne este valor por defecto
         },
         likes: {
-            type: dataTypes.INTEGER
+            type: dataTypes.INTEGER,
+            defaultValue: 0
         },
         download: {
             type: dataTypes.TEXT
         },
         active: {
-            type: dataTypes.BOOLEAN
+            type: dataTypes.BOOLEAN,
+            defaultValue: true
         },
         private: {
-            type: dataTypes.BOOLEAN
+            type: dataTypes.BOOLEAN,
+            defaultValue: false
         }
     }, {
         timestamps: true,

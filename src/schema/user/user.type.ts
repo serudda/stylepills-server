@@ -15,8 +15,6 @@ type User {
     about: String
     atoms: [Atom]
     active: Boolean
-    createdAt: String
-    updatedAt: String
 }
 `;
 

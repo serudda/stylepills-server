@@ -88,8 +88,6 @@ exports.resolver = {
          */
         searchAtoms(parent, { filter, limit }) {
             // Init Filter
-            // TODO: Leer nuestros apuntos de como se debe inicializar una funcion con valores "default"
-            // en el cuaderno donde anotamos todo sobre ES6
             let filters = {
                 active: true,
                 private: filter.private || false,

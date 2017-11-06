@@ -18,8 +18,6 @@ type Atom {
     private: Boolean
     author: User!
     category: AtomCategory!
-    createdAt: String
-    updatedAt: String
 }
 `;
 

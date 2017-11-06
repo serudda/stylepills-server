@@ -41,7 +41,7 @@ export const resolver = {
             return models.AtomCategory.findAll({
                 where: {
                     active: true
-                }
+                }, raw: true
             });
         }
     },

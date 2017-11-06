@@ -1,4 +1,3 @@
-import { typeDef } from './atom/atom.type';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -74,6 +73,7 @@ const typeDefs = [`
 /*             ROOT RESOLVERS            */
 /*****************************************/
 const resolvers: any = merge(
+
     userMutation.resolver,
     userQuery.resolver,
 

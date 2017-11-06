@@ -11,8 +11,6 @@ type Comment {
     commentableId: Int
     active: Boolean
     author: User!
-    createdAt: String
-    updatedAt: String
 }
 `;
 /* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).

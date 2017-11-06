@@ -115,8 +115,6 @@ export const resolver = {
          */
         searchAtoms(parent: any, { filter, limit }: IAtomArgs) {
             // Init Filter
-            // TODO: Leer nuestros apuntos de como se debe inicializar una funcion con valores "default"
-            // en el cuaderno donde anotamos todo sobre ES6
             let filters: any = {
                 active: true,
                 private: filter.private || false,

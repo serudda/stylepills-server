@@ -28,7 +28,7 @@ exports.resolver = {
             return index_1.models.AtomCategory.findAll({
                 where: {
                     active: true
-                }
+                }, raw: true
             });
         }
     },

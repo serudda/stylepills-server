@@ -10,8 +10,6 @@ type Comment {
     commentableId: Int
     active: Boolean
     author: User!
-    createdAt: String
-    updatedAt: String
 }
 `;
 

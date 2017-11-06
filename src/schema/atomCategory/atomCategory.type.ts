@@ -3,14 +3,13 @@
 /************************************/
 
 export const typeDef = `
+
 type AtomCategory {
     id: ID!
     name: String!
     description: String
     atoms: [Atom]
     active: Boolean
-    createdAt: String
-    updatedAt: String
 }
 `;
 
