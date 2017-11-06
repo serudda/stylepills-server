@@ -10,6 +10,7 @@ import { models, sequelize } from './../../models/index';
 interface IAtomArgs {
     id: number;
     filter: IFilterArgs;
+    sortBy: string;
     limit: number;
 }
 
@@ -36,7 +37,7 @@ export const typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        searchAtoms(filter: AtomFilter, limit: Int): [Atom!]!
+        searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
     }
 
 `;
@@ -110,10 +111,11 @@ export const resolver = {
          * @param {any} parent - TODO: Investigar un poco más estos parametros
          * @param {IAtomArgs} args - destructuring: filter, limit 
          * @param {IFilterArgs} filter - a set of filters
+         * @param {String} sortBy - sort list by a passed parameter
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List based on a filter parameters: e.g category, user's input text
          */
-        searchAtoms(parent: any, { filter, limit }: IAtomArgs) {
+        searchAtoms(parent: any, { filter, sortBy = 'created_at', limit }: IAtomArgs) {
             // Init Filter
             let filters: any = {
                 active: true,
@@ -132,6 +134,7 @@ export const resolver = {
 
             return models.Atom.findAll({
                 limit,
+                order: [[sortBy, 'DESC']],
                 where: filters
             });
 

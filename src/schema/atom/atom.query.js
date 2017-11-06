@@ -19,7 +19,7 @@ exports.typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        searchAtoms(filter: AtomFilter, limit: Int): [Atom!]!
+        searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
     }
 
 `;
@@ -83,10 +83,11 @@ exports.resolver = {
          * @param {any} parent - TODO: Investigar un poco más estos parametros
          * @param {IAtomArgs} args - destructuring: filter, limit
          * @param {IFilterArgs} filter - a set of filters
+         * @param {String} sortBy - sort list by a passed parameter
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List based on a filter parameters: e.g category, user's input text
          */
-        searchAtoms(parent, { filter, limit }) {
+        searchAtoms(parent, { filter, sortBy = 'created_at', limit }) {
             // Init Filter
             let filters = {
                 active: true,
@@ -102,6 +103,7 @@ exports.resolver = {
             }
             return index_1.models.Atom.findAll({
                 limit,
+                order: [[sortBy, 'DESC']],
                 where: filters
             });
         }
