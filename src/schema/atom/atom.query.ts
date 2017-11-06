@@ -1,3 +1,4 @@
+import { IAtomCategory } from './../../models/atomCategory.model';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -7,17 +8,37 @@ import { models, sequelize } from './../../models/index';
 /************************************/
 /*            INTERFACES            */
 /************************************/    
-interface IAtomArgs {
-    id: number;
-    filter: IFilterArgs;
-    sortBy: string;
-    limit: number;
+
+/**
+ * Values required by Query filter
+ */
+interface IQueryFilters {
+    name?: {
+        $like: string
+    };
+    atomCategoryId?: number;
+    active: boolean;
+    private: boolean;
 }
 
-interface IFilterArgs {
-    private: boolean;
+/**
+ * Arguments passed to Atom filter
+ */
+interface IAtomFilterArgs {
     atomCategoryId?: number;
+    active: boolean;
+    private: boolean;
     text?: string;
+}
+
+/**
+ * Arguments passed to Atom queries
+ */
+interface IAtomQueryArgs {
+    id: number;
+    filter: IAtomFilterArgs;
+    sortBy: string;
+    limit: number;
 }
 
 
@@ -55,11 +76,11 @@ export const resolver = {
          * @method Method atomById
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomArgs} args - destructuring: id
+         * @param {IAtomQueryArgs} args - destructuring: id
          * @param {number} id - Atom id
          * @returns {IAtom} Atom entity
          */
-        atomById(parent: any, { id }: IAtomArgs) {
+        atomById(parent: any, { id }: IAtomQueryArgs) {
             return models.Atom.findById(id);
         },
 
@@ -69,11 +90,11 @@ export const resolver = {
          * @method Method allAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomArgs} args - destructuring: limit
+         * @param {IAtomQueryArgs} args - destructuring: limit
          * @param {Int} limit - limit number of results returned
          * @returns {Array<IAtom>} Atoms list
          */
-        allAtoms(parent: any, { limit }: IAtomArgs) {
+        allAtoms(parent: any, { limit = 12 }: IAtomQueryArgs) {
             return models.Atom.findAll({
                 limit,
                 where: {
@@ -88,12 +109,12 @@ export const resolver = {
          * @method Method atomsByCategory
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomArgs} args - destructuring: filter, limit 
-         * @param {IFilterArgs} filter - a set of filters
+         * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy 
+         * @param {IAtomFilterArgs} filter - a set of filters
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
          */
-        atomsByCategory(parent: any, { filter, limit }: IAtomArgs) {
+        atomsByCategory(parent: any, { filter, limit = 12 }: IAtomQueryArgs) {
             return models.Atom.findAll({
                 limit,
                 where: {
@@ -109,33 +130,38 @@ export const resolver = {
          * @method Method searchAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomArgs} args - destructuring: filter, limit 
-         * @param {IFilterArgs} filter - a set of filters
+         * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
+         * @param {IAtomFilterArgs} filter - a set of filters
          * @param {String} sortBy - sort list by a passed parameter
          * @param {number} limit - limit number of results returned
-         * @returns {Array<Atom>} Atoms List based on a filter parameters: e.g category, user's input text
+         * @returns {Array<Atom>} Atoms List based on a filter parameters: 
+         * e.g category, user's input text
          */
-        searchAtoms(parent: any, { filter, sortBy = 'created_at', limit }: IAtomArgs) {
+        searchAtoms(parent: any, { filter, sortBy = 'created_at', limit = 12 }: IAtomQueryArgs) {
+
             // Init Filter
-            let filters: any = {
+            let queryFilter: IQueryFilters = {
                 active: true,
-                private: filter.private || false,
+                private: filter.private || false
             };
 
+            // Add 'atomCategoryId' filter if it exists or is different from 0
             if (filter.atomCategoryId && filter.atomCategoryId !== 0) {
-                filters.atomCategoryId = filter.atomCategoryId;
+                queryFilter.atomCategoryId = filter.atomCategoryId;
             }
 
+            // Add 'name' filter if 'text' exists
             if (filter.text) {
-                filters.name = {
-                    $like: '%' + filter.text + '%'
+                queryFilter.name = {
+                    $like: `%${filter.text}%`
                 };
             }
 
+            // Get all Atoms based on query args
             return models.Atom.findAll({
                 limit,
                 order: [[sortBy, 'DESC']],
-                where: filters
+                where: queryFilter
             });
 
         }
