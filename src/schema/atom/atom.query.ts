@@ -120,7 +120,7 @@ export const resolver = {
                 private: filter.private || false,
             };
 
-            if (filter.atomCategoryId) {
+            if (filter.atomCategoryId && filter.atomCategoryId !== 0) {
                 filters.atomCategoryId = filter.atomCategoryId;
             }
 
