@@ -1,4 +1,3 @@
-import { IAtomCategory } from './../../models/atomCategory.model';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -94,6 +93,7 @@ export const resolver = {
          * @param {Int} limit - limit number of results returned
          * @returns {Array<IAtom>} Atoms list
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 12
         allAtoms(parent: any, { limit = 12 }: IAtomQueryArgs) {
             return models.Atom.findAll({
                 limit,
@@ -114,6 +114,7 @@ export const resolver = {
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 12
         atomsByCategory(parent: any, { filter, limit = 12 }: IAtomQueryArgs) {
             return models.Atom.findAll({
                 limit,
@@ -137,6 +138,7 @@ export const resolver = {
          * @returns {Array<Atom>} Atoms List based on a filter parameters: 
          * e.g category, user's input text
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 'created_at' y 12
         searchAtoms(parent: any, { filter, sortBy = 'created_at', limit = 12 }: IAtomQueryArgs) {
 
             // Init Filter
@@ -158,6 +160,7 @@ export const resolver = {
             }
 
             // Get all Atoms based on query args
+            // TODO: Crear un archivo de constantes como en el FE, para almacenar 'DESC'
             return models.Atom.findAll({
                 limit,
                 order: [[sortBy, 'DESC']],
@@ -179,39 +182,3 @@ export const resolver = {
         }
     }
 };
-
-
-
-/* 
-
-Queries:
-
-
-query getAtomById($atomId : ID!) {
-    atom(id: $atomId) {
-        id
-        name
-        html
-        css
-        contextualBg
-        stores
-        views
-        likes
-        download
-        __typename
-        comments {
-            id
-            content
-            __typename
-        }
-        author {
-            id
-            firstname
-            lastname
-            username
-            avatar
-            __typename
-        }
-    }
-}
-*/

@@ -38,18 +38,4 @@ exports.resolver = {
         }
     }
 };
-/*
-
-Queries:
-
-
-query getAtomCategoryById($atomCategoryId : ID!) {
-    atomCategoryById(id: $atomCategoryId) {
-        id
-        name
-        description
-        __typename
-    }
-}
-*/ 
 //# sourceMappingURL=atomCategory.query.js.map

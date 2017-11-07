@@ -54,28 +54,4 @@ exports.resolver = {
         }
     }
 };
-/*
-
-Queries:
-
-
-query getUserById($userId : ID!) {
-    userById(id: $userId) {
-        id
-        firstname
-        lastname
-        username
-        email
-        avatar
-        about
-        website
-        __typename
-        atoms {
-            id
-            name
-            __typename
-        }
-    }
-}
-*/ 
 //# sourceMappingURL=user.query.js.map

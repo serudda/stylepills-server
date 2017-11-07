@@ -51,20 +51,3 @@ export const resolver = {
         }
     }
 };
-
-
-
-/* 
-
-Queries:
-
-
-query getAtomCategoryById($atomCategoryId : ID!) {
-    atomCategoryById(id: $atomCategoryId) {
-        id
-        name
-        description
-        __typename 
-    }
-}
-*/

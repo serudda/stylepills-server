@@ -49,6 +49,7 @@ exports.resolver = {
          * @param {Int} limit - limit number of results returned
          * @returns {Array<IAtom>} Atoms list
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 12
         allAtoms(parent, { limit = 12 }) {
             return index_1.models.Atom.findAll({
                 limit,
@@ -67,6 +68,7 @@ exports.resolver = {
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 12
         atomsByCategory(parent, { filter, limit = 12 }) {
             return index_1.models.Atom.findAll({
                 limit,
@@ -88,6 +90,7 @@ exports.resolver = {
          * @returns {Array<Atom>} Atoms List based on a filter parameters:
          * e.g category, user's input text
          */
+        // TODO: Crear un archivo de constantes como en el FE, para almacenar 'created_at' y 12
         searchAtoms(parent, { filter, sortBy = 'created_at', limit = 12 }) {
             // Init Filter
             let queryFilter = {
@@ -105,6 +108,7 @@ exports.resolver = {
                 };
             }
             // Get all Atoms based on query args
+            // TODO: Crear un archivo de constantes como en el FE, para almacenar 'DESC'
             return index_1.models.Atom.findAll({
                 limit,
                 order: [[sortBy, 'DESC']],
@@ -124,37 +128,4 @@ exports.resolver = {
         }
     }
 };
-/*
-
-Queries:
-
-
-query getAtomById($atomId : ID!) {
-    atom(id: $atomId) {
-        id
-        name
-        html
-        css
-        contextualBg
-        stores
-        views
-        likes
-        download
-        __typename
-        comments {
-            id
-            content
-            __typename
-        }
-        author {
-            id
-            firstname
-            lastname
-            username
-            avatar
-            __typename
-        }
-    }
-}
-*/ 
 //# sourceMappingURL=atom.query.js.map
