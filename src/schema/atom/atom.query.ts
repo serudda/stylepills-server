@@ -256,26 +256,43 @@ export const resolver = {
                     edges,
                     pageInfo: {
                         hasNextPage() {
-                            if (atoms.length < (last || first)) {
+
+                            // 'elements returned' is less than 'elements per page'
+                            if (atoms.length < (last || first) &&
+                                after) {
                                 return Promise.resolve(false);
                             }
 
+                            // get element greater than/less than last element on 'returned' elements list
                             return models.Atom.findOne({
                                 where: {
                                   id: {
-                                    [before ? '$gt' : '$lt']: atoms[atoms.length - 1].dataValues.id,
+                                    [before ? '$lt' : '$gt']: atoms[atoms.length - 1].dataValues.id,
                                   },
                                 },
                                 order: [['id', 'DESC']],
-                            }).then(atom => !!atom);
+                            }).then((atom) => {
+                                    return !!atom;
+                                }
+                            );
+
                         },
                         hasPreviousPage() {
+
+                            // 'elements returned' is less than 'elements per page'
+                            if (atoms.length < (last || first) &&
+                                before) {
+                                return Promise.resolve(false);
+                            }
+
+                            // get element greater than/less than cursor element
                             return models.Atom.findOne({
                               where: {
                                 id: where.id,
                               },
                               order: [['id']],
                             }).then(atom => !!atom);
+
                         },
                     }
                 };
