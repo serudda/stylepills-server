@@ -35,6 +35,7 @@ interface IAtomFilterArgs {
  */
 interface IAtomQueryArgs {
     id: number;
+    atomConnection: any;
     filter: IAtomFilterArgs;
     sortBy: string;
     limit: number;
@@ -53,11 +54,36 @@ export const typeDef = `
         text: String
     }
 
+    input ConnectionInput {
+        first: Int
+        after: String
+        last: Int
+        before: String
+    }
+
+    type AtomConnection {
+        edges: [MessageEdge]
+        pageInfo: PageInfo!
+    }
+
+    type MessageEdge {
+        cursor: String!
+        node: Atom!
+    }
+
+    type PageInfo {
+        hasNextPage: Boolean!
+        hasPreviousPage: Boolean!
+    }
+
     extend type Query {
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+        atomPaginated(atomConnection: ConnectionInput): AtomConnection
+        searchAtoms(filter: AtomFilter, 
+                    sortBy: String, 
+                    limit: Int): [Atom!]!
     }
 
 `;
@@ -68,6 +94,14 @@ export const typeDef = `
 /*******************************************/
 
 export const resolver = {
+    PageInfo: {
+        hasNextPage(connection: any, args: any) {
+            return connection.hasNextPage();
+        },
+        hasPreviousPage(connection: any, args: any) {
+            return connection.hasPreviousPage();
+        }
+    },
     Query: {
 
         /**
@@ -139,7 +173,13 @@ export const resolver = {
          * e.g category, user's input text
          */
         // TODO: Crear un archivo de constantes como en el FE, para almacenar 'created_at' y 12
-        searchAtoms(parent: any, { filter, sortBy = 'created_at', limit = 12 }: IAtomQueryArgs) {
+        searchAtoms(
+            parent: any, 
+            {
+                filter, 
+                sortBy = 'created_at', 
+                limit = 12 
+            }: IAtomQueryArgs) {
 
             // Init Filter
             let queryFilter: IQueryFilters = {
@@ -167,6 +207,62 @@ export const resolver = {
                 where: queryFilter
             });
 
+        },
+
+
+        atomPaginated(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
+            const { first, last, before, after } = atomConnection;
+            const where: any = {};
+
+            if (before) {
+                where.id = { $gt: Buffer.from(before, 'base64').toString() };
+            }
+
+            if (after) {
+                where.id = { $lt: Buffer.from(after, 'base64').toString() };
+            }
+
+            return models.Atom.findAll({
+                where,
+                order: [['id', 'DESC']],
+                limit: first || last
+            }).then((atoms) => {
+                const edges = atoms.map(atom => ({
+                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
+                    cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
+                    node: atom
+                }));
+
+                return {
+                    edges,
+                    pageInfo: {
+                        hasNextPage() {
+                            if (atoms.length < (last || first)) {
+                                return Promise.resolve(false);
+                            }
+
+                            return models.Atom.findOne({
+                                where: {
+                                  id: {
+                                    [before ? '$gt' : '$lt']: atoms[atoms.length - 1].dataValues.id,
+                                  },
+                                },
+                                order: [['id', 'DESC']],
+                            }).then(atom => !!atom);
+                        },
+                        hasPreviousPage() {
+                            return models.Atom.findOne({
+                              where: {
+                                id: where.id,
+                              },
+                              order: [['id']],
+                            }).then(atom => !!atom);
+                        },
+                    }
+                };
+
+            });
+
         }
 
     },
@@ -182,3 +278,26 @@ export const resolver = {
         }
     }
 };
+
+
+
+/*
+Search Atoms Pagination structure
+
+input AtomPagination {
+    first: Int
+    after: String
+}
+
+input AtomFilter {
+    private: Boolean        
+    atomCategoryId: Int
+    text: String
+}
+
+extend type Query {
+    searchAtoms(pagination: AtomPagination, filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+}
+
+searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+*/

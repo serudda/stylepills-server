@@ -15,11 +15,36 @@ exports.typeDef = `
         text: String
     }
 
+    input ConnectionInput {
+        first: Int
+        after: String
+        last: Int
+        before: String
+    }
+
+    type AtomConnection {
+        edges: [MessageEdge]
+        pageInfo: PageInfo!
+    }
+
+    type MessageEdge {
+        cursor: String!
+        node: Atom!
+    }
+
+    type PageInfo {
+        hasNextPage: Boolean!
+        hasPreviousPage: Boolean!
+    }
+
     extend type Query {
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+        atomPaginated(atomConnection: ConnectionInput): AtomConnection
+        searchAtoms(filter: AtomFilter, 
+                    sortBy: String, 
+                    limit: Int): [Atom!]!
     }
 
 `;
@@ -27,6 +52,14 @@ exports.typeDef = `
 /*            ATOM QUERY RESOLVER          */
 /*******************************************/
 exports.resolver = {
+    PageInfo: {
+        hasNextPage(connection, args) {
+            return connection.hasNextPage();
+        },
+        hasPreviousPage(connection, args) {
+            return connection.hasPreviousPage();
+        }
+    },
     Query: {
         /**
          * @desc Get Atom by Id
@@ -114,6 +147,53 @@ exports.resolver = {
                 order: [[sortBy, 'DESC']],
                 where: queryFilter
             });
+        },
+        atomPaginated(parent, { atomConnection = {} }) {
+            const { first, last, before, after } = atomConnection;
+            const where = {};
+            if (before) {
+                where.id = { $gt: Buffer.from(before, 'base64').toString() };
+            }
+            if (after) {
+                where.id = { $lt: Buffer.from(after, 'base64').toString() };
+            }
+            return index_1.models.Atom.findAll({
+                where,
+                order: [['id', 'DESC']],
+                limit: first || last
+            }).then((atoms) => {
+                const edges = atoms.map(atom => ({
+                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
+                    cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
+                    node: atom
+                }));
+                return {
+                    edges,
+                    pageInfo: {
+                        hasNextPage() {
+                            if (atoms.length < (last || first)) {
+                                return Promise.resolve(false);
+                            }
+                            return index_1.models.Atom.findOne({
+                                where: {
+                                    id: {
+                                        [before ? '$gt' : '$lt']: atoms[atoms.length - 1].dataValues.id,
+                                    },
+                                },
+                                order: [['id', 'DESC']],
+                            }).then(atom => !!atom);
+                        },
+                        hasPreviousPage() {
+                            return index_1.models.Atom.findOne({
+                                where: {
+                                    id: where.id,
+                                },
+                                order: [['id']],
+                            }).then(atom => !!atom);
+                        },
+                    }
+                };
+            });
         }
     },
     Atom: {
@@ -128,4 +208,24 @@ exports.resolver = {
         }
     }
 };
+/*
+Search Atoms Pagination structure
+
+input AtomPagination {
+    first: Int
+    after: String
+}
+
+input AtomFilter {
+    private: Boolean
+    atomCategoryId: Int
+    text: String
+}
+
+extend type Query {
+    searchAtoms(pagination: AtomPagination, filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+}
+
+searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
+*/ 
 //# sourceMappingURL=atom.query.js.map
