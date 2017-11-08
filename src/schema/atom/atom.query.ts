@@ -94,6 +94,7 @@ export const typeDef = `
 /*******************************************/
 
 export const resolver = {
+    
     PageInfo: {
         hasNextPage(connection: any, args: any) {
             return connection.hasNextPage();
@@ -102,6 +103,7 @@ export const resolver = {
             return connection.hasPreviousPage();
         }
     },
+
     Query: {
 
         /**
@@ -213,20 +215,37 @@ export const resolver = {
         atomPaginated(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
             const { first, last, before, after } = atomConnection;
             const where: any = {};
+            const DESC = 'DESC';
+            const ASC = 'ASC';
 
+            let order = DESC;
+
+            /*
+            CHANGE ORDER BY:
+                before => ASC
+                after => DESC
+            */
             if (before) {
                 where.id = { $gt: Buffer.from(before, 'base64').toString() };
+                order = ASC;
             }
 
             if (after) {
                 where.id = { $lt: Buffer.from(after, 'base64').toString() };
+                order = DESC;
             }
 
             return models.Atom.findAll({
                 where,
-                order: [['id', 'DESC']],
+                order: [['id', order]],
                 limit: first || last
             }).then((atoms) => {
+                
+                // When is 'previous button' is necessary to reverser the array result
+                if (before) {
+                    atoms = atoms.slice(0).reverse();
+                }
+
                 const edges = atoms.map(atom => ({
                     // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
                     cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),

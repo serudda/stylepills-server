@@ -151,17 +151,31 @@ exports.resolver = {
         atomPaginated(parent, { atomConnection = {} }) {
             const { first, last, before, after } = atomConnection;
             const where = {};
+            const DESC = 'DESC';
+            const ASC = 'ASC';
+            let order = DESC;
+            /*
+            CHANGE ORDER BY:
+                before => ASC
+                after => DESC
+            */
             if (before) {
                 where.id = { $gt: Buffer.from(before, 'base64').toString() };
+                order = ASC;
             }
             if (after) {
                 where.id = { $lt: Buffer.from(after, 'base64').toString() };
+                order = DESC;
             }
             return index_1.models.Atom.findAll({
                 where,
-                order: [['id', 'DESC']],
+                order: [['id', order]],
                 limit: first || last
             }).then((atoms) => {
+                // When is 'previous button' is necessary to reverser the array result
+                if (before) {
+                    atoms = atoms.slice(0).reverse();
+                }
                 const edges = atoms.map(atom => ({
                     // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
                     cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
