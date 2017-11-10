@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const index_1 = require("./../../models/index");
+const buffer_1 = require("buffer");
 /**************************************/
 /*         ATOM QUERY TYPEDEF         */
 /**************************************/
@@ -22,12 +23,19 @@ exports.typeDef = `
         before: String
     }
 
+    # Test
+    type AtomConnectionOffset {
+        edges: [AtomEdge]
+        pageInfo: PageInfo!
+        count: Int
+    }
+
     type AtomConnection {
-        edges: [MessageEdge]
+        edges: [AtomEdge]
         pageInfo: PageInfo!
     }
 
-    type MessageEdge {
+    type AtomEdge {
         cursor: String!
         node: Atom!
     }
@@ -41,10 +49,11 @@ exports.typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        atomPaginated(atomConnection: ConnectionInput): AtomConnection
+        atomCursorPaginated(atomConnection: ConnectionInput): AtomConnection
         searchAtoms(filter: AtomFilter, 
-                    sortBy: String, 
-                    limit: Int): [Atom!]!
+                    sortBy: String,
+                    limit: Int,
+                    offset: Int): AtomConnectionOffset!
     }
 
 `;
@@ -124,7 +133,7 @@ exports.resolver = {
          * e.g category, user's input text
          */
         // TODO: Crear un archivo de constantes como en el FE, para almacenar 'created_at' y 12
-        searchAtoms(parent, { filter, sortBy = 'created_at', limit = 12 }) {
+        searchAtoms(parent, { filter, sortBy = 'created_at', limit = 12, offset = 12 }) {
             // Init Filter
             let queryFilter = {
                 active: true,
@@ -142,45 +151,90 @@ exports.resolver = {
             }
             // Get all Atoms based on query args
             // TODO: Crear un archivo de constantes como en el FE, para almacenar 'DESC'
-            return index_1.models.Atom.findAll({
-                limit,
+            return index_1.models.Atom.findAndCountAll({
+                where: queryFilter,
                 order: [[sortBy, 'DESC']],
-                where: queryFilter
+                limit,
+                offset
+            }).then((atoms) => {
+                const edges = atoms.rows.map(atom => ({
+                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
+                    cursor: buffer_1.Buffer.from(atom.dataValues.id.toString()).toString('base64'),
+                    node: atom
+                }));
+                return {
+                    edges,
+                    count: atoms.count,
+                    pageInfo: {
+                        hasNextPage() {
+                            return true;
+                        },
+                        hasPreviousPage() {
+                            return true;
+                        }
+                    }
+                };
             });
         },
-        atomPaginated(parent, { atomConnection = {} }) {
+        /**
+         * @desc Implementation of a Atom pagination based on Relay Cursor Connection (only sortBy ID)
+         * @method Method atomCursorPaginated
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
+         * @param {any} atomConnection - include: first, last, before, and after parameters
+         * @returns {Array<Atom>} Atoms List based on a pagination params
+         */
+        atomCursorPaginated(parent, { atomConnection = {} }) {
             const { first, last, before, after } = atomConnection;
-            const where = {};
+            let where = {};
             const DESC = 'DESC';
             const ASC = 'ASC';
             let order = DESC;
-            /*
-            CHANGE ORDER BY:
-                before => ASC
-                after => DESC
-            */
+            // PREVIOUS (before => ASC => $gt)
             if (before) {
-                where.id = { $gt: Buffer.from(before, 'base64').toString() };
+                let cursor = buffer_1.Buffer.from(before, 'base64').toString().split(':');
+                if (cursor[1] === '0') {
+                    where = {
+                        likes: { $gte: cursor[1] },
+                        id: { $gt: cursor[0] }
+                    };
+                }
+                else {
+                    where.likes = { $gt: cursor[1] };
+                }
                 order = ASC;
             }
+            // NEXT (after => DESC => $lt)
             if (after) {
-                where.id = { $lt: Buffer.from(after, 'base64').toString() };
+                let cursor = buffer_1.Buffer.from(after, 'base64').toString().split(':');
+                if (cursor[1] === '0') {
+                    where = {
+                        likes: { $lte: cursor[1] },
+                        id: { $lt: cursor[0] }
+                    };
+                }
+                else {
+                    where.likes = { $lt: cursor[1] };
+                }
                 order = DESC;
             }
             return index_1.models.Atom.findAll({
                 where,
-                order: [['id', order]],
+                order: [['likes', order], ['id', order]],
                 limit: first || last
             }).then((atoms) => {
                 // When is 'previous button' is necessary to reverser the array result
                 if (before) {
                     atoms = atoms.slice(0).reverse();
                 }
-                const edges = atoms.map(atom => ({
-                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
-                    cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
-                    node: atom
-                }));
+                const edges = atoms.map(atom => {
+                    let str = `${atom.dataValues.id}:${atom.dataValues.likes}`;
+                    return {
+                        cursor: buffer_1.Buffer.from(str).toString('base64'),
+                        node: atom
+                    };
+                });
                 return {
                     edges,
                     pageInfo: {
