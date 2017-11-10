@@ -9,7 +9,9 @@ const Op = SequelizeStatic.Op;
 const operatorsAliases = {
     $like: Op.like,
     $gt: Op.gt,
-    $lt: Op.lt
+    $gte: Op.gte,
+    $lt: Op.lt,
+    $lte: Op.lte
 };
 /****************************************/
 /*            DATABASE CONFIG           */

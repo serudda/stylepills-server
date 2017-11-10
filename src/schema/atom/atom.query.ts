@@ -255,14 +255,14 @@ export const resolver = {
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
         atomCursorPaginated(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
-            const { first, last, before, after } = atomConnection;
+            const { first, after, last, before } = atomConnection;
             let where: any = {};
             const DESC = 'DESC';
             const ASC = 'ASC';
 
             let order = DESC;
 
-            // PREVIOUS (before => ASC => $gt)
+            // PREVIOUS (before => ASC => $gt) + last
             if (before) {
                 let cursor = Buffer.from(before, 'base64').toString().split(':');
                 if (cursor[1] === '0') {
@@ -276,7 +276,7 @@ export const resolver = {
                 order = ASC;
             }
 
-            // NEXT (after => DESC => $lt)
+            // NEXT (after => DESC => $lt) + first
             if (after) {
                 let cursor = Buffer.from(after, 'base64').toString().split(':');
                 if (cursor[1] === '0') {
@@ -290,6 +290,7 @@ export const resolver = {
                 order = DESC;
             }
 
+            // GET ATOMS BASED ON FILTERS AND PAGINATION
             return models.Atom.findAll({
                 where,
                 order: [['likes', order], ['id', order]],
