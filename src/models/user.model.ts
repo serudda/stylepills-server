@@ -15,6 +15,7 @@ import { IAtom } from './atom.model';
 
 export interface IUser {
     id: number | null;
+    googleId: number | null;
     username: string;
     firstname: string;
     lastname: string;
@@ -31,6 +32,7 @@ export interface IUser {
 
 
 export interface IUserAttributes {
+    googleId: number | null;
     firstname: string;
     lastname: string;
     username: string;
