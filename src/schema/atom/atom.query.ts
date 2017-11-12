@@ -3,7 +3,89 @@
 /************************************/
 import { models, sequelize } from './../../models/index';
 import { Buffer } from 'buffer';
-import { pagination }  from './../../utils/pagination';
+import { pagination as paginationUtils }  from './../../utils/pagination';
+
+
+function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, text: string): IQueryFilters {
+
+    // Init Filter
+    let queryFilter: IQueryFilters = {
+        active: true,
+        private: isPrivate
+    };
+
+    // Add 'atomCategoryId' filter if it exists or is different from 0
+    if (atomCategoryId && atomCategoryId !== 0) {
+        queryFilter.atomCategoryId = atomCategoryId;
+    }
+
+    // Add 'name' filter if 'text' exists
+    if (text) {
+        queryFilter.name = {
+            $like: `%${text}%`
+        };
+    }
+
+    return queryFilter;
+}
+
+function buildPaginationQuery(
+    before: string, 
+    after: string, 
+    desc: boolean, 
+    paginationField: string,
+    primaryKeyField: string,
+    paginationFieldIsNonId: boolean
+) {
+
+    const decodedBefore = !!before ? paginationUtils.decodeCursor(before) : null;
+    const decodedAfter = !!after ? paginationUtils.decodeCursor(after) : null;
+    // If is before (previous) = FALSE, if not TRUE
+    const cursorOrderIsDesc = before ? !desc : desc;
+    const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';    
+
+    // VARIABLES
+    let paginationQuery;
+    let order: Array<any> = [
+        cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+        ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+    ];
+
+    if (before) {
+        
+        paginationQuery = paginationUtils.getPaginationQuery(
+            decodedBefore, 
+            cursorOrderOperator, 
+            paginationField, 
+            primaryKeyField
+        );
+
+        /* FIXME: #67 - Rompe cuando paginationFieldIsNonId es false, es decir 
+            cuando quiero organizar por 'created_at' */
+        order = [
+            paginationField,
+            // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
+            paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : '',
+        ];
+
+    } else if (after) {
+
+        paginationQuery = paginationUtils.getPaginationQuery(
+            decodedAfter, 
+            cursorOrderOperator, 
+            paginationField, 
+            primaryKeyField
+        );
+
+        order = [
+            cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+            ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+        ];
+
+    }
+
+    return {paginationQuery, order};
+}
 
 
 /************************************/
@@ -28,8 +110,18 @@ interface IQueryFilters {
 interface IAtomFilterArgs {
     atomCategoryId?: number;
     active: boolean;
-    private: boolean;
+    isPrivate: boolean;
     text?: string;
+}
+
+/**
+ * Arguments passed to Atom pagination
+ */
+interface IAtomPaginationArgs {
+    first: number;
+    after: string;
+    last: string;
+    before: string;
 }
 
 /**
@@ -37,11 +129,10 @@ interface IAtomFilterArgs {
  */
 interface IAtomQueryArgs {
     id: number;
-    atomConnection: any;
+    pagination: IAtomPaginationArgs;
     filter: IAtomFilterArgs;
     sortBy: string;
     limit: number;
-    offset: number;
 }
 
 
@@ -52,38 +143,16 @@ interface IAtomQueryArgs {
 export const typeDef = `
 
     input AtomFilter {
-        private: Boolean        
+        isPrivate: Boolean        
         atomCategoryId: Int
         text: String
     }
 
-    input ConnectionInput {
+    input PaginationInput {
         first: Int
         after: String
         last: Int
         before: String
-    }
-
-    # Test
-    type AtomConnectionOffset {
-        edges: [AtomEdge]
-        pageInfo: PageInfo!
-        count: Int
-    }
-
-    type AtomConnection {
-        edges: [AtomEdge]
-        pageInfo: PageInfo
-    }
-
-    type AtomEdge {
-        cursor: String!
-        node: Atom!
-    }
-
-    type PageInfo {
-        hasNextPage: Boolean!
-        hasPreviousPage: Boolean!
     }
 
     type Cursor {
@@ -93,7 +162,7 @@ export const typeDef = `
         after: String
     }
 
-    type AtomPaginate {
+    type AtomPaginated {
         results: [Atom],
         cursors: Cursor
     }
@@ -102,12 +171,11 @@ export const typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        atomCursorPaginated(atomConnection: ConnectionInput): AtomConnection
-        atomPaginate(atomConnection: ConnectionInput): AtomPaginate
-        searchAtoms(filter: AtomFilter, 
+        atomPaginate(pagination: PaginationInput): AtomPaginated
+        searchAtoms(pagination: PaginationInput
+                    filter: AtomFilter, 
                     sortBy: String,
-                    limit: Int,
-                    offset: Int): AtomConnectionOffset!
+                    limit: Int): AtomPaginated!
     }
 
 `;
@@ -118,15 +186,6 @@ export const typeDef = `
 /*******************************************/
 
 export const resolver = {
-    
-    PageInfo: {
-        hasNextPage(connection: any, args: any) {
-            return connection.hasNextPage();
-        },
-        hasPreviousPage(connection: any, args: any) {
-            return connection.hasPreviousPage();
-        }
-    },
 
     Query: {
 
@@ -199,13 +258,12 @@ export const resolver = {
          * e.g category, user's input text
          */
         // TODO: Crear un archivo de constantes como en el FE, para almacenar 'created_at' y 12
-        searchAtoms(
+        /*searchAtoms(
             parent: any, 
             {
                 filter, 
                 sortBy = 'created_at', 
-                limit = 12,
-                offset = 12
+                limit = 12
             }: IAtomQueryArgs) {
 
             // Init Filter
@@ -231,8 +289,7 @@ export const resolver = {
             return models.Atom.findAndCountAll({
                 where: queryFilter,
                 order: [[sortBy, 'DESC']],
-                limit,
-                offset
+                limit
             }).then((atoms) => {
                 const edges = atoms.rows.map((atom) => ({
                     cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
@@ -253,195 +310,71 @@ export const resolver = {
                 };
             });
 
-        },
-
+        },*/
 
 
 
         /**
-         * @desc Implementation of a Atom pagination based on Relay Cursor Connection (only sortBy ID)
-         * @method Method atomCursorPaginated
+         * @desc Get Atoms by an user's input text (including category filter)
+         * @method Method searchAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
          * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
-         * @param {any} atomConnection - include: first, last, before, and after parameters
+         * @param {IAtomFilterArgs} filter - a set of filters
+         * @param {String} sortBy - sort list by a passed parameter
+         * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
-        atomCursorPaginated(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
-            const { first, after, last, before } = atomConnection;
-            let where: any = {};
-            const DESC = 'DESC';
-            const ASC = 'ASC';
+        searchAtoms(parent: any, { 
+            filter = <IAtomFilterArgs> {}, 
+            sortBy = 'likes', 
+            pagination = <IAtomPaginationArgs> {}
+        }: IAtomQueryArgs) {
 
-            let order = DESC;
-
-            // PREVIOUS (before => ASC => $gt) + last
-            if (before) {
-                let cursor = Buffer.from(before, 'base64').toString().split(':');
-                if (cursor[1] === '0') {
-                    where = {
-                        likes: { $gte: cursor[1] },
-                        id: { $gt: cursor[0] }
-                    };
-                } else {
-                    where.likes = { $gt: cursor[1] };
-                }
-                order = ASC;
-            }
-
-            // NEXT (after => DESC => $lt) + first
-            if (after) {
-                let cursor = Buffer.from(after, 'base64').toString().split(':');
-                if (cursor[1] === '0') {
-                    where = {
-                        likes: { $lte: cursor[1] },
-                        id: { $lt: cursor[0] }
-                    };
-                } else {
-                    where.likes = { $lt: cursor[1] };
-                }
-                order = DESC;
-            }
-
-            // GET ATOMS BASED ON FILTERS AND PAGINATION
-            return models.Atom.findAll({
-                where,
-                order: [['likes', order], ['id', order]],
-                limit: first || last
-            }).then((atoms) => {
-                
-                // When is 'previous button' is necessary to reverser the array result
-                if (before) {
-                    atoms = atoms.slice(0).reverse();
-                }
-
-                const edges = atoms.map((atom) => {
-
-                    let str = `${atom.dataValues.id}:${atom.dataValues.likes}`;
-
-                    return {
-                        cursor: Buffer.from(str).toString('base64'),
-                        node: atom
-                    };
-                });
-
-                return {
-                    edges,
-                    pageInfo: {
-                        hasNextPage() {
-
-                            // 'elements returned' is less than 'elements per page'
-                            if (atoms.length < (last || first) &&
-                                after) {
-                                return Promise.resolve(false);
-                            }
-
-                            // get element greater than/less than last element on 'returned' elements list
-                            return models.Atom.findOne({
-                                where: {
-                                  id: {
-                                    [before ? '$lt' : '$gt']: atoms[atoms.length - 1].dataValues.id,
-                                  },
-                                },
-                                order: [['id', 'DESC']],
-                            }).then((atom) => {
-                                    return !!atom;
-                                }
-                            );
-
-                        },
-                        hasPreviousPage() {
-
-                            // 'elements returned' is less than 'elements per page'
-                            if (atoms.length < (last || first) &&
-                                before) {
-                                return Promise.resolve(false);
-                            }
-
-                            // get element greater than/less than cursor element
-                            return models.Atom.findOne({
-                              where: {
-                                id: where.id,
-                              },
-                              order: [['id']],
-                            }).then((atom) => !!atom);
-
-                        },
-                    }
-                };
-
-            });
-
-        },
-
-
-
-        atomPaginate(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
-            const { first, after, last, before } = atomConnection;
-            let where = {
-                stores: {
-                    $gte: 0
-                }
-            };
-            // let where = {};
+            // VARIABLES
+            let { first = 12, after, last = 12, before } = pagination;
+            let { isPrivate = false, atomCategoryId, text } = filter;
+            let primaryKeyField = 'id';
+            let paginationField = sortBy;
+            // let primaryKeyField = 'created_at';
+            // let paginationField = 'created_at';
+            let where = {};
             let include: any = []; 
             let limit = first;
-            let desc = true; 
-            let primaryKeyField = 'id';
-            // let primaryKeyField = 'created_at';
-            let paginationField = 'stores';
-            // let paginationField = 'created_at';
-            const decodedBefore: Array<any> = !!before ?  pagination.decodeCursor(before) : null;
-            const decodedAfter: Array<any> = !!after ?  pagination.decodeCursor(after) : null;
-            // If is before (previous) = FALSE, if not TRUE
-            const cursorOrderIsDesc = before ? !desc : desc;
-            const cursorOrderOperator: string = cursorOrderIsDesc ? '$lt' : '$gt';
+            let desc = true;
+
             const paginationFieldIsNonId = paginationField !== primaryKeyField;
 
-            let paginationQuery;
+            // Build filter query
+            let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
 
-            let order: Array<any> = [
-                cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
-                ...(paginationFieldIsNonId ? [primaryKeyField] : []),
-            ];
-            
-            if (before) {
-
-                paginationQuery =  pagination.getPaginationQuery(
-                    decodedBefore, 
-                    cursorOrderOperator, 
-                    paginationField, 
-                    primaryKeyField
-                );
-
-                /* FIXME: #67 - Rompe cuando paginationFieldIsNonId es false, es decir 
-                   cuando quiero organizar por 'created_at' */
-                order = [
-                    paginationField,
-                    // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
-                    paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : '',
-                ];
-
-            } else if (after) {
-
-                paginationQuery =  pagination.getPaginationQuery(
-                    decodedAfter, 
-                    cursorOrderOperator, 
-                    paginationField, 
-                    primaryKeyField
-                );
-
-                order = [
-                    cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
-                    ...(paginationFieldIsNonId ? [primaryKeyField] : []),
-                ];
-
+            // Build main Where
+            if (sortBy !== 'created_at') {
+                where = {
+                    [sortBy]: {
+                        $gte: 0
+                    }
+                };
             }
+
+            where = Object.assign({}, where, filterQuery);
+            
+            // Build pagination query
+            let { paginationQuery, order } = buildPaginationQuery(
+                before,
+                after,
+                desc,
+                paginationField,
+                primaryKeyField,
+                paginationFieldIsNonId);
 
             /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model 
              no acepta: $and */
             const whereQuery: any = paginationQuery ? { $and: [paginationQuery, where] } : where;
 
+
+            // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return models.Atom.findAll({
                 where: whereQuery,
                 include,
@@ -466,13 +399,13 @@ export const resolver = {
         
                 if (results.length > 0) {
                     beforeCursor = paginationFieldIsNonId 
-                    ?  pagination.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                    :  pagination.encodeCursor([results[0][paginationField]]);
+                    ? paginationUtils.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
+                    : paginationUtils.encodeCursor([results[0][paginationField]]);
         
                     afterCursor = paginationFieldIsNonId
                     // tslint:disable-next-line:max-line-length
-                    ?  pagination.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                    :  pagination.encodeCursor([results[results.length - 1][paginationField]]);
+                    ? paginationUtils.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
+                    : paginationUtils.encodeCursor([results[results.length - 1][paginationField]]);
                 }
         
                 return {
