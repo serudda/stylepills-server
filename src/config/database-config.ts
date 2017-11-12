@@ -7,11 +7,13 @@ import * as SequelizeStatic from 'sequelize';
 // Accepted Operators aliases
 const Op = SequelizeStatic.Op;
 const operatorsAliases = {
-  $like: Op.like,
-  $gt: Op.gt,
-  $gte: Op.gte,
-  $lt: Op.lt,
-  $lte: Op.lte
+    $and: Op.and,
+    $or: Op.or,
+    $like: Op.like,
+    $gt: Op.gt,
+    $gte: Op.gte,
+    $lt: Op.lt,
+    $lte: Op.lte
 };
 
 

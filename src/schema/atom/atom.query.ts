@@ -4,6 +4,61 @@
 import { models, sequelize } from './../../models/index';
 import { Buffer } from 'buffer';
 
+const base64 = require('base-64');
+
+function decodeCursor(cursor: any) {
+  return cursor ? JSON.parse(base64.decode(cursor)) : null;
+}
+
+function encodeCursor(cursor: any) {
+  return base64.encode(JSON.stringify(cursor));
+}
+
+function getPaginationQuery(cursor: any, cursorOrderOperator: any, paginationField: any, primaryKeyField: any) {
+
+    const primaryCursorOrderOperator = cursorOrderOperator === '$gt' ? '$lt' : '$gt';
+
+    if (paginationField !== primaryKeyField) {
+        /* 
+            AFTER: 
+            ("stores" < 100 OR ("stores" = 100 AND "id" > 7)
+            cursorOrderOperator = $lt (<)
+
+            BEFORE: 
+            ("likes" > 12389 OR ("likes" = 12389 AND "id" < 4)
+            cursorOrderOperator = $gt (>)
+        */
+        return {
+            $or: [
+                {
+                    // AFTER: "store" < 100
+                    // BEFORE: "likes" > 12389
+                    [paginationField]: {
+                        [cursorOrderOperator]: cursor[0],
+                    },
+                },
+                {
+                    // AFTER: "stores" = 100
+                    // BEFORE: "likes" = 12389
+                    [paginationField]: cursor[0],
+                    // AFTER: "id" > 7
+                    // BEFORE: "id" < 4
+                    [primaryKeyField]: {
+                        [primaryCursorOrderOperator]: cursor[1],
+                    },
+                },
+            ],
+        };
+  } else {
+    return {
+        // AFTER: "store" < 100
+        // BEFORE: "likes" > 12389
+        [paginationField]: {
+            [cursorOrderOperator]: cursor[0],
+        },
+    };
+  }
+}
 
 /************************************/
 /*            INTERFACES            */
@@ -72,7 +127,7 @@ export const typeDef = `
 
     type AtomConnection {
         edges: [AtomEdge]
-        pageInfo: PageInfo!
+        pageInfo: PageInfo
     }
 
     type AtomEdge {
@@ -85,11 +140,24 @@ export const typeDef = `
         hasPreviousPage: Boolean!
     }
 
+    type Cursor {
+        hasNext: Boolean,
+        hasPrevious: Boolean,
+        before: String,
+        after: String
+    }
+
+    type AtomPaginate {
+        results: [Atom],
+        cursors: Cursor
+    }
+
     extend type Query {
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
         atomCursorPaginated(atomConnection: ConnectionInput): AtomConnection
+        atomPaginate(atomConnection: ConnectionInput): AtomPaginate
         searchAtoms(filter: AtomFilter, 
                     sortBy: String,
                     limit: Int,
@@ -219,9 +287,8 @@ export const resolver = {
                 order: [[sortBy, 'DESC']],
                 limit,
                 offset
-            }).then((atoms) => {
-                const edges = atoms.rows.map(atom => ({
-                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
+            }).then((atoms: any) => {
+                const edges = atoms.rows.map((atom: any) => ({
                     cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
                     node: atom
                 }));
@@ -295,14 +362,14 @@ export const resolver = {
                 where,
                 order: [['likes', order], ['id', order]],
                 limit: first || last
-            }).then((atoms) => {
+            }).then((atoms: any) => {
                 
                 // When is 'previous button' is necessary to reverser the array result
                 if (before) {
                     atoms = atoms.slice(0).reverse();
                 }
 
-                const edges = atoms.map(atom => {
+                const edges = atoms.map((atom: any) => {
 
                     let str = `${atom.dataValues.id}:${atom.dataValues.likes}`;
 
@@ -331,7 +398,7 @@ export const resolver = {
                                   },
                                 },
                                 order: [['id', 'DESC']],
-                            }).then((atom) => {
+                            }).then((atom: any) => {
                                     return !!atom;
                                 }
                             );
@@ -351,13 +418,123 @@ export const resolver = {
                                 id: where.id,
                               },
                               order: [['id']],
-                            }).then(atom => !!atom);
+                            }).then((atom: any) => !!atom);
 
                         },
                     }
                 };
 
             });
+
+        },
+
+
+
+        atomPaginate(parent: any, { atomConnection = {} }: IAtomQueryArgs) {
+            const { first, after, last, before } = atomConnection;
+            let where = {
+                stores: {
+                    $gte: 0
+                }
+            };
+            // let where = {};
+            let include: any = []; 
+            let limit = first;
+            let desc = true; 
+            let primaryKeyField = 'id';
+            // let primaryKeyField = 'created_at';
+            let paginationField = 'stores';
+            // let paginationField = 'created_at';
+            const decodedBefore = !!before ? decodeCursor(before) : null;
+            const decodedAfter = !!after ? decodeCursor(after) : null;
+            // If is before (previous) = FALSE, if not TRUE
+            const cursorOrderIsDesc = before ? !desc : desc;
+            const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';
+            const paginationFieldIsNonId = paginationField !== primaryKeyField;
+
+            let paginationQuery;
+
+            let order: Array<any> = [
+                cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+                ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+            ];
+            
+            if (before) {
+
+                paginationQuery = getPaginationQuery(
+                    decodedBefore, 
+                    cursorOrderOperator, 
+                    paginationField, 
+                    primaryKeyField
+                );
+
+                order = [
+                    paginationField,
+                    // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
+                    paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : '',
+                ];
+
+            } else if (after) {
+
+                paginationQuery = getPaginationQuery(
+                    decodedAfter, 
+                    cursorOrderOperator, 
+                    paginationField, 
+                    primaryKeyField
+                );
+
+                order = [
+                    cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+                    ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+                ];
+
+            }
+
+            const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
+
+            return models.Atom.findAll({
+                where: whereQuery,
+                include,
+                limit: limit + 1,
+                order,
+            }).then((results: any) => {
+                const hasMore = results.length > limit;
+          
+                if (hasMore) {
+                    results.pop();
+                }
+        
+                if (before) {
+                    results.reverse();
+                }
+          
+                const hasNext = !!before || hasMore;
+                const hasPrevious = !!after || (!!before && hasMore);
+        
+                let beforeCursor = null;
+                let afterCursor = null;
+        
+                if (results.length > 0) {
+                    beforeCursor = paginationFieldIsNonId 
+                    ? encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
+                    : encodeCursor([results[0][paginationField]]);
+        
+                    afterCursor = paginationFieldIsNonId
+                    // tslint:disable-next-line:max-line-length
+                    ? encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
+                    : encodeCursor([results[results.length - 1][paginationField]]);
+                }
+        
+                return {
+                    results,
+                    cursors: {
+                        hasNext,
+                        hasPrevious,
+                        before: beforeCursor,
+                        after: afterCursor,
+                    },
+                };
+              });
 
         }
 

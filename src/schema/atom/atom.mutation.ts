@@ -52,11 +52,11 @@ export const resolver = {
         createAtom(root: any, args: ICreateAtomArgs) {
             return models.Atom.create(args.input)
             .then(
-                (result) => {
+                (result: any) => {
                     return result;
                 }
             ).catch(
-                (err) => {
+                (err: any) => {
                     return err;
                 }
             );

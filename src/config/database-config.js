@@ -7,6 +7,8 @@ const SequelizeStatic = require("sequelize");
 // Accepted Operators aliases
 const Op = SequelizeStatic.Op;
 const operatorsAliases = {
+    $and: Op.and,
+    $or: Op.or,
     $like: Op.like,
     $gt: Op.gt,
     $gte: Op.gte,

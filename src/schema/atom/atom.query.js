@@ -5,6 +5,57 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const index_1 = require("./../../models/index");
 const buffer_1 = require("buffer");
+const base64 = require('base-64');
+function decodeCursor(cursor) {
+    return cursor ? JSON.parse(base64.decode(cursor)) : null;
+}
+function encodeCursor(cursor) {
+    return base64.encode(JSON.stringify(cursor));
+}
+function getPaginationQuery(cursor, cursorOrderOperator, paginationField, primaryKeyField) {
+    const primaryCursorOrderOperator = cursorOrderOperator === '$gt' ? '$lt' : '$gt';
+    if (paginationField !== primaryKeyField) {
+        /*
+            AFTER:
+            ("stores" < 100 OR ("stores" = 100 AND "id" > 7)
+            cursorOrderOperator = $lt (<)
+
+            BEFORE:
+            ("likes" > 12389 OR ("likes" = 12389 AND "id" < 4)
+            cursorOrderOperator = $gt (>)
+        */
+        return {
+            $or: [
+                {
+                    // AFTER: "store" < 100
+                    // BEFORE: "likes" > 12389
+                    [paginationField]: {
+                        [cursorOrderOperator]: cursor[0],
+                    },
+                },
+                {
+                    // AFTER: "stores" = 100
+                    // BEFORE: "likes" = 12389
+                    [paginationField]: cursor[0],
+                    // AFTER: "id" > 7
+                    // BEFORE: "id" < 4
+                    [primaryKeyField]: {
+                        [primaryCursorOrderOperator]: cursor[1],
+                    },
+                },
+            ],
+        };
+    }
+    else {
+        return {
+            // AFTER: "store" < 100
+            // BEFORE: "likes" > 12389
+            [paginationField]: {
+                [cursorOrderOperator]: cursor[0],
+            },
+        };
+    }
+}
 /**************************************/
 /*         ATOM QUERY TYPEDEF         */
 /**************************************/
@@ -32,7 +83,7 @@ exports.typeDef = `
 
     type AtomConnection {
         edges: [AtomEdge]
-        pageInfo: PageInfo!
+        pageInfo: PageInfo
     }
 
     type AtomEdge {
@@ -45,11 +96,24 @@ exports.typeDef = `
         hasPreviousPage: Boolean!
     }
 
+    type Cursor {
+        hasNext: Boolean,
+        hasPrevious: Boolean,
+        before: String,
+        after: String
+    }
+
+    type AtomPaginate {
+        results: [Atom],
+        cursors: Cursor
+    }
+
     extend type Query {
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
         atomCursorPaginated(atomConnection: ConnectionInput): AtomConnection
+        atomPaginate(atomConnection: ConnectionInput): AtomPaginate
         searchAtoms(filter: AtomFilter, 
                     sortBy: String,
                     limit: Int,
@@ -157,8 +221,7 @@ exports.resolver = {
                 limit,
                 offset
             }).then((atoms) => {
-                const edges = atoms.rows.map(atom => ({
-                    // TODO: No deberia usar: dataValues, deberia poder usar atom.id directamente
+                const edges = atoms.rows.map((atom) => ({
                     cursor: buffer_1.Buffer.from(atom.dataValues.id.toString()).toString('base64'),
                     node: atom
                 }));
@@ -229,7 +292,7 @@ exports.resolver = {
                 if (before) {
                     atoms = atoms.slice(0).reverse();
                 }
-                const edges = atoms.map(atom => {
+                const edges = atoms.map((atom) => {
                     let str = `${atom.dataValues.id}:${atom.dataValues.likes}`;
                     return {
                         cursor: buffer_1.Buffer.from(str).toString('base64'),
@@ -269,9 +332,87 @@ exports.resolver = {
                                     id: where.id,
                                 },
                                 order: [['id']],
-                            }).then(atom => !!atom);
+                            }).then((atom) => !!atom);
                         },
                     }
+                };
+            });
+        },
+        atomPaginate(parent, { atomConnection = {} }) {
+            const { first, after, last, before } = atomConnection;
+            let where = {
+                stores: {
+                    $gte: 0
+                }
+            };
+            // let where = {};
+            let include = [];
+            let limit = first;
+            let desc = true;
+            let primaryKeyField = 'id';
+            // let primaryKeyField = 'created_at';
+            let paginationField = 'stores';
+            // let paginationField = 'created_at';
+            const decodedBefore = !!before ? decodeCursor(before) : null;
+            const decodedAfter = !!after ? decodeCursor(after) : null;
+            // If is before (previous) = FALSE, if not TRUE
+            const cursorOrderIsDesc = before ? !desc : desc;
+            const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';
+            const paginationFieldIsNonId = paginationField !== primaryKeyField;
+            let paginationQuery;
+            let order = [
+                cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+                ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+            ];
+            if (before) {
+                paginationQuery = getPaginationQuery(decodedBefore, cursorOrderOperator, paginationField, primaryKeyField);
+                order = [
+                    paginationField,
+                    // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
+                    paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : '',
+                ];
+            }
+            else if (after) {
+                paginationQuery = getPaginationQuery(decodedAfter, cursorOrderOperator, paginationField, primaryKeyField);
+                order = [
+                    cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
+                    ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+                ];
+            }
+            const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
+            return index_1.models.Atom.findAll({
+                where: whereQuery,
+                include,
+                limit: limit + 1,
+                order,
+            }).then((results) => {
+                const hasMore = results.length > limit;
+                if (hasMore) {
+                    results.pop();
+                }
+                if (before) {
+                    results.reverse();
+                }
+                const hasNext = !!before || hasMore;
+                const hasPrevious = !!after || (!!before && hasMore);
+                let beforeCursor = null;
+                let afterCursor = null;
+                if (results.length > 0) {
+                    beforeCursor = paginationFieldIsNonId
+                        ? encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
+                        : encodeCursor([results[0][paginationField]]);
+                    afterCursor = paginationFieldIsNonId
+                        ? encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
+                        : encodeCursor([results[results.length - 1][paginationField]]);
+                }
+                return {
+                    results,
+                    cursors: {
+                        hasNext,
+                        hasPrevious,
+                        before: beforeCursor,
+                        after: afterCursor,
+                    },
                 };
             });
         }
