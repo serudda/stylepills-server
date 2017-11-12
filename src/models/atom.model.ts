@@ -41,6 +41,7 @@ export interface IAtom {
 
 
 export interface IAtomAttributes {
+    id: number | null;
     name: string;
     html: string;
     css: string;

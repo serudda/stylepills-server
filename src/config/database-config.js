@@ -1,6 +1,20 @@
 "use strict";
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 const SequelizeStatic = require("sequelize");
+// Accepted Operators aliases
+const Op = SequelizeStatic.Op;
+const operatorsAliases = {
+    $and: Op.and,
+    $or: Op.or,
+    $like: Op.like,
+    $gt: Op.gt,
+    $gte: Op.gte,
+    $lt: Op.lt,
+    $lte: Op.lte
+};
 /****************************************/
 /*            DATABASE CONFIG           */
 /****************************************/
@@ -15,10 +29,6 @@ function databaseConfig(env) {
         host = match[3];
         port = match[4];
     }
-    const Op = SequelizeStatic.Op;
-    const operatorsAliases = {
-        $like: Op.like
-    };
     switch (env) {
         case 'local':
             return {
@@ -28,7 +38,7 @@ function databaseConfig(env) {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
-                operatorsAliases: operatorsAliases,
+                operatorsAliases,
                 define: {
                     underscored: true // NOTE: 1
                 },
@@ -43,7 +53,7 @@ function databaseConfig(env) {
                 port: port,
                 host: host,
                 dialect: 'postgres',
-                operatorsAliases: operatorsAliases,
+                operatorsAliases,
                 define: {
                     underscored: true
                 },
@@ -58,7 +68,7 @@ function databaseConfig(env) {
                 port: port,
                 host: host,
                 dialect: 'postgres',
-                operatorsAliases: operatorsAliases,
+                operatorsAliases,
                 define: {
                     underscored: true
                 },
@@ -72,7 +82,7 @@ function databaseConfig(env) {
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',
-                operatorsAliases: operatorsAliases,
+                operatorsAliases,
                 define: {
                     underscored: true
                 },
