@@ -331,6 +331,8 @@ exports.resolver = {
                     ...(paginationFieldIsNonId ? [primaryKeyField] : []),
                 ];
             }
+            /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model
+             no acepta: $and */
             const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
             return index_1.models.Atom.findAll({
                 where: whereQuery,

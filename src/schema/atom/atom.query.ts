@@ -233,8 +233,8 @@ export const resolver = {
                 order: [[sortBy, 'DESC']],
                 limit,
                 offset
-            }).then((atoms: any) => {
-                const edges = atoms.rows.map((atom: any) => ({
+            }).then((atoms) => {
+                const edges = atoms.rows.map((atom) => ({
                     cursor: Buffer.from(atom.dataValues.id.toString()).toString('base64'),
                     node: atom
                 }));
@@ -308,14 +308,14 @@ export const resolver = {
                 where,
                 order: [['likes', order], ['id', order]],
                 limit: first || last
-            }).then((atoms: any) => {
+            }).then((atoms) => {
                 
                 // When is 'previous button' is necessary to reverser the array result
                 if (before) {
                     atoms = atoms.slice(0).reverse();
                 }
 
-                const edges = atoms.map((atom: any) => {
+                const edges = atoms.map((atom) => {
 
                     let str = `${atom.dataValues.id}:${atom.dataValues.likes}`;
 
@@ -344,7 +344,7 @@ export const resolver = {
                                   },
                                 },
                                 order: [['id', 'DESC']],
-                            }).then((atom: any) => {
+                            }).then((atom) => {
                                     return !!atom;
                                 }
                             );
@@ -364,7 +364,7 @@ export const resolver = {
                                 id: where.id,
                               },
                               order: [['id']],
-                            }).then((atom: any) => !!atom);
+                            }).then((atom) => !!atom);
 
                         },
                     }
@@ -438,14 +438,16 @@ export const resolver = {
 
             }
 
-            const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
+            /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model 
+             no acepta: $and */
+            const whereQuery: any = paginationQuery ? { $and: [paginationQuery, where] } : where;
 
             return models.Atom.findAll({
                 where: whereQuery,
                 include,
                 limit: limit + 1,
                 order,
-            }).then((results: any) => {
+            }).then((results: any) => { // TODO: Add type
                 const hasMore = results.length > limit;
           
                 if (hasMore) {

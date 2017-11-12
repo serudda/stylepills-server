@@ -22,7 +22,7 @@ import { ICommentAttributes, ICommentInstance } from './comment.model';
 /************************************/
 export interface ISequelizeModels {
     User: SequelizeStatic.Model<IUserInstance, IUserAttributes>;
-    Atom: any;
+    Atom: SequelizeStatic.Model<IAtomInstance, IAtomAttributes>;
     AtomCategory: SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes>;
     Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;
 }
