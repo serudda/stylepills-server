@@ -5,57 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const index_1 = require("./../../models/index");
 const buffer_1 = require("buffer");
-const base64 = require('base-64');
-function decodeCursor(cursor) {
-    return cursor ? JSON.parse(base64.decode(cursor)) : null;
-}
-function encodeCursor(cursor) {
-    return base64.encode(JSON.stringify(cursor));
-}
-function getPaginationQuery(cursor, cursorOrderOperator, paginationField, primaryKeyField) {
-    const primaryCursorOrderOperator = cursorOrderOperator === '$gt' ? '$lt' : '$gt';
-    if (paginationField !== primaryKeyField) {
-        /*
-            AFTER:
-            ("stores" < 100 OR ("stores" = 100 AND "id" > 7)
-            cursorOrderOperator = $lt (<)
-
-            BEFORE:
-            ("likes" > 12389 OR ("likes" = 12389 AND "id" < 4)
-            cursorOrderOperator = $gt (>)
-        */
-        return {
-            $or: [
-                {
-                    // AFTER: "store" < 100
-                    // BEFORE: "likes" > 12389
-                    [paginationField]: {
-                        [cursorOrderOperator]: cursor[0],
-                    },
-                },
-                {
-                    // AFTER: "stores" = 100
-                    // BEFORE: "likes" = 12389
-                    [paginationField]: cursor[0],
-                    // AFTER: "id" > 7
-                    // BEFORE: "id" < 4
-                    [primaryKeyField]: {
-                        [primaryCursorOrderOperator]: cursor[1],
-                    },
-                },
-            ],
-        };
-    }
-    else {
-        return {
-            // AFTER: "store" < 100
-            // BEFORE: "likes" > 12389
-            [paginationField]: {
-                [cursorOrderOperator]: cursor[0],
-            },
-        };
-    }
-}
+const pagination_1 = require("./../../utils/pagination");
 /**************************************/
 /*         ATOM QUERY TYPEDEF         */
 /**************************************/
@@ -353,8 +303,8 @@ exports.resolver = {
             // let primaryKeyField = 'created_at';
             let paginationField = 'stores';
             // let paginationField = 'created_at';
-            const decodedBefore = !!before ? decodeCursor(before) : null;
-            const decodedAfter = !!after ? decodeCursor(after) : null;
+            const decodedBefore = !!before ? pagination_1.pagination.decodeCursor(before) : null;
+            const decodedAfter = !!after ? pagination_1.pagination.decodeCursor(after) : null;
             // If is before (previous) = FALSE, if not TRUE
             const cursorOrderIsDesc = before ? !desc : desc;
             const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';
@@ -365,8 +315,8 @@ exports.resolver = {
                 ...(paginationFieldIsNonId ? [primaryKeyField] : []),
             ];
             if (before) {
-                paginationQuery = getPaginationQuery(decodedBefore, cursorOrderOperator, paginationField, primaryKeyField);
-                /* FIXME: Rompe cuando paginationFieldIsNonId es false, es decir
+                paginationQuery = pagination_1.pagination.getPaginationQuery(decodedBefore, cursorOrderOperator, paginationField, primaryKeyField);
+                /* FIXME: #67 - Rompe cuando paginationFieldIsNonId es false, es decir
                    cuando quiero organizar por 'created_at' */
                 order = [
                     paginationField,
@@ -375,7 +325,7 @@ exports.resolver = {
                 ];
             }
             else if (after) {
-                paginationQuery = getPaginationQuery(decodedAfter, cursorOrderOperator, paginationField, primaryKeyField);
+                paginationQuery = pagination_1.pagination.getPaginationQuery(decodedAfter, cursorOrderOperator, paginationField, primaryKeyField);
                 order = [
                     cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
                     ...(paginationFieldIsNonId ? [primaryKeyField] : []),
@@ -401,11 +351,11 @@ exports.resolver = {
                 let afterCursor = null;
                 if (results.length > 0) {
                     beforeCursor = paginationFieldIsNonId
-                        ? encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                        : encodeCursor([results[0][paginationField]]);
+                        ? pagination_1.pagination.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
+                        : pagination_1.pagination.encodeCursor([results[0][paginationField]]);
                     afterCursor = paginationFieldIsNonId
-                        ? encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                        : encodeCursor([results[results.length - 1][paginationField]]);
+                        ? pagination_1.pagination.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
+                        : pagination_1.pagination.encodeCursor([results[results.length - 1][paginationField]]);
                 }
                 return {
                     results,

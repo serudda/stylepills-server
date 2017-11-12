@@ -17,6 +17,7 @@
   "author": "Rosita & Sergio",
   "license": "MIT",
   "dependencies": {
+    "@types/base-64": "^0.1.2",
     "@types/body-parser": "^1.16.5",
     "@types/continuation-local-storage": "^3.2.1",
     "@types/cors": "^2.8.1",

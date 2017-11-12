@@ -3,62 +3,8 @@
 /************************************/
 import { models, sequelize } from './../../models/index';
 import { Buffer } from 'buffer';
+import { pagination }  from './../../utils/pagination';
 
-const base64 = require('base-64');
-
-function decodeCursor(cursor: any) {
-  return cursor ? JSON.parse(base64.decode(cursor)) : null;
-}
-
-function encodeCursor(cursor: any) {
-  return base64.encode(JSON.stringify(cursor));
-}
-
-function getPaginationQuery(cursor: any, cursorOrderOperator: any, paginationField: any, primaryKeyField: any) {
-
-    const primaryCursorOrderOperator = cursorOrderOperator === '$gt' ? '$lt' : '$gt';
-
-    if (paginationField !== primaryKeyField) {
-        /* 
-            AFTER: 
-            ("stores" < 100 OR ("stores" = 100 AND "id" > 7)
-            cursorOrderOperator = $lt (<)
-
-            BEFORE: 
-            ("likes" > 12389 OR ("likes" = 12389 AND "id" < 4)
-            cursorOrderOperator = $gt (>)
-        */
-        return {
-            $or: [
-                {
-                    // AFTER: "store" < 100
-                    // BEFORE: "likes" > 12389
-                    [paginationField]: {
-                        [cursorOrderOperator]: cursor[0],
-                    },
-                },
-                {
-                    // AFTER: "stores" = 100
-                    // BEFORE: "likes" = 12389
-                    [paginationField]: cursor[0],
-                    // AFTER: "id" > 7
-                    // BEFORE: "id" < 4
-                    [primaryKeyField]: {
-                        [primaryCursorOrderOperator]: cursor[1],
-                    },
-                },
-            ],
-        };
-  } else {
-    return {
-        // AFTER: "store" < 100
-        // BEFORE: "likes" > 12389
-        [paginationField]: {
-            [cursorOrderOperator]: cursor[0],
-        },
-    };
-  }
-}
 
 /************************************/
 /*            INTERFACES            */
@@ -445,11 +391,11 @@ export const resolver = {
             // let primaryKeyField = 'created_at';
             let paginationField = 'stores';
             // let paginationField = 'created_at';
-            const decodedBefore = !!before ? decodeCursor(before) : null;
-            const decodedAfter = !!after ? decodeCursor(after) : null;
+            const decodedBefore: Array<any> = !!before ?  pagination.decodeCursor(before) : null;
+            const decodedAfter: Array<any> = !!after ?  pagination.decodeCursor(after) : null;
             // If is before (previous) = FALSE, if not TRUE
             const cursorOrderIsDesc = before ? !desc : desc;
-            const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';
+            const cursorOrderOperator: string = cursorOrderIsDesc ? '$lt' : '$gt';
             const paginationFieldIsNonId = paginationField !== primaryKeyField;
 
             let paginationQuery;
@@ -461,14 +407,14 @@ export const resolver = {
             
             if (before) {
 
-                paginationQuery = getPaginationQuery(
+                paginationQuery =  pagination.getPaginationQuery(
                     decodedBefore, 
                     cursorOrderOperator, 
                     paginationField, 
                     primaryKeyField
                 );
 
-                /* FIXME: Rompe cuando paginationFieldIsNonId es false, es decir 
+                /* FIXME: #67 - Rompe cuando paginationFieldIsNonId es false, es decir 
                    cuando quiero organizar por 'created_at' */
                 order = [
                     paginationField,
@@ -478,7 +424,7 @@ export const resolver = {
 
             } else if (after) {
 
-                paginationQuery = getPaginationQuery(
+                paginationQuery =  pagination.getPaginationQuery(
                     decodedAfter, 
                     cursorOrderOperator, 
                     paginationField, 
@@ -518,13 +464,13 @@ export const resolver = {
         
                 if (results.length > 0) {
                     beforeCursor = paginationFieldIsNonId 
-                    ? encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                    : encodeCursor([results[0][paginationField]]);
+                    ?  pagination.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
+                    :  pagination.encodeCursor([results[0][paginationField]]);
         
                     afterCursor = paginationFieldIsNonId
                     // tslint:disable-next-line:max-line-length
-                    ? encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                    : encodeCursor([results[results.length - 1][paginationField]]);
+                    ?  pagination.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
+                    :  pagination.encodeCursor([results[results.length - 1][paginationField]]);
                 }
         
                 return {
@@ -536,7 +482,7 @@ export const resolver = {
                         after: afterCursor,
                     },
                 };
-              });
+            });
 
         }
 
