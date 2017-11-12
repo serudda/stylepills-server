@@ -72,7 +72,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
         default:
             return {

@@ -96,7 +96,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
     
         default:
