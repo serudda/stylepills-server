@@ -366,6 +366,8 @@ exports.resolver = {
             ];
             if (before) {
                 paginationQuery = getPaginationQuery(decodedBefore, cursorOrderOperator, paginationField, primaryKeyField);
+                /* FIXME: Rompe cuando paginationFieldIsNonId es false, es decir
+                   cuando quiero organizar por 'created_at' */
                 order = [
                     paginationField,
                     // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),

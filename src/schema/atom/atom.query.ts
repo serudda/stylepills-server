@@ -468,6 +468,8 @@ export const resolver = {
                     primaryKeyField
                 );
 
+                /* FIXME: Rompe cuando paginationFieldIsNonId es false, es decir 
+                   cuando quiero organizar por 'created_at' */
                 order = [
                     paginationField,
                     // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
