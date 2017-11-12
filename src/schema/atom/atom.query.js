@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const index_1 = require("./../../models/index");
 const pagination_1 = require("./../../utils/pagination");
+// TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
     // Init Filter
     let queryFilter = {
@@ -23,6 +24,7 @@ function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
     }
     return queryFilter;
 }
+// TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildPaginationQuery(before, after, desc, paginationField, primaryKeyField, paginationFieldIsNonId) {
     const decodedBefore = !!before ? pagination_1.pagination.decodeCursor(before) : null;
     const decodedAfter = !!after ? pagination_1.pagination.decodeCursor(after) : null;
@@ -88,7 +90,6 @@ exports.typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        atomPaginate(pagination: PaginationInput): AtomPaginated
         searchAtoms(pagination: PaginationInput
                     filter: AtomFilter, 
                     sortBy: String,
@@ -231,7 +232,7 @@ exports.resolver = {
          */
         searchAtoms(parent, { filter = {}, sortBy = 'likes', pagination = {} }) {
             // VARIABLES
-            let { first = 12, after, last = 12, before } = pagination;
+            let { first, after, last, before } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
             let primaryKeyField = 'id';
             let paginationField = sortBy;
@@ -239,7 +240,7 @@ exports.resolver = {
             // let paginationField = 'created_at';
             let where = {};
             let include = [];
-            let limit = first;
+            let limit = first || last;
             let desc = true;
             const paginationFieldIsNonId = paginationField !== primaryKeyField;
             // Build filter query
@@ -308,24 +309,4 @@ exports.resolver = {
         }
     }
 };
-/*
-Search Atoms Pagination structure
-
-input AtomPagination {
-    first: Int
-    after: String
-}
-
-input AtomFilter {
-    private: Boolean
-    atomCategoryId: Int
-    text: String
-}
-
-extend type Query {
-    searchAtoms(pagination: AtomPagination, filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
-}
-
-searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
-*/ 
 //# sourceMappingURL=atom.query.js.map

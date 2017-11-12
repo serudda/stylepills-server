@@ -1,0 +1,49 @@
+El Paginador es basado en la estructura 'Relay Cursor Connection'
+
+Lo que hice fue tomar el plugin: sequelize-cursor-pagination, y lo incorpore en mi proyecto para poderlo
+manipular.
+
+El comportamiento es sencillo: Cuando voy a hacer el llamado, la primera pagina, solo tengo que
+pasarle el parametro:
+pagination {
+    first: <numero>
+}
+
+Aqui le estoy indicando que traigame la primera pagina, con un maximo de <numero> elementos por pagina
+Al recibir la primera pagina, el BE me devuelve una estructura:
+
+"results": [...],
+"cursors": {
+    "hasNext": true,
+    "hasPrevious": false,
+    "before": "WzksMTRd",
+    "after": "WzEsNl0="
+}
+
+en donde "result" es un array con todos mis datos. Y cursors tiene la información necesaria por el
+cliente (FE) para saber si hay mas paginas, y en donde son los siguientes cortes. Es decir si quiero
+avanzar a la siguiente pagina, lo que tengo que hacer es asegurarme que "hasNext" este en True, y 
+agregarle a mi parametro "filter" la propiedad "after":
+
+NEXT BUTTON >
+-----------
+
+pagination {
+    first: <numero>
+    after: "WzEsNl0="
+}
+
+Ahi el me trae los siguientes <numero> de la siguiente pagina, un nuevo cursor after, before y si existe 
+una proxima pagina, estar "hasNext" en true.
+
+Para devolvernos a una pagina anterior (Previous button), lo que hacemos es tomar el cursor "before" como guia
+y "last" para trazar el limite de elemento por pagina
+
+PREV BUTTON >
+-----------
+
+pagination {
+    last: <numero>
+    before: "WzksMTRd"
+}
+

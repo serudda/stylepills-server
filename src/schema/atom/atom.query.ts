@@ -5,7 +5,7 @@ import { models, sequelize } from './../../models/index';
 import { Buffer } from 'buffer';
 import { pagination as paginationUtils }  from './../../utils/pagination';
 
-
+// TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, text: string): IQueryFilters {
 
     // Init Filter
@@ -29,6 +29,7 @@ function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, te
     return queryFilter;
 }
 
+// TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildPaginationQuery(
     before: string, 
     after: string, 
@@ -120,7 +121,7 @@ interface IAtomFilterArgs {
 interface IAtomPaginationArgs {
     first: number;
     after: string;
-    last: string;
+    last: number;
     before: string;
 }
 
@@ -171,7 +172,6 @@ export const typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        atomPaginate(pagination: PaginationInput): AtomPaginated
         searchAtoms(pagination: PaginationInput
                     filter: AtomFilter, 
                     sortBy: String,
@@ -333,7 +333,7 @@ export const resolver = {
         }: IAtomQueryArgs) {
 
             // VARIABLES
-            let { first = 12, after, last = 12, before } = pagination;
+            let { first, after, last, before } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
             let primaryKeyField = 'id';
             let paginationField = sortBy;
@@ -341,7 +341,7 @@ export const resolver = {
             // let paginationField = 'created_at';
             let where = {};
             let include: any = []; 
-            let limit = first;
+            let limit: number = first || last;
             let desc = true;
 
             const paginationFieldIsNonId = paginationField !== primaryKeyField;
@@ -434,26 +434,3 @@ export const resolver = {
         }
     }
 };
-
-
-
-/*
-Search Atoms Pagination structure
-
-input AtomPagination {
-    first: Int
-    after: String
-}
-
-input AtomFilter {
-    private: Boolean        
-    atomCategoryId: Int
-    text: String
-}
-
-extend type Query {
-    searchAtoms(pagination: AtomPagination, filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
-}
-
-searchAtoms(filter: AtomFilter, sortBy: String, limit: Int): [Atom!]!
-*/
