@@ -90,10 +90,9 @@ exports.typeDef = `
         atomById(id: ID!): Atom!
         allAtoms(limit: Int): [Atom!]!
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
-        searchAtoms(pagination: PaginationInput
+        searchAtoms(pagination: PaginationInput!
                     filter: AtomFilter, 
-                    sortBy: String,
-                    limit: Int): AtomPaginated!
+                    sortBy: String): AtomPaginated!
     }
 
 `;
