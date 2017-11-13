@@ -6,6 +6,7 @@ import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
 import { IAtom } from './atom.model';
+import { IAuthenticationMethod } from 'models/authenticationMethod.model';
 
 
 
@@ -46,6 +47,7 @@ export interface IUserAttributes {
 
 export interface IUserInstance extends Instance<IUserAttributes> {
     dataValues: IUserAttributes;
+    createAuthenticationMethod?: (args: any) => Promise<any>;
 }
 
 
@@ -143,6 +145,14 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
             foreignKey: {
                 name: 'authorId',
                 field: 'author_id'
+            }
+        });
+
+        // One user has many authentication methods (1:M)
+        User.hasMany(models.AuthenticationMethod, {
+            foreignKey: {
+                name: 'userId',
+                field: 'user_id'
             }
         });
 

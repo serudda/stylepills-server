@@ -12,6 +12,7 @@ import { config } from '../config/config';
 import { logger } from '../utils/logger';
 
 import { IUserAttributes, IUserInstance } from './user.model';
+import { IAuthenticationMethodAttributes, IAuthenticationMethodInstance } from './authenticationMethod.model';
 import { IAtomAttributes, IAtomInstance } from './atom.model';
 import { IAtomCategoryAttributes, IAtomCategoryInstance } from './atomCategory.model';
 import { ICommentAttributes, ICommentInstance } from './comment.model';
@@ -22,6 +23,7 @@ import { ICommentAttributes, ICommentInstance } from './comment.model';
 /************************************/
 export interface ISequelizeModels {
     User: SequelizeStatic.Model<IUserInstance, IUserAttributes>;
+    AuthenticationMethod: SequelizeStatic.Model<IAuthenticationMethodInstance, IAuthenticationMethodAttributes>;
     Atom: SequelizeStatic.Model<IAtomInstance, IAtomAttributes>;
     AtomCategory: SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes>;
     Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;

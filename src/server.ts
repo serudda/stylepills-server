@@ -25,11 +25,11 @@ const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 
 // Transform Google profile into user object
-const transformGoogleProfile = (user: IUserInstance, profile: any) => {
+const transformGoogleProfile = (user: any, profile: any, token: string) => {
     user.dataValues.email = profile.emails[0].value;
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
-    user.dataValues.avatar = profile._json.picture;
+    user.dataValues.avatar = profile.image.url;
     
     return user;
 };
@@ -39,39 +39,59 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
     (accessToken, refreshToken, profile, done) => {
 
-        console.log('ACCESSTOKEN: ', accessToken);
-        console.log('REFRESHTOKEN: ', refreshToken);
-        console.log('PROFILE: ', profile);
-        console.log('EMAIL: ', profile.emails[0].value);
 
-        models.User.findOne<IUser>({where: {googleId: profile.id}}).then(
-            (user: IUserInstance) => {
+        // Find if the user exists
+        models.User.findOne<IUser>({
+            include: [{
+                model: models.AuthenticationMethod,
+                where: { type: 'google', externalId: profile.id }
+            }]
+        }).then((user: IUserInstance) => {
 
-                if (user) {
-                    return done(null, user);
-                } else {
-                    
-                    let newUser = models.User.build();
-                    
-                    newUser = transformGoogleProfile(newUser, profile._json);
+            // If user exists
+            if (user) {
 
-                    console.log('NEWUSER: ', newUser);
-                    
-                    newUser.save().then(() => {
-                        return done(null, newUser);
-                    }).catch(err => {
-                        throw err;
-                    });
-                }
+                return done(null, user);
+
+            // If user does not exists
+            } else {
                 
-            })
-            .catch((err: any) => {
-
-                if (err) { return done(err); }
+                // create a new User instance
+                let newUser = models.User.build(null, {include: [{
+                    model: models.AuthenticationMethod
+                }]});
                 
-              }
-        );
-  }
+                newUser = transformGoogleProfile(newUser, profile._json, accessToken);
+                
+                // Create new User
+                newUser.save().then(() => {
+
+                    // Save authenticaton method asociated to the new user
+                    newUser.createAuthenticationMethod({
+                        type: 'google',
+                        externalId: profile.id,
+                        token: accessToken,
+                        displayName: profile.displayName
+                    }).then(
+                        () => {
+                            console.log('USER CREATED SUCCESSFULL!');
+                            done(null, newUser);
+                        }).catch(err => { 
+                            throw err; 
+                        });
+
+                }).catch(err => {
+                    throw err;
+                });
+            }
+
+        })
+        .catch((err: any) => {
+
+            if (err) { return done(err); }
+
+        });
+    }
 
 ));
 

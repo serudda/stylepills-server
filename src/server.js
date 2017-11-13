@@ -19,29 +19,47 @@ const GRAPHQL_PORT = process.env.PORT || 4000;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 // Transform Google profile into user object
-const transformGoogleProfile = (user, profile) => {
+const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
-    user.dataValues.avatar = profile._json.picture;
+    user.dataValues.avatar = profile.image.url;
     return user;
 };
 // Register Google Passport strategy
 passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth, (accessToken, refreshToken, profile, done) => {
-    console.log('ACCESSTOKEN: ', accessToken);
-    console.log('REFRESHTOKEN: ', refreshToken);
-    console.log('PROFILE: ', profile);
-    console.log('EMAIL: ', profile.emails[0].value);
-    index_2.models.User.findOne({ where: { googleId: profile.id } }).then((user) => {
+    // Find if the user exists
+    index_2.models.User.findOne({
+        include: [{
+                model: index_2.models.AuthenticationMethod,
+                where: { type: 'google', externalId: profile.id }
+            }]
+    }).then((user) => {
+        // If user exists
         if (user) {
             return done(null, user);
+            // If user does not exists
         }
         else {
-            let newUser = index_2.models.User.build();
-            newUser = transformGoogleProfile(newUser, profile._json);
-            console.log('NEWUSER: ', newUser);
+            // create a new User instance
+            let newUser = index_2.models.User.build(null, { include: [{
+                        model: index_2.models.AuthenticationMethod
+                    }] });
+            newUser = transformGoogleProfile(newUser, profile._json, accessToken);
+            // Create new User
             newUser.save().then(() => {
-                return done(null, newUser);
+                // Save authenticaton method asociated to the new user
+                newUser.createAuthenticationMethod({
+                    type: 'google',
+                    externalId: profile.id,
+                    token: accessToken,
+                    displayName: profile.displayName
+                }).then(() => {
+                    console.log('USER CREATED SUCCESSFULL!');
+                    done(null, newUser);
+                }).catch(err => {
+                    throw err;
+                });
             }).catch(err => {
                 throw err;
             });

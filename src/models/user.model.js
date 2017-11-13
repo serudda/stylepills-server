@@ -87,6 +87,13 @@ function default_1(sequelize, dataTypes) {
                 field: 'author_id'
             }
         });
+        // One user has many authentication methods (1:M)
+        User.hasMany(models.AuthenticationMethod, {
+            foreignKey: {
+                name: 'userId',
+                field: 'user_id'
+            }
+        });
     };
     return User;
 }
