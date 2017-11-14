@@ -4,13 +4,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*            SERVER CONFIG             */
 /****************************************/
 exports.serverConfig = {
-    port: 3000,
-    session: {
-        secret: 'stylepills_db',
-        name: 'stylepills-server',
-        resave: false,
-        saveUninitialized: false,
-        proxy: false
+    port: 4000,
+    auth: {
+        jwt: {
+            secret: process.env.JWT_SECRET || 'This is the futureee!!!'
+        }
     },
     googleAuth: {
         clientID: '355460120650-1gcpiu5583f6fll4geif10l5jf8pk8u2.apps.googleusercontent.com',

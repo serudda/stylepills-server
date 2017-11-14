@@ -33,6 +33,7 @@ export interface IUser {
 
 
 export interface IUserAttributes {
+    id: number | null;
     googleId: number | null;
     firstname: string;
     lastname: string;

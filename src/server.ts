@@ -7,6 +7,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as csurf from 'csurf';
 import * as cookieParser from 'cookie-parser';
+import * as jwt from 'jsonwebtoken';
 import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
@@ -16,13 +17,14 @@ import schema from './schema/index';
 
 import { models } from './models/index';
 import { IUser, IUserInstance } from './models/user.model';
+import { accessSync } from 'fs';
 
 // VARIABLES
 let serverConfig = config.getServerConfig();
 
 
 // CONSTANTS
-const GRAPHQL_PORT = process.env.PORT || 4000;
+const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const GRAPHQL_ROUTE = '/graphql';
 const GRAPHIQL_ROUTE = '/graphiql';
 
@@ -36,10 +38,23 @@ const transformGoogleProfile = (user: any, profile: any, token: string) => {
     return user;
 };
 
+// Generate JWT
+const generateJWT = (user: IUserInstance, accessToken: string)  => {
+
+    const token = jwt.sign({
+        id: user.dataValues.id,
+        token: accessToken
+    }, serverConfig.auth.jwt.secret);
+
+    return token;
+};
+
 // Register Google Passport strategy
 passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
     (accessToken, refreshToken, profile, done) => {
+
+        console.log('REFRESH TOKEN: ', refreshToken);
 
         // asynchronous
         process.nextTick(() => {
@@ -55,7 +70,7 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
                 // If user exists
                 if (user) {
 
-                    return done(null, user);
+                    return done(null, generateJWT(user, accessToken));
 
                 // If user does not exists
                 } else {
@@ -79,7 +94,7 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
                         }).then(
                             () => {
                                 console.log('USER CREATED SUCCESSFULL!');
-                                done(null, newUser);
+                                done(null, generateJWT(newUser, accessToken));
                             }).catch(err => { 
                                 // throw err;
                                 return done(err);
@@ -130,7 +145,13 @@ graphQLServer.get('/auth/google', passport.authenticate('google', { scope: ['pro
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
 graphQLServer.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/auth/google', failureFlash: true }),
-  (req, res) => res.redirect('OAuthLogin://login?user=' + JSON.stringify(req.user)));
+  (req, res) => res.redirect('http://localhost:3000/explore?token=' + JSON.stringify(req.user)));
+
+// LOGOUT
+graphQLServer.get('/auth/logout', function(req: any, res: any){
+    req.logout(); // provided by passport
+    res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
+});
 
 graphQLServer.listen(GRAPHQL_PORT, () => console.log(
     `GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`

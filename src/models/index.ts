@@ -107,5 +107,7 @@ const database = new Database();
 export const models = database.getModels();
 export const sequelize = database. getSequelize();
 
-/* Only on Develop: Recreate DataBase based on new migrations updates  */
-sequelize.sync({});
+/* Only on Local: Recreate DataBase based on new migrations updates  */
+if (config.getEnv() === 'local') {
+    sequelize.sync({});
+}
