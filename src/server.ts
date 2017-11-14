@@ -5,6 +5,8 @@ import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
+import * as csurf from 'csurf';
+import * as cookieParser from 'cookie-parser';
 import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
@@ -39,58 +41,65 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
     (accessToken, refreshToken, profile, done) => {
 
+        // asynchronous
+        process.nextTick(() => {
 
-        // Find if the user exists
-        models.User.findOne<IUser>({
-            include: [{
-                model: models.AuthenticationMethod,
-                where: { type: 'google', externalId: profile.id }
-            }]
-        }).then((user: IUserInstance) => {
+             // Find if the user exists
+            models.User.findOne<IUser>({
+                include: [{
+                    model: models.AuthenticationMethod,
+                    where: { type: 'google', externalId: profile.id }
+                }]
+            }).then((user: IUserInstance) => {
 
-            // If user exists
-            if (user) {
+                // If user exists
+                if (user) {
 
-                return done(null, user);
+                    return done(null, user);
 
-            // If user does not exists
-            } else {
-                
-                // create a new User instance
-                let newUser = models.User.build(null, {include: [{
-                    model: models.AuthenticationMethod
-                }]});
-                
-                newUser = transformGoogleProfile(newUser, profile._json, accessToken);
-                
-                // Create new User
-                newUser.save().then(() => {
+                // If user does not exists
+                } else {
+                    
+                    // create a new User instance
+                    let newUser = models.User.build(null, {include: [{
+                        model: models.AuthenticationMethod
+                    }]});
+                    
+                    newUser = transformGoogleProfile(newUser, profile._json, accessToken);
+                    
+                    // Create new User
+                    newUser.save().then(() => {
 
-                    // Save authenticaton method asociated to the new user
-                    newUser.createAuthenticationMethod({
-                        type: 'google',
-                        externalId: profile.id,
-                        token: accessToken,
-                        displayName: profile.displayName
-                    }).then(
-                        () => {
-                            console.log('USER CREATED SUCCESSFULL!');
-                            done(null, newUser);
-                        }).catch(err => { 
-                            throw err; 
-                        });
+                        // Save authenticaton method asociated to the new user
+                        newUser.createAuthenticationMethod({
+                            type: 'google',
+                            externalId: profile.id,
+                            token: accessToken,
+                            displayName: profile.displayName
+                        }).then(
+                            () => {
+                                console.log('USER CREATED SUCCESSFULL!');
+                                done(null, newUser);
+                            }).catch(err => { 
+                                // throw err;
+                                return done(err);
+                            });
 
-                }).catch(err => {
-                    throw err;
-                });
-            }
+                    }).catch(err => {
+                        // throw err;
+                        return done(err);
+                    });
+                }
 
-        })
-        .catch((err: any) => {
+            })
+            .catch((err: any) => {
 
-            if (err) { return done(err); }
+                if (err) { return done(err); }
+
+            });
 
         });
+
     }
 
 ));
@@ -120,9 +129,63 @@ graphQLServer.get('/auth/google', passport.authenticate('google', { scope: ['pro
 
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
 graphQLServer.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/auth/google' }),
+  passport.authenticate('google', { failureRedirect: '/auth/google', failureFlash: true }),
   (req, res) => res.redirect('OAuthLogin://login?user=' + JSON.stringify(req.user)));
 
 graphQLServer.listen(GRAPHQL_PORT, () => console.log(
     `GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`
 ));
+
+
+/*
+    guides used to manage auth with passportJS: 
+    https://scotch.io/tutorials/easy-node-authentication-setup-and-local
+    http://rationalappdev.com/logging-into-react-native-apps-with-facebook-or-google/
+
+
+    ----------------------------------------------------------------------------------
+
+    ** ENTENDER MEJOR LAS ROUTE ANTES Y DESPUES DEL LOGIN **
+
+    // Redirect the user to Google for authentication.  
+    // When complete, Google will redirect the user back to the 
+    // application at /auth/google/callback 
+    graphQLServer.get(
+        // Login url
+        '/auth/google',
+    
+        // Save the url of the user's current page so the app can redirect back to
+        // it after authorization
+        (req, res, next) => {
+        if (req.query.return) {
+            req.session.oauth2return = req.query.return;
+        }
+        next();
+        },
+    
+        // Start OAuth 2 flow using Passport.js
+        passport.authenticate('google', { scope: ['profile', 'email'] })
+    );
+
+
+    // Google will redirect the user to this URL after approval.  Finish the
+    // authentication process by attempting to obtain an access token.  If
+    // access was granted, the user will be logged in.  Otherwise,
+    // authentication has failed.
+    graphQLServer.get(
+        // OAuth 2 callback url. Use this url to configure your OAuth client in the
+        // Google Developers console
+        '/auth/google/callback',
+    
+        // Finish OAuth 2 flow using Passport.js
+        passport.authenticate('google'),
+    
+        // Redirect back to the original page, if any
+        (req, res) => {
+        const redirect = req.session.oauth2return || '/';
+        delete req.session.oauth2return;
+        res.redirect(redirect);
+        }
+    );
+    
+*/
