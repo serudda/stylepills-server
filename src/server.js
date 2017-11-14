@@ -10,15 +10,17 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
+const appConfig = require("./constants/app.constants");
 const config_1 = require("./config/config");
+const functionsUtil_1 = require("./utils/functionsUtil");
 const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
 // VARIABLES
 let serverConfig = config_1.config.getServerConfig();
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
-const GRAPHQL_ROUTE = '/graphql';
-const GRAPHIQL_ROUTE = '/graphiql';
+const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
+const REDIRECT_URL = 'http://localhost:3000/explore?token=';
 // Transform Google profile into user object
 const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;
@@ -37,7 +39,6 @@ const generateJWT = (user, accessToken) => {
 };
 // Register Google Passport strategy
 passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth, (accessToken, refreshToken, profile, done) => {
-    console.log('REFRESH TOKEN: ', refreshToken);
     // asynchronous
     process.nextTick(() => {
         // Find if the user exists
@@ -58,6 +59,9 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
                             model: index_2.models.AuthenticationMethod
                         }] });
                 newUser = transformGoogleProfile(newUser, profile._json, accessToken);
+                // generate username
+                let { firstname, lastname } = newUser.dataValues;
+                newUser.dataValues.username = functionsUtil_1.functionsUtil.generateUsername(firstname, lastname);
                 // Create new User
                 newUser.save().then(() => {
                     // Save authenticaton method asociated to the new user
@@ -98,14 +102,14 @@ graphQLServer.use('*', cors());
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
 // INIT GRAPHQL SERVER
-graphQLServer.use(GRAPHQL_ROUTE, bodyParser.json(), apollo_server_express_1.graphqlExpress({ schema: index_1.default }));
-graphQLServer.use(GRAPHIQL_ROUTE, apollo_server_express_1.graphiqlExpress({ endpointURL: GRAPHQL_ROUTE }));
+graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({ schema: index_1.default }));
+graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ endpointURL: appConfig.DATA }));
 // SET UP GOOGLE AUTH ROUTES
-graphQLServer.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
-graphQLServer.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/auth/google', failureFlash: true }), (req, res) => res.redirect('http://localhost:3000/explore?token=' + JSON.stringify(req.user)));
+graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => res.redirect(`${REDIRECT_URL}${JSON.stringify(req.user)}`));
 // LOGOUT
-graphQLServer.get('/auth/logout', function (req, res) {
+graphQLServer.get(appConfig.AUTH_LOGOUT, function (req, res) {
     req.logout(); // provided by passport
     res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
 });

@@ -5,6 +5,8 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
+import * as appConfig from './../constants/app.constants';
+
 import { IAtom } from './atom.model';
 import { IAuthenticationMethod } from 'models/authenticationMethod.model';
 
@@ -58,19 +60,23 @@ export interface IUserInstance extends Instance<IUserAttributes> {
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IUserInstance, IUserAttributes> {
 
+    // CONSTANTS
+    // tslint:disable:max-line-length
+    const USERNAME_LENGTH_MSG = `The username needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
+    const EMAIL_INVALID_MSG = 'Invalid email';
+    const PASSWORD_LENGTH_MSG = `The password needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
+    const URL_INVALID_MSG = 'Invalid url';
+
+
     let User: any = sequelize.define<IUserInstance, IUserAttributes>(
         'User', {
             username: {
                 type: dataTypes.STRING,
                 unique: true,
                 validate: {
-                    isAlphanumeric: {
-                      args: true,
-                      msg: 'The username can only contain letters and numbers',
-                    },
                     len: {
-                      args: [3, 25],
-                      msg: 'The username needs to be between 3 and 25 characters long',
+                      args: [appConfig.USERNAME_MIN_LENGTH, appConfig.USERNAME_MAX_LENGTH],
+                      msg: USERNAME_LENGTH_MSG,
                     }
                 }
             },
@@ -86,7 +92,7 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
                 validate: {
                     isEmail: {
                         args: true,
-                        msg: 'Invalid email',
+                        msg: EMAIL_INVALID_MSG,
                     }  
                 }
             },
@@ -94,8 +100,8 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
                 type: dataTypes.STRING,
                 validate: {
                     len: {
-                        args: [5, 100],
-                        msg: 'The password needs to be between 5 and 100 characters long',
+                        args: [appConfig.PASSWORD_MIN_LENGTH, appConfig.PASSWORD_MAX_LENGTH],
+                        msg: PASSWORD_LENGTH_MSG,
                     }
                 }
             },
@@ -104,7 +110,7 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
                 validate: {
                     isUrl: {
                         args: true,
-                        msg: 'Invalid url',
+                        msg: URL_INVALID_MSG,
                     }
                 }
             },
