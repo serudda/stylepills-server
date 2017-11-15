@@ -5,24 +5,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const lodash_1 = require("lodash");
 const graphql_tools_1 = require("graphql-tools");
-const userMutation = require("./mutations/user.mutation");
-const userQuery = require("./queries/user.query");
-const userTypes = require("./types/user.type");
-const socialMutation = require("./mutations/social.mutation");
-const socialQuery = require("./queries/social.query");
-const socialTypes = require("./types/social.type");
-const colorMutation = require("./mutations/color.mutation");
-const colorQuery = require("./queries/color.query");
-const colorTypes = require("./types/color.type");
-const colorPaletteMutation = require("./mutations/colorPalette.mutation");
-const colorPaletteQuery = require("./queries/colorPalette.query");
-const colorPaletteTypes = require("./types/colorPalette.type");
-const uiComponentMutation = require("./mutations/uiComponent.mutation");
-const uiComponentQuery = require("./queries/uiComponent.query");
-const uiComponentTypes = require("./types/uiComponent.type");
+const userTypes = require("./user/user.type");
+const userQuery = require("./user/user.query");
+const userMutation = require("./user/user.mutation");
+const commentTypes = require("./comment/comment.type");
+const commentQuery = require("./comment/comment.query");
+const atomCategoryTypes = require("./atomCategory/atomCategory.type");
+const atomCategoryQuery = require("./atomCategory/atomCategory.query");
+const atomTypes = require("./atom/atom.type");
+const atomQuery = require("./atom/atom.query");
+const atomMutation = require("./atom/atom.mutation");
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
+// TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
 
     # Type
@@ -55,23 +51,18 @@ const typeDefs = [`
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
-    socialTypes.typeDef,
-    socialQuery.typeDef,
-    socialMutation.typeDef,
-    colorTypes.typeDef,
-    colorQuery.typeDef,
-    colorMutation.typeDef,
-    colorPaletteTypes.typeDef,
-    colorPaletteQuery.typeDef,
-    colorPaletteMutation.typeDef,
-    uiComponentTypes.typeDef,
-    uiComponentQuery.typeDef,
-    uiComponentMutation.typeDef,
+    commentTypes.typeDef,
+    commentQuery.typeDef,
+    atomCategoryTypes.typeDef,
+    atomCategoryQuery.typeDef,
+    atomTypes.typeDef,
+    atomQuery.typeDef,
+    atomMutation.typeDef,
 ];
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, socialMutation.resolver, socialQuery.resolver, colorMutation.resolver, colorQuery.resolver, colorPaletteMutation.resolver, colorPaletteQuery.resolver, uiComponentMutation.resolver, uiComponentQuery.resolver);
+const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

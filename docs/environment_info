@@ -1,0 +1,16 @@
+Los ambientes que manejamos son:
+
+- 'local'
+Se conecta a una base de datos local llamada: stylepills_dev
+
+- 'development'
+Se conecta a una base de datos remota en Heroku: postgresql-cylindrical-82421
+
+- 'production'
+Se conecta a la base datos de PRD remota en Heroku: postgresql-cylindrical-73935
+
+
+Para que los archivos de configuración encuentren las variables de entorno, 
+es necesario en Heroku, en cada App (DEV y PRD), ir a:
+Settings -> Config Variables -> Reveal Config Vars
+En la propiedad: NODE_ENV debe estar setead correctamente el nombre del ambiente.

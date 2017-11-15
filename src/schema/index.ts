@@ -4,32 +4,25 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
-import { loggingConfig } from './../config/logging-config';
+import * as userTypes from './user/user.type';
+import * as userQuery from './user/user.query';
+import * as userMutation from './user/user.mutation';
 
-import * as userMutation from './mutations/user.mutation';
-import * as userQuery from './queries/user.query';
-import * as userTypes from './types/user.type';
+import * as commentTypes from './comment/comment.type';
+import * as commentQuery from './comment/comment.query';
 
-import * as socialMutation from './mutations/social.mutation';
-import * as socialQuery from './queries/social.query';
-import * as socialTypes from './types/social.type';
+import * as atomCategoryTypes from './atomCategory/atomCategory.type';
+import * as atomCategoryQuery from './atomCategory/atomCategory.query';
 
-import * as colorMutation from './mutations/color.mutation';
-import * as colorQuery from './queries/color.query';
-import * as colorTypes from './types/color.type';
-
-import * as colorPaletteMutation from './mutations/colorPalette.mutation';
-import * as colorPaletteQuery from './queries/colorPalette.query';
-import * as colorPaletteTypes from './types/colorPalette.type';
-
-import * as uiComponentMutation from './mutations/uiComponent.mutation';
-import * as uiComponentQuery from './queries/uiComponent.query';
-import * as uiComponentTypes from './types/uiComponent.type';
+import * as atomTypes from './atom/atom.type';
+import * as atomQuery from './atom/atom.query';
+import * as atomMutation from './atom/atom.mutation';
 
 
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
+// TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
 
     # Type
@@ -62,22 +55,16 @@ const typeDefs = [`
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
-
-    socialTypes.typeDef,
-    socialQuery.typeDef,
-    socialMutation.typeDef,
-
-    colorTypes.typeDef,
-    colorQuery.typeDef,
-    colorMutation.typeDef,
     
-    colorPaletteTypes.typeDef,
-    colorPaletteQuery.typeDef,
-    colorPaletteMutation.typeDef,
-    
-    uiComponentTypes.typeDef,
-    uiComponentQuery.typeDef,
-    uiComponentMutation.typeDef,
+    commentTypes.typeDef,
+    commentQuery.typeDef,
+
+    atomCategoryTypes.typeDef,
+    atomCategoryQuery.typeDef,
+
+    atomTypes.typeDef,
+    atomQuery.typeDef,
+    atomMutation.typeDef,
     
 ];
 
@@ -86,16 +73,16 @@ const typeDefs = [`
 /*             ROOT RESOLVERS            */
 /*****************************************/
 const resolvers: any = merge(
+
     userMutation.resolver,
     userQuery.resolver,
-    socialMutation.resolver,
-    socialQuery.resolver,
-    colorMutation.resolver, 
-    colorQuery.resolver, 
-    colorPaletteMutation.resolver,
-    colorPaletteQuery.resolver,
-    uiComponentMutation.resolver,
-    uiComponentQuery.resolver
+
+    commentQuery.resolver,
+
+    atomCategoryQuery.resolver,
+
+    atomMutation.resolver,
+    atomQuery.resolver
 );
 
 

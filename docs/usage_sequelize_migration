@@ -1,0 +1,75 @@
+Pasos para usar y entender el flujo de Sequelize migrations:
+
+1. Cuando creamos un nuevo modelo, agregamos sus campos, etc. Es necesario crear
+su respectivo archivo 'migration', el cual es el que nos va a permitir hacer la 
+modificacion a la Base de Datos de forma segura, ya que si nuestro archivo migration
+tiene error, puedo hacer rollback solo de esa tabla o campo a agregar sin dañar nada.
+
+2. Para crear el archivo migrate, es simplemente analizar que se quiere: crear una 
+nueva tabla? un nuevo campo de una tabla existente? Cambiar el nombre de una columna?
+Con base a eso se construye una migration por cada accion a ejecutar, por ejemplo:
+En esta feature tuve que: agregar la tabla 'user', la tabla Social, cambiarle el nombre
+al campo 'title' de uiComponent por 'name', y agregarle un nuevo campo a uiComponent que 
+lo relacione con la nueva tabla 'user'. Todos estos pasos es mejor hacerlos por separado
+en un orden especifico para que no surjan errores, por ejemplo: 
+  1. Crear tabla 'user'
+  2. Crear tabla 'social' (la creamos despues de 'user' ya social depende de 'user')
+  3. Agregar el campo 'authorId' en uiComponent (uiComponent esta conectado con la nueva tabla 'user')
+  4. Cambiar el nombre de la columna 'title' por 'name' en la tabla: uiComponent.
+
+Asi cuando tengamos que hacer rollback, es mucho mas facil de entender y controlar.
+
+3. Despues de creados los migrations files, es hora de ejecutarlos. Lo primero que hay que entender es que
+Sequelize guardar un registro sencillo en la tabla 'SequelizeSchema' de las migrations que se han ejecutado,
+y el orden en que se han ejecutado. Asi que cuando queramos hacer rollback, podemos hacer rollback uno por uno
+desde el ultimo hasta el primero.
+
+4. Asegurarse que en la tabla 'SequelizeSchema' no exista el registro de lo nuevos migrations, ya que sino no 
+los correra, por que dara por hecho que ya se corrieron anteriormente.
+
+NOTA: Es recomendable no tocar la tabla SequelizeSchema a mano, que todo se efectue con los comandos de 'migrate' 
+y de 'migrate:undo', ya que sino lo que lograriamos con esto es que se desincronizaria el estado actual de 
+nuestras tablas, con los migrations files.
+
+5. Correr el comando:
+npm run sequelize db:migrate
+(el comando original es sin 'npm run', pero como se agrego Babel en el medio,
+para no tener que usar un database-config.json y un config.ts separados.
+Fue necesario hacer unos cambios en la configuración, para que solo tuvieramos
+que cambiar: src/config/database-config.ts, y ya migrations/config/config.js 
+estaria ligado a los cambios que hagamos en database-config.ts)
+
+Este correra los migrations files que no se encuentren aun registrados en la tabla 'SequelizeSchema'.
+
+6. Si por algun motivo hubo un error en los migrations files, o los escribimos con algun error del
+cual no nos dimos cuenta, podemos hacer rollback con el siguiente comando:
+npm run sequelize db:migrate:undo
+
+Este comando hara rollback del ultimo migration ejecutado, disparando la funcion 'down' del archivo migration,
+y eliminando su registro en la tabla 'SequelizeSchema', asi podemos ejecutar este comando cuantas veces querramos,
+hasta llegar al migration file que fallo.
+
+Despues de hacer rollback, vamos al migration file que tiene el error, lo modificamos, y volvemos a ejecutar el comando:
+npm run sequelize db:migrate
+
+Volvera a ejecutar todos los migrations que no estan registrados en la tabla 'SequelizeSchema'.
+
+Si todo esta OK, listo queda un registro de todos los migrations corridos, y deberia verse reflejados los cambios en 
+cada una de las tablas afectadas.
+
+NOTA: Cuidado con el comando:
+npm run sequelize db:migrate:undo:all
+
+Ya que hace rollback de todos los migrations que esten registrados en la tabla 'SequelizeSchema'
+y se perderian todos los datos.
+
+
+------------------------------------------------------------------------------
+
+USE SEQUELIZE MIGRATION REMOTELY
+
+1. Correr el comando: 
+heroku run bash --app <nombre_de_la_app>
+
+2. Para correr las migraciones pendientes, correr el comando:
+npm run sequelize db:migrate

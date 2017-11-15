@@ -1,0 +1,133 @@
+DATA LIST
+
+Id  Likes
+---------
+
+10  25790
+7   25000
+3   12389   -> AFTER
+---------
+4   12389
+5   12389
+8   847     -> AFTER
+---------
+9   37
+11  37
+13  37      -> AFTER
+---------
+1   4
+6   1
+2   0
+
+----------
+
+
+NEXT BUTTON
+------------------------
+
+initial_likes = 25790
+initial_id = 10
+item_per_page = 3
+limit = 4
+
+# GET FIRST PAGE
+
+SELECT * 
+FROM "atom" 
+WHERE "likes" >= 0 
+ORDER BY "likes" DESC, "id" 
+LIMIT 4;
+
+--------------------------------------------------------------------------------
+
+likes(after) = 12389
+id(after) = 3
+
+SELECT * 
+FROM "atom" 
+WHERE (("likes" < 12389 OR ("likes" = 12389 AND "id" > 3)) AND "likes" >= 0) 
+ORDER BY "likes" DESC, "id" 
+LIMIT 4;
+
+--------------------------------------------------------------------------------
+
+likes(after) = 847
+id(after) = 8
+
+SELECT * 
+FROM "atom" 
+WHERE (("likes" < 847 OR ("likes" = 847 AND "id" > 8)) AND "likes" >= 0) 
+ORDER BY "likes" DESC, "id" 
+LIMIT 4;
+
+--------------------------------------------------------------------------------
+
+likes(after) = 37
+id(after) = 13
+
+SELECT *
+FROM "atom"
+WHERE (("likes" < 37 OR ("likes" = 37 AND "id" > 13)) AND "likes" >= 0) 
+ORDER BY "likes" DESC, "id"
+LIMIT 4;
+
+
+PREVIOUS BUTTON
+-------------------------
+
+DATA LIST
+
+Id  Likes
+---------
+
+10  25790
+7   25000
+3   12389
+---------
+4   12389   -> BEFORE
+5   12389
+8   847     
+---------
+9   37      -> BEFORE
+11  37
+13  37      
+---------
+1   4       -> BEFORE
+6   1
+2   0
+
+---------
+
+NOTA: Al resultado es necesario hacerle "reverse".
+
+
+likes(before) = 4
+id(before) = 1
+
+SELECT * 
+FROM "atom"
+WHERE (("likes" > 4 OR ("likes" = 4 AND "id" < 1)) AND "likes" >= 0) 
+ORDER BY "likes", "id" DESC
+LIMIT 4;
+
+--------------------------------------------------------------------------------
+
+likes(before) = 37
+id(before) = 9
+
+SELECT * 
+FROM "atom"
+WHERE (("likes" > 37 OR ("likes" = 37 AND "id" < 9)) AND "likes" >= 0) 
+ORDER BY "likes", "id" DESC
+LIMIT 4;
+
+--------------------------------------------------------------------------------
+
+likes(before) = 12389
+id(before) = 4
+
+SELECT * 
+FROM "atom"
+WHERE (("likes" > 12389 OR ("likes" = 12389 AND "id" < 4)) AND "likes" >= 0) 
+ORDER BY "likes", "id" DESC
+LIMIT 4;
