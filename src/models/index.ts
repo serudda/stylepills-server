@@ -12,6 +12,7 @@ import { config } from '../config/config';
 import { logger } from '../utils/logger';
 
 import { IUserAttributes, IUserInstance } from './user.model';
+import { IAuthenticationMethodAttributes, IAuthenticationMethodInstance } from './authenticationMethod.model';
 import { IAtomAttributes, IAtomInstance } from './atom.model';
 import { IAtomCategoryAttributes, IAtomCategoryInstance } from './atomCategory.model';
 import { ICommentAttributes, ICommentInstance } from './comment.model';
@@ -22,6 +23,7 @@ import { ICommentAttributes, ICommentInstance } from './comment.model';
 /************************************/
 export interface ISequelizeModels {
     User: SequelizeStatic.Model<IUserInstance, IUserAttributes>;
+    AuthenticationMethod: SequelizeStatic.Model<IAuthenticationMethodInstance, IAuthenticationMethodAttributes>;
     Atom: SequelizeStatic.Model<IAtomInstance, IAtomAttributes>;
     AtomCategory: SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes>;
     Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;
@@ -48,9 +50,9 @@ class Database {
         this._basename = path.basename(module.filename);
         let dbConfig = config.getDatabaseConfig();
 
-        /*if (dbConfig.logging) {
+        if (dbConfig.logging) {
             dbConfig.logging = logger.info;
-        }*/
+        }
 
         (SequelizeStatic as any).cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username,
@@ -105,5 +107,7 @@ const database = new Database();
 export const models = database.getModels();
 export const sequelize = database. getSequelize();
 
-/* Only on Develop: Recreate DataBase based on new migrations updates  */
-sequelize.sync({});
+/* Only on Local: Recreate DataBase based on new migrations updates  */
+if (config.getEnv() === 'local') {
+    sequelize.sync({});
+}
