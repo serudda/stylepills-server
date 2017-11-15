@@ -21,6 +21,10 @@ exports.AUTH_LOGOUT = '/auth/logout';
 exports.LOCAL_SERVER_URL = 'http://localhost:4000';
 exports.DEV_SERVER_URL = 'https://stylepills-server-dev.herokuapp.com';
 exports.PRD_SERVER_URL = 'https://stylepills-server.herokuapp.com';
+/* Client Urls */
+exports.LOCAL_CLIENT_URL = 'http://localhost:3000';
+exports.DEV_CLIENT_URL = 'https://stylepills-dev.netlify.com';
+exports.PRD_CLIENT_URL = 'http://stylepills.co';
 /* Data Base Endpoints */
 exports.LOCAL_DATA_URL = `${exports.LOCAL_SERVER_URL}${exports.DATA}`;
 exports.DEV_DATA_URL = `${exports.DEV_SERVER_URL}${exports.DATA}`;
@@ -36,6 +40,10 @@ exports.PRD_AUTH_GOOGLE_URL = `${exports.PRD_SERVER_URL}${exports.AUTH_GOOGLE}`;
 exports.LOCAL_AUTH_GOOGLE_CALLBACK_URL = `${exports.LOCAL_AUTH_GOOGLE_URL}${exports.AUTH_CALLBACK}`;
 exports.DEV_AUTH_GOOGLE_CALLBACK_URL = `${exports.DEV_AUTH_GOOGLE_URL}${exports.AUTH_CALLBACK}`;
 exports.PRD_AUTH_GOOGLE_CALLBACK_URL = `${exports.PRD_AUTH_GOOGLE_URL}${exports.AUTH_CALLBACK}`;
+/* Google redirect when user signed up successful */
+exports.LOCAL_GOOGLE_AUTH_REDIRECT_URL = `${exports.LOCAL_CLIENT_URL}/explore?token=`;
+exports.DEV_GOOGLE_AUTH_REDIRECT_URL = `${exports.DEV_CLIENT_URL}/explore?token=`;
+exports.PRD_GOOGLE_AUTH_REDIRECT_URL = `${exports.PRD_CLIENT_URL}/explore?token=`;
 /* Auth Logout Base Endpoints */
 exports.LOCAL_AUTH_LOGOUT_URL = `${exports.LOCAL_SERVER_URL}${exports.AUTH_LOGOUT}`;
 exports.DEV_AUTH_LOGOUT_URL = `${exports.DEV_SERVER_URL}${exports.AUTH_LOGOUT}`;

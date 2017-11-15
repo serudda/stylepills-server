@@ -1,4 +1,3 @@
-import { DEV_AUTH_GOOGLE_CALLBACK_URL, LOCAL_AUTH_GOOGLE_CALLBACK_URL } from './../constants/app.constants';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -12,6 +11,7 @@ export interface IAuthConfig {
     clientID: string;
     clientSecret: string;
     callbackURL: string;
+    redirectURL: string;
 }
 
 export interface IServerConfig {
@@ -40,6 +40,22 @@ function _getCallBackUrl(env: string): string {
     }
 }
 
+function _getRedirectUrl(env: string): string {
+    switch (env) {
+        case appConfig.LOCAL:
+            return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+        
+        case appConfig.DEV:
+            return appConfig.DEV_GOOGLE_AUTH_REDIRECT_URL;
+        
+        case appConfig.PRD:
+            return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
+
+        default:
+            return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+    }
+}
+
 
 /****************************************/
 /*            SERVER CONFIG             */
@@ -56,7 +72,8 @@ export function serverConfig(env: string): IServerConfig {
         googleAuth: {
             clientID: appConfig.CLIENT_ID,
             clientSecret: appConfig.CLIENT_SECRET,
-            callbackURL: _getCallBackUrl(env)
+            callbackURL: _getCallBackUrl(env),
+            redirectURL: _getRedirectUrl(env)            
         }
     };
 

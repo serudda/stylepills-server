@@ -16,6 +16,18 @@ function _getCallBackUrl(env) {
             return appConfig.LOCAL_AUTH_GOOGLE_CALLBACK_URL;
     }
 }
+function _getRedirectUrl(env) {
+    switch (env) {
+        case appConfig.LOCAL:
+            return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+        case appConfig.DEV:
+            return appConfig.DEV_GOOGLE_AUTH_REDIRECT_URL;
+        case appConfig.PRD:
+            return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
+        default:
+            return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+    }
+}
 /****************************************/
 /*            SERVER CONFIG             */
 /****************************************/
@@ -30,7 +42,8 @@ function serverConfig(env) {
         googleAuth: {
             clientID: appConfig.CLIENT_ID,
             clientSecret: appConfig.CLIENT_SECRET,
-            callbackURL: _getCallBackUrl(env)
+            callbackURL: _getCallBackUrl(env),
+            redirectURL: _getRedirectUrl(env)
         }
     };
 }
