@@ -10,46 +10,65 @@ module.exports = {
             },
             username: {
                 type: Sequelize.STRING,
+                unique: true,
                 allowNull: false
             },
             firstname: {
                 type: Sequelize.STRING,
-                allowNull: true
+                allowNull: false
             },
             lastname: {
                 type: Sequelize.STRING,
-                allowNull: true
+                allowNull: false
             },
             email: {
                 type: Sequelize.STRING,
+                unique: true,
+                allowNull: false
+            },
+            password: {
+                type: Sequelize.STRING,
                 allowNull: true
-            },            
+            },
             website: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
             avatar: {
-                type: Sequelize.STRING,
-                allowNull: true
+                type: Sequelize.TEXT,
+                allowNull: false
             },
             about: {
                 type: Sequelize.TEXT,
                 allowNull: true
             },
+            isBetaMember: {
+                type: Sequelize.BOOLEAN,
+                field: 'is_beta_member',
+                defaultValue: true,
+                allowNull: false                
+            },
+            active: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: true,
+                allowNull: false
+            },
             createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                field: 'created_at',
+                allowNull: false
             },
             updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE
-            },
+                type: Sequelize.DATE,
+                field: 'updated_at',
+                allowNull: false
+            }
         }, {
             tableName: 'user',
             freezeTableName: true,
         });
     },
-    down: (queryInterface /* , Sequelize */) => {
+    down: (queryInterface) => {
         return queryInterface.dropTable('user');
     }
 };

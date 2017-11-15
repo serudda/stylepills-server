@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function default_1(sequelize, dataTypes) {
     let Comment = sequelize.define('Comment', {
         content: {
-            type: dataTypes.TEXT
+            type: dataTypes.TEXT,
+            allowNull: false
         },
         commentable: {
             type: dataTypes.STRING

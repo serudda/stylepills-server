@@ -8,8 +8,6 @@ import { ISequelizeModels } from './index';
 import * as appConfig from './../constants/app.constants';
 
 import { IAtom } from './atom.model';
-import { IAuthenticationMethod } from 'models/authenticationMethod.model';
-
 
 
 /************************************/
@@ -18,7 +16,6 @@ import { IAuthenticationMethod } from 'models/authenticationMethod.model';
 
 export interface IUser {
     id: number | null;
-    googleId: number | null;
     username: string;
     firstname: string;
     lastname: string;
@@ -29,6 +26,7 @@ export interface IUser {
     about: string;
     atoms: Array<IAtom>;
     active: boolean;
+    isBetaMember: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -36,7 +34,6 @@ export interface IUser {
 
 export interface IUserAttributes {
     id: number | null;
-    googleId: number | null;
     firstname: string;
     lastname: string;
     username: string;
@@ -45,6 +42,7 @@ export interface IUserAttributes {
     avatar: string;
     about: string;
     active: boolean;
+    isBetaMember: boolean;
 }
 
 
@@ -119,6 +117,12 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
             },
             about: {
                 type: dataTypes.TEXT
+            },
+            isBetaMember: {
+                type: dataTypes.BOOLEAN,
+                field: 'is_beta_member',
+                defaultValue: true,
+                allowNull: false                
             },
             active: {
                 type: dataTypes.BOOLEAN
