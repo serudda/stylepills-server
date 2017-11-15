@@ -1,52 +1,63 @@
 'use strict';
 module.exports = {
     up: (queryInterface, Sequelize) => {
-        return queryInterface.createTable('social', {
+        return queryInterface.createTable('authentication_method', {
             id: {
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
-            twitter: {
+            externalId: {
+                type: Sequelize.STRING,
+                allowNull: true,
+                field: 'external_id'
+            },
+            type: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
+            token: {
+                type: Sequelize.TEXT,
+                allowNull: true
+            },
+            username: {
                 type: Sequelize.STRING,
                 allowNull: true
             },
-            facebook: {
+            displayName: {
                 type: Sequelize.STRING,
-                allowNull: true
-            },
-            github: {
-                type: Sequelize.STRING,
-                allowNull: true
-            },
-            linkedin: {
-                type: Sequelize.STRING,
+                field: 'display_name',
                 allowNull: true
             },
             createdAt: {
-                allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                allowNull: false
             },
             updatedAt: {
-                allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                allowNull: false
+            },
+            active: {
+                type: Sequelize.BOOLEAN,
+                defaultValue: true
             },
             userId: {
                 type: Sequelize.INTEGER,
+                field: 'user_id',
                 onDelete: 'CASCADE',
                 references: {
                     model: 'user',
                     key: 'id',
-                    as: 'userId',
+                    as: 'user_id',
                 }
             }
         }, {
-            tableName: 'social',
-            freezeTableName: true,
+            tableName: 'authentication_method',
+            freezeTableName: true
         });
     },
-    down: (queryInterface /* , Sequelize */) => {
-        return queryInterface.dropTable('social');
+    down: (queryInterface) => {
+        return queryInterface.dropTable('authentication_method');
     }
 };

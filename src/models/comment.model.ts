@@ -45,7 +45,8 @@ SequelizeStatic.Model<ICommentInstance, ICommentAttributes> {
     let Comment: any = sequelize.define<ICommentInstance, ICommentAttributes>(
         'Comment', {
             content: {
-                type: dataTypes.TEXT
+                type: dataTypes.TEXT,
+                allowNull: false
             },
             commentable: {
                 type: dataTypes.STRING

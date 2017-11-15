@@ -62,6 +62,12 @@ function default_1(sequelize, dataTypes) {
         about: {
             type: dataTypes.TEXT
         },
+        isBetaMember: {
+            type: dataTypes.BOOLEAN,
+            field: 'is_beta_member',
+            defaultValue: true,
+            allowNull: false
+        },
         active: {
             type: dataTypes.BOOLEAN
         },

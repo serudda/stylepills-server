@@ -16,6 +16,9 @@ export interface IAuthenticationMethod {
     token: string;
     username: string;
     displayName: string;
+    active: boolean;
+    createdAt: string;
+    updatedAt: string;
 }
 
 
@@ -25,6 +28,7 @@ export interface IAuthenticationMethodAttributes {
     token: string;
     username: string;
     displayName: string;
+    active: boolean;
 }
 
 
@@ -59,6 +63,10 @@ SequelizeStatic.Model<IAuthenticationMethodInstance, IAuthenticationMethodAttrib
                 type: dataTypes.STRING,
                 field: 'display_name'   
             },
+            active: {
+                type: dataTypes.BOOLEAN,
+                defaultValue: true
+            }
         }, {
             timestamps: true,
             tableName: 'authentication_method',

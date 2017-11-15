@@ -23,6 +23,10 @@ function default_1(sequelize, dataTypes) {
             type: dataTypes.STRING,
             field: 'display_name'
         },
+        active: {
+            type: dataTypes.BOOLEAN,
+            defaultValue: true
+        }
     }, {
         timestamps: true,
         tableName: 'authentication_method',
