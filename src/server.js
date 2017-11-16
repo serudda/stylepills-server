@@ -30,10 +30,18 @@ const transformGoogleProfile = (user, profile, token) => {
 };
 // Generate JWT
 const generateJWT = (user, accessToken) => {
-    const token = jwt.sign({
-        id: user.dataValues.id,
+    const dataToEncode = {
+        user: {
+            id: user.dataValues.id,
+            username: user.dataValues.username,
+            firstname: user.dataValues.firstname,
+            lastname: user.dataValues.lastname,
+            email: user.dataValues.email,
+            avatar: user.dataValues.avatar
+        },
         token: accessToken
-    }, serverConfig.auth.jwt.secret);
+    };
+    const token = jwt.sign(dataToEncode, serverConfig.auth.jwt.secret);
     return token;
 };
 // Register Google Passport strategy
