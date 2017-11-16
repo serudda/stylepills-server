@@ -22,6 +22,19 @@ import { models } from './models/index';
 import { IUser, IUserInstance } from './models/user.model';
 import { accessSync } from 'fs';
 
+// TODO: Pasar esta interface en una carpeta /auth
+// INTERFACES
+export interface IJwtDecoded {
+    user: {
+        id: string | number;
+        username: string;
+        firstname: string;
+        lastname: string;
+        email: string;
+        avatar: string;
+    };
+    token: string;
+}
 
 // VARIABLES
 let serverConfig = config.getServerConfig();
@@ -42,12 +55,21 @@ const transformGoogleProfile = (user: any, profile: any, token: string) => {
 };
 
 // Generate JWT
-const generateJWT = (user: IUserInstance, accessToken: string)  => {
+const generateJWT = (user: IUserInstance, accessToken: string): string  => {
 
-    const token = jwt.sign({
-        id: user.dataValues.id,
+    const dataToEncode: IJwtDecoded = {
+        user: {
+            id: user.dataValues.id,
+            username: user.dataValues.username,
+            firstname: user.dataValues.firstname,
+            lastname: user.dataValues.lastname,
+            email: user.dataValues.email,
+            avatar: user.dataValues.avatar
+        },
         token: accessToken
-    }, serverConfig.auth.jwt.secret);
+    };
+
+    const token = jwt.sign(dataToEncode, serverConfig.auth.jwt.secret);
 
     return token;
 };
