@@ -27,7 +27,7 @@ function default_1(sequelize, dataTypes) {
         },
         views: {
             type: dataTypes.INTEGER,
-            defaultValue: 0 // TODO: Validar al correr los migration files, que si se asigne este valor por defecto
+            defaultValue: 0
         },
         likes: {
             type: dataTypes.INTEGER,

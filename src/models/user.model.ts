@@ -5,7 +5,7 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import * as appConfig from './../constants/app.constants';
+import * as appConfig from './../core/constants/app.constants';
 
 import { IAtom } from './atom.model';
 

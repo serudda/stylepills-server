@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
-const appConfig = require("./../constants/app.constants");
+const appConfig = require("./../core/constants/app.constants");
 function _getCallBackUrl(env) {
     switch (env) {
         case appConfig.LOCAL:

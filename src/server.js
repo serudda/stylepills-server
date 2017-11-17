@@ -10,9 +10,9 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
-const appConfig = require("./constants/app.constants");
+const appConfig = require("./core/constants/app.constants");
 const config_1 = require("./config/config");
-const functionsUtil_1 = require("./utils/functionsUtil");
+const functionsUtil_1 = require("./core/utils/functionsUtil");
 const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
 // VARIABLES

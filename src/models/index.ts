@@ -9,7 +9,7 @@ import * as SequelizeStatic from 'sequelize';
 import * as _ from 'lodash';
 
 import { config } from '../config/config';
-import { logger } from '../utils/logger';
+import { logger } from '../core/utils/logger';
 
 import { IUserAttributes, IUserInstance } from './user.model';
 import { IAuthenticationMethodAttributes, IAuthenticationMethodInstance } from './authenticationMethod.model';

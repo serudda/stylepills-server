@@ -8,7 +8,7 @@ de saber de donde saque este, para ver si lo continuamos
 const cluster = require("cluster");
 const mkdirp = require("mkdirp");
 const path = require("path");
-const config_1 = require("../config/config");
+const config_1 = require("../../config/config");
 const winston_1 = require("winston");
 let configs = config_1.config.getLoggingConfig();
 configs.file.filename = `${path.join(configs.directory, '../logs')}/${configs.file.filename}`;

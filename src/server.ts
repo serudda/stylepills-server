@@ -11,10 +11,10 @@ import * as jwt from 'jsonwebtoken';
 import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
-import * as appConfig from './constants/app.constants';
+import * as appConfig from './core/constants/app.constants';
 import { config } from './config/config';
 
-import { functionsUtil } from './utils/functionsUtil';
+import { functionsUtil } from './core/utils/functionsUtil';
 
 import schema from './schema/index';
 
