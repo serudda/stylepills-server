@@ -6,7 +6,7 @@ de saber de donde saque este, para ver si lo continuamos
 import * as cluster from 'cluster';
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
-import { config } from '../config/config';
+import { config } from '../../config/config';
 import { transports, Logger } from 'winston';
 import { Request, Response } from 'express';
 

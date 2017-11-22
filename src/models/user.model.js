@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const appConfig = require("./../constants/app.constants");
+const appConfig = require("./../core/constants/app.constants");
 /*****************************************/
 /*              USER MODEL               */
 /*****************************************/

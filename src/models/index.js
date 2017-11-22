@@ -8,7 +8,7 @@ const fs = require("fs");
 const path = require("path");
 const SequelizeStatic = require("sequelize");
 const config_1 = require("../config/config");
-const logger_1 = require("../utils/logger");
+const logger_1 = require("../core/utils/logger");
 /****************************************/
 /*            DATABASE CLASS            */
 /****************************************/

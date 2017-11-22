@@ -49,7 +49,7 @@ exports.LOCAL_AUTH_LOGOUT_URL = `${exports.LOCAL_SERVER_URL}${exports.AUTH_LOGOU
 exports.DEV_AUTH_LOGOUT_URL = `${exports.DEV_SERVER_URL}${exports.AUTH_LOGOUT}`;
 exports.PRD_AUTH_LOGOUT_URL = `${exports.PRD_SERVER_URL}${exports.AUTH_LOGOUT}`;
 /* Search params */
-exports.ATOM_SEARCH_LIMIT = 6;
+exports.ATOM_SEARCH_LIMIT = 9;
 exports.ATOM_SEARCH_ORDER_BY_DEFAULT = 'likes';
 exports.ATOM_SEARCH_ORDER = 'DESC';
 /* Username length */

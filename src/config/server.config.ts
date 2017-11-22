@@ -1,7 +1,7 @@
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
-import * as appConfig from './../constants/app.constants';
+import * as appConfig from './../core/constants/app.constants';
 
 
 /************************************/
