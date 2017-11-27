@@ -137,11 +137,12 @@ exports.resolver = {
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
             let sortByQuery = {};
+            // let include: any = [];
             let include = [
                 {
                     model: index_1.models.User,
                     where: {
-                        username: 'rosaa-3222638'
+                        username: 'sergior-3374107'
                     }
                 }
             ];

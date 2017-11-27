@@ -53,15 +53,13 @@ function default_1(sequelize, dataTypes) {
     /*********************************/
     Atom.associate = (models) => {
         // one Atom belongs to many owners (N:M)
-        /* TODO: Cuando se vaya a agregar el 'owner' analizar muy bien, ya que si descomento esto,
-        la relacion Atom.belongsTo.User de abajo, deja de funcionar y me trae atoms: [] */
-        /*Atom.belongsToMany(models.User, {
+        Atom.belongsToMany(models.User, {
             through: 'owner',
             foreignKey: {
                 name: 'atomId',
                 field: 'atom_id'
             }
-        });*/
+        });
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
             foreignKey: {

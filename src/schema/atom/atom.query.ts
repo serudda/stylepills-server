@@ -211,11 +211,12 @@ export const resolver = {
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
             let sortByQuery = {};
+            // let include: any = [];
             let include: any = [
                 {
                     model: models.User,
                     where: {
-                        username: 'rosaa-3222638'
+                        username: 'sergior-3374107'
                     }
                 }
             ];
