@@ -1,8 +1,10 @@
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
-import { models, sequelize } from './../../models/index';
+import { WhereOptions } from 'sequelize';
 import { Buffer } from 'buffer';
+
+import { models, sequelize } from './../../models/index';
 import { Pagination, ICursorsResult }  from './../../core/utils/pagination';
 import * as appConfig from './../../core/constants/app.constants';
 import { IAtomInstance } from './../../models/atom.model';
@@ -50,6 +52,14 @@ interface IQueryFilters {
 }
 
 /**
+ * Arguments passed to Atom include model
+ */
+interface IAtomIncludeArgs {
+    model: string;
+    where: WhereOptions<any>;
+}
+
+/**
  * Arguments passed to Atom filter
  */
 interface IAtomFilterArgs {
@@ -77,6 +87,7 @@ interface IAtomQueryArgs {
     id: number;
     pagination: IAtomPaginationArgs;
     filter: IAtomFilterArgs;
+    include: IAtomIncludeArgs;
     sortBy: string;
     limit: number;
 }
@@ -88,8 +99,13 @@ interface IAtomQueryArgs {
 
 export const typeDef = `
 
+    input AtomInclude {
+        model: String!
+        where: JSON!
+    }
+
     input AtomFilter {
-        isPrivate: Boolean        
+        isPrivate: Boolean     
         atomCategoryId: Int
         text: String
     }
@@ -120,6 +136,7 @@ export const typeDef = `
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
         searchAtoms(pagination: PaginationInput!
                     filter: AtomFilter, 
+                    include: AtomInclude,
                     sortBy: String): AtomPaginated!
     }
 
@@ -203,7 +220,8 @@ export const resolver = {
         searchAtoms(parent: any, {
             filter = <IAtomFilterArgs> {}, 
             sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, 
-            pagination = <IAtomPaginationArgs> {}
+            pagination = <IAtomPaginationArgs> {},
+            include = <IAtomIncludeArgs> null
         }: IAtomQueryArgs) {
 
             // VARIABLES
@@ -211,16 +229,18 @@ export const resolver = {
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
             let sortByQuery = {};
-            // let include: any = [];
-            let include: any = [
-                {
-                    model: models.User,
-                    where: {
-                        username: 'sergior-3374107'
-                    }
-                }
-            ];
+            let includeQuery: any = [];
             let limit: number = first || last;
+
+            // Build include query
+            if (include) {
+                includeQuery = [
+                    {
+                        model: (<any> models)[include.model],
+                        where: include.where
+                    }
+                ];
+            }
 
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
@@ -255,7 +275,7 @@ export const resolver = {
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return models.Atom.findAll({
                 where: whereQuery,
-                include,
+                include: includeQuery,
                 limit: limit + 1,
                 order,
             }).then((results: Array<IAtomInstance>) => {

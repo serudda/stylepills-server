@@ -1,8 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/************************************/
-/*           DEPENDENCIES           */
-/************************************/
 const index_1 = require("./../../models/index");
 const pagination_1 = require("./../../core/utils/pagination");
 const appConfig = require("./../../core/constants/app.constants");
@@ -30,8 +27,13 @@ function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
 /**************************************/
 exports.typeDef = `
 
+    input AtomInclude {
+        model: String!
+        where: JSON!
+    }
+
     input AtomFilter {
-        isPrivate: Boolean        
+        isPrivate: Boolean     
         atomCategoryId: Int
         text: String
     }
@@ -62,6 +64,7 @@ exports.typeDef = `
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
         searchAtoms(pagination: PaginationInput!
                     filter: AtomFilter, 
+                    include: AtomInclude,
                     sortBy: String): AtomPaginated!
     }
 
@@ -131,22 +134,23 @@ exports.resolver = {
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
-        searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {} }) {
+        searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {}, include = null }) {
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
             let sortByQuery = {};
-            // let include: any = [];
-            let include = [
-                {
-                    model: index_1.models.User,
-                    where: {
-                        username: 'sergior-3374107'
-                    }
-                }
-            ];
+            let includeQuery = [];
             let limit = first || last;
+            // Build include query
+            if (include) {
+                includeQuery = [
+                    {
+                        model: index_1.models[include.model],
+                        where: include.where
+                    }
+                ];
+            }
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
             // Build main Where
@@ -174,7 +178,7 @@ exports.resolver = {
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return index_1.models.Atom.findAll({
                 where: whereQuery,
-                include,
+                include: includeQuery,
                 limit: limit + 1,
                 order,
             }).then((results) => {

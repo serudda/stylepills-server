@@ -15,11 +15,17 @@ const atomCategoryQuery = require("./atomCategory/atomCategory.query");
 const atomTypes = require("./atom/atom.type");
 const atomQuery = require("./atom/atom.query");
 const atomMutation = require("./atom/atom.mutation");
+const GraphQLJSON = require("graphql-type-json");
+const scalarJSON = {
+    JSON: GraphQLJSON
+};
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
 // TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
+    #Scalar
+    scalar JSON
 
     # Type
     type Base {
@@ -62,7 +68,7 @@ const typeDefs = [`
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver);
+const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/
