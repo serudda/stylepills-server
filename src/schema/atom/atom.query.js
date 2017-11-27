@@ -154,10 +154,11 @@ exports.resolver = {
                 };
             }
             where = Object.assign({}, where, filterQuery);
+            // Init Pagination instance
+            let paginationInstance = new pagination_1.Pagination(before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId);
             // Build pagination query
-            let { paginationQuery, order } = pagination_1.pagination.buildPaginationQuery(before, after, desc, paginationField, primaryKeyField, paginationFieldIsNonId);
-            /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model
-             no acepta: $and */
+            let { paginationQuery, order } = paginationInstance.buildPaginationQuery();
+            // Build where query joining filters and pagination
             const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return index_1.models.Atom.findAll({
@@ -166,33 +167,11 @@ exports.resolver = {
                 limit: limit + 1,
                 order,
             }).then((results) => {
-                const hasMore = results.length > limit;
-                if (hasMore) {
-                    results.pop();
-                }
-                if (before) {
-                    results.reverse();
-                }
-                const hasNext = !!before || hasMore;
-                const hasPrevious = !!after || (!!before && hasMore);
-                let beforeCursor = null;
-                let afterCursor = null;
-                if (results.length > 0) {
-                    beforeCursor = paginationFieldIsNonId
-                        ? pagination_1.pagination.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                        : pagination_1.pagination.encodeCursor([results[0][paginationField]]);
-                    afterCursor = paginationFieldIsNonId
-                        ? pagination_1.pagination.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                        : pagination_1.pagination.encodeCursor([results[results.length - 1][paginationField]]);
-                }
+                // Build cursors
+                let cursors = paginationInstance.buildCursors(results);
                 return {
                     results,
-                    cursors: {
-                        hasNext,
-                        hasPrevious,
-                        before: beforeCursor,
-                        after: afterCursor,
-                    },
+                    cursors
                 };
             });
         }

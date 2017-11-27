@@ -10,9 +10,81 @@ const base64 = require("base-64");
 class Pagination {
     /*       CONSTRUCTOR      */
     /**************************/
-    constructor() { }
+    constructor(before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId) {
+        // Init properties
+        this.before = before;
+        this.after = after;
+        this.desc = desc;
+        this.limit = limit;
+        this.paginationField = paginationField;
+        this.primaryKeyField = primaryKeyField;
+        this.paginationFieldIsNonId = paginationFieldIsNonId;
+    }
     /*       METHODS       */
     /***********************/
+    get Before() {
+        return this.before;
+    }
+    set Before(before) {
+        if (before === undefined) {
+            throw 'Please supply a *before* value';
+        }
+        this.before = before;
+    }
+    get After() {
+        return this.after;
+    }
+    set After(after) {
+        if (after === undefined) {
+            throw 'Please supply a *after* value';
+        }
+        this.after = after;
+    }
+    get Desc() {
+        return this.desc;
+    }
+    set Desc(desc) {
+        if (desc === undefined) {
+            throw 'Please supply a *desc* value';
+        }
+        this.desc = desc;
+    }
+    get Limit() {
+        return this.limit;
+    }
+    set Limit(limit) {
+        if (limit === undefined) {
+            throw 'Please supply a *limit* value';
+        }
+        this.limit = limit;
+    }
+    get PaginationField() {
+        return this.paginationField;
+    }
+    set PaginationField(paginationField) {
+        if (paginationField === undefined) {
+            throw 'Please supply a *paginationField* value';
+        }
+        this.paginationField = paginationField;
+    }
+    get PrimaryKeyField() {
+        return this.primaryKeyField;
+    }
+    set PrimaryKeyField(primaryKeyField) {
+        if (primaryKeyField === undefined) {
+            throw 'Please supply a *primaryKeyField* value';
+        }
+        this.primaryKeyField = primaryKeyField;
+    }
+    get PaginationFieldIsNonId() {
+        return this.paginationFieldIsNonId;
+    }
+    set PaginationFieldIsNonId(paginationFieldIsNonId) {
+        if (paginationFieldIsNonId === undefined) {
+            throw 'Please supply a *paginationFieldIsNonId* value';
+        }
+        this.paginationFieldIsNonId = paginationFieldIsNonId;
+    }
     /**
      * @desc Decode a cursor formatted in Base64 structure
      * @method Method decodeCursor
@@ -37,44 +109,72 @@ class Pagination {
      * @desc Build the pagination query (where) and order
      * @method Method buildPaginationQuery
      * @public
-     * @param {string} before cursor coded (Previous page on pagination)
-     * @param {string} after cursor coded (Next page on pagination)
-     * @param {boolean} desc Is it in desc order?
-     * @param {string} paginationField field on model to use by pagination (e.g. "likes", "stores")
-     * @param {string} primaryKeyField primary key field (e.g. "Id")
-     * @param {boolean} paginationFieldIsNonId Pagination Field is non Id?
      * @returns {Object, Array} paginationQuery, order
      */
-    buildPaginationQuery(before, after, desc, paginationField, primaryKeyField, paginationFieldIsNonId) {
-        const decodedBefore = !!before ? this.decodeCursor(before) : null;
-        const decodedAfter = !!after ? this.decodeCursor(after) : null;
+    buildPaginationQuery() {
+        const decodedBefore = !!this.before ? this.decodeCursor(this.before) : null;
+        const decodedAfter = !!this.after ? this.decodeCursor(this.after) : null;
         // If is before (previous) = FALSE, if not TRUE
-        const cursorOrderIsDesc = before ? !desc : desc;
+        const cursorOrderIsDesc = this.before ? !this.desc : this.desc;
         const cursorOrderOperator = cursorOrderIsDesc ? '$lt' : '$gt';
         // VARIABLES
         let paginationQuery;
         let order = [
-            cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
-            ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+            cursorOrderIsDesc ? [this.paginationField, 'DESC'] : this.paginationField,
+            ...(this.paginationFieldIsNonId ? [this.primaryKeyField] : []),
         ];
-        if (before) {
-            paginationQuery = this._getPaginationOperator(decodedBefore, cursorOrderOperator, paginationField, primaryKeyField);
+        if (this.before) {
+            paginationQuery = this._getPaginationOperator(decodedBefore, cursorOrderOperator);
             /* FIXME: #67 - Rompe cuando paginationFieldIsNonId es false, es decir
                 cuando quiero organizar por 'created_at' */
             order = [
-                paginationField,
+                this.paginationField,
                 // ...(paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : []),
-                paginationFieldIsNonId ? [primaryKeyField, 'DESC'] : '',
+                this.paginationFieldIsNonId ? [this.primaryKeyField, 'DESC'] : '',
             ];
         }
-        else if (after) {
-            paginationQuery = this._getPaginationOperator(decodedAfter, cursorOrderOperator, paginationField, primaryKeyField);
+        else if (this.after) {
+            paginationQuery = this._getPaginationOperator(decodedAfter, cursorOrderOperator);
             order = [
-                cursorOrderIsDesc ? [paginationField, 'DESC'] : paginationField,
-                ...(paginationFieldIsNonId ? [primaryKeyField] : []),
+                cursorOrderIsDesc ? [this.paginationField, 'DESC'] : this.paginationField,
+                ...(this.paginationFieldIsNonId ? [this.primaryKeyField] : []),
             ];
         }
         return { paginationQuery, order };
+    }
+    /**
+     * @desc Build Cursors
+     * @method Method buildCursors
+     * @public
+     * @param {Array<any>} results Data results
+     * @return {ICursorsResult} Cursors section on response returned to client
+     */
+    buildCursors(results) {
+        const hasMore = results.length > this.limit;
+        const hasNext = !!this.before || hasMore;
+        const hasPrevious = !!this.after || (!!this.before && hasMore);
+        let beforeCursor = null;
+        let afterCursor = null;
+        if (hasMore) {
+            results.pop();
+        }
+        if (this.before) {
+            results.reverse();
+        }
+        if (results.length > 0) {
+            beforeCursor = this.paginationFieldIsNonId
+                ? this.encodeCursor([results[0][this.paginationField], results[0][this.primaryKeyField]])
+                : this.encodeCursor([results[0][this.paginationField]]);
+            afterCursor = this.paginationFieldIsNonId
+                ? this.encodeCursor([results[results.length - 1][this.paginationField], results[results.length - 1][this.primaryKeyField]])
+                : this.encodeCursor([results[results.length - 1][this.paginationField]]);
+        }
+        return {
+            hasNext,
+            hasPrevious,
+            before: beforeCursor,
+            after: afterCursor,
+        };
     }
     /**
      * @desc Get pagination operator ($or, $and)
@@ -85,9 +185,9 @@ class Pagination {
      * @param {string} paginationField field on model to use by pagination (e.g. "likes", "stores")
      * @param {string} primaryKeyField primary key field (e.g. "Id")
      */
-    _getPaginationOperator(cursor, cursorOrderOperator, paginationField, primaryKeyField) {
+    _getPaginationOperator(cursor, cursorOrderOperator) {
         const primaryCursorOrderOperator = cursorOrderOperator === '$gt' ? '$lt' : '$gt';
-        if (paginationField !== primaryKeyField) {
+        if (this.paginationField !== this.primaryKeyField) {
             /*
                 AFTER:
                 ("stores" < 100 OR ("stores" = 100 AND "id" > 7)
@@ -102,17 +202,17 @@ class Pagination {
                     {
                         // AFTER: "store" < 100
                         // BEFORE: "likes" > 12389
-                        [paginationField]: {
+                        [this.paginationField]: {
                             [cursorOrderOperator]: cursor[0],
                         },
                     },
                     {
                         // AFTER: "stores" = 100
                         // BEFORE: "likes" = 12389
-                        [paginationField]: cursor[0],
+                        [this.paginationField]: cursor[0],
                         // AFTER: "id" > 7
                         // BEFORE: "id" < 4
-                        [primaryKeyField]: {
+                        [this.primaryKeyField]: {
                             [primaryCursorOrderOperator]: cursor[1],
                         },
                     },
@@ -123,13 +223,12 @@ class Pagination {
             return {
                 // AFTER: "store" < 100
                 // BEFORE: "likes" > 12389
-                [paginationField]: {
+                [this.paginationField]: {
                     [cursorOrderOperator]: cursor[0],
                 },
             };
         }
     }
 }
-/* Export Pagination instance */
-exports.pagination = new Pagination();
+exports.Pagination = Pagination;
 //# sourceMappingURL=pagination.js.map

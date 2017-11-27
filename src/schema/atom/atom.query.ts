@@ -3,8 +3,9 @@
 /************************************/
 import { models, sequelize } from './../../models/index';
 import { Buffer } from 'buffer';
-import { pagination as paginationUtils }  from './../../core/utils/pagination';
+import { Pagination, ICursorsResult }  from './../../core/utils/pagination';
 import * as appConfig from './../../core/constants/app.constants';
+import { IAtomInstance } from './../../models/atom.model';
 
 
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
@@ -197,7 +198,7 @@ export const resolver = {
          * @param {number} limit - limit number of results returned
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
-        searchAtoms(parent: any, { 
+        searchAtoms(parent: any, {
             filter = <IAtomFilterArgs> {}, 
             sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, 
             pagination = <IAtomPaginationArgs> {}
@@ -211,7 +212,7 @@ export const resolver = {
             // let primaryKeyField = 'created_at';
             // let paginationField = 'created_at';
             let where = {};
-            let include: any = []; 
+            let include: any = [];
             let limit: number = first || last;
             let desc = true;
 
@@ -230,20 +231,16 @@ export const resolver = {
             }
 
             where = Object.assign({}, where, filterQuery);
+
+            // Init Pagination instance
+            let paginationInstance = new Pagination(
+                before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId);
             
             // Build pagination query
-            let { paginationQuery, order } = paginationUtils.buildPaginationQuery(
-                before,
-                after,
-                desc,
-                paginationField,
-                primaryKeyField,
-                paginationFieldIsNonId);
+            let { paginationQuery, order } = paginationInstance.buildPaginationQuery();
 
-            /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model 
-             no acepta: $and */
+            // Build where query joining filters and pagination
             const whereQuery: any = paginationQuery ? { $and: [paginationQuery, where] } : where;
-
 
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return models.Atom.findAll({
@@ -251,42 +248,14 @@ export const resolver = {
                 include,
                 limit: limit + 1,
                 order,
-            }).then((results: any) => { // TODO: Add type
-                const hasMore = results.length > limit;
-          
-                if (hasMore) {
-                    results.pop();
-                }
-        
-                if (before) {
-                    results.reverse();
-                }
-          
-                const hasNext = !!before || hasMore;
-                const hasPrevious = !!after || (!!before && hasMore);
-        
-                let beforeCursor = null;
-                let afterCursor = null;
-        
-                if (results.length > 0) {
-                    beforeCursor = paginationFieldIsNonId 
-                    ? paginationUtils.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                    : paginationUtils.encodeCursor([results[0][paginationField]]);
-        
-                    afterCursor = paginationFieldIsNonId
-                    // tslint:disable-next-line:max-line-length
-                    ? paginationUtils.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                    : paginationUtils.encodeCursor([results[results.length - 1][paginationField]]);
-                }
-        
+            }).then((results: Array<IAtomInstance>) => {
+                
+                // Build cursors
+                let cursors = paginationInstance.buildCursors(results);
+
                 return {
                     results,
-                    cursors: {
-                        hasNext,
-                        hasPrevious,
-                        before: beforeCursor,
-                        after: afterCursor,
-                    },
+                    cursors
                 };
             });
 
