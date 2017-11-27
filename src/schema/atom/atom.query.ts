@@ -210,7 +210,15 @@ export const resolver = {
             let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
-            let include: any = [];
+            let sortByQuery = {};
+            let include: any = [
+                {
+                    model: models.User,
+                    where: {
+                        username: 'rosaa-3222638'
+                    }
+                }
+            ];
             let limit: number = first || last;
 
             // Build filter query
@@ -218,14 +226,14 @@ export const resolver = {
 
             // Build main Where
             if (sortBy !== 'created_at') {
-                where = {
+                sortByQuery = {
                     [sortBy]: {
                         $gte: 0
                     }
                 };
             }
 
-            where = Object.assign({}, where, filterQuery);
+            where = Object.assign({}, where, sortByQuery, filterQuery);
 
             // Init Pagination instance
             let paginationInstance = new Pagination({

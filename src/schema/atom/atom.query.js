@@ -136,19 +136,27 @@ exports.resolver = {
             let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
             let where = {};
-            let include = [];
+            let sortByQuery = {};
+            let include = [
+                {
+                    model: index_1.models.User,
+                    where: {
+                        username: 'rosaa-3222638'
+                    }
+                }
+            ];
             let limit = first || last;
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
             // Build main Where
             if (sortBy !== 'created_at') {
-                where = {
+                sortByQuery = {
                     [sortBy]: {
                         $gte: 0
                     }
                 };
             }
-            where = Object.assign({}, where, filterQuery);
+            where = Object.assign({}, where, sortByQuery, filterQuery);
             // Init Pagination instance
             let paginationInstance = new pagination_1.Pagination({
                 before,
