@@ -41,6 +41,7 @@ exports.typeDef = `
         after: String
         last: Int
         before: String
+        primaryKey: String
     }
 
     type Cursor {
@@ -132,17 +133,11 @@ exports.resolver = {
          */
         searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {} }) {
             // VARIABLES
-            let { first, after, last, before } = pagination;
+            let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
-            let primaryKeyField = 'id';
-            let paginationField = sortBy;
-            // let primaryKeyField = 'created_at';
-            // let paginationField = 'created_at';
             let where = {};
             let include = [];
             let limit = first || last;
-            let desc = true;
-            const paginationFieldIsNonId = paginationField !== primaryKeyField;
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
             // Build main Where
@@ -155,7 +150,14 @@ exports.resolver = {
             }
             where = Object.assign({}, where, filterQuery);
             // Init Pagination instance
-            let paginationInstance = new pagination_1.Pagination(before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId);
+            let paginationInstance = new pagination_1.Pagination({
+                before,
+                after,
+                desc: true,
+                limit,
+                sortBy,
+                primaryKey
+            });
             // Build pagination query
             let { paginationQuery, order } = paginationInstance.buildPaginationQuery();
             // Build where query joining filters and pagination

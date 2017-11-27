@@ -2,6 +2,7 @@
 /*            DEPENDENCIES             */
 /***************************************/
 import * as base64 from 'base-64';
+import * as appConfig from './../../core/constants/app.constants';
 
 
 /***************************************/
@@ -12,6 +13,15 @@ export interface IPagination {
     encodeCursor: (cursor: Array<any>) => string;
     buildPaginationQuery: () => Object;
     buildCursors: (results: Array<any>) => ICursorsResult;
+}
+
+export interface IPaginationOptions {
+    before: string;
+    after: string;
+    desc: boolean;
+    limit: number;
+    sortBy: string;
+    primaryKey: string;
 }
 
 export interface ICursorsResult {
@@ -39,24 +49,25 @@ export class Pagination implements IPagination {
 
     /*       CONSTRUCTOR      */
     /**************************/
-    constructor(
-        before: string,
-        after: string,
-        desc: boolean,
-        limit: number,
-        paginationField: string,
-        primaryKeyField: string,
-        paginationFieldIsNonId: boolean
-    ) {
+    constructor({
+        before,
+        after,
+        desc,
+        limit,
+        sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT,
+        primaryKey = 'id'
+    }: IPaginationOptions) {
 
         // Init properties
         this.before = before;
         this.after = after;
         this.desc = desc;
         this.limit = limit;
-        this.paginationField = paginationField;
-        this.primaryKeyField = primaryKeyField;
-        this.paginationFieldIsNonId = paginationFieldIsNonId;
+        // this.primaryKeyField = 'created_at';
+        // this.paginationField = 'created_at';
+        this.paginationField = sortBy;
+        this.primaryKeyField = primaryKey;
+        this.paginationFieldIsNonId = this.paginationField !== this.primaryKeyField;
     }
 
 

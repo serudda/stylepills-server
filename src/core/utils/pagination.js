@@ -4,21 +4,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*            DEPENDENCIES             */
 /***************************************/
 const base64 = require("base-64");
+const appConfig = require("./../../core/constants/app.constants");
 /***************************************/
 /*          PAGINATION CLASS           */
 /***************************************/
 class Pagination {
     /*       CONSTRUCTOR      */
     /**************************/
-    constructor(before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId) {
+    constructor({ before, after, desc, limit, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, primaryKey = 'id' }) {
         // Init properties
         this.before = before;
         this.after = after;
         this.desc = desc;
         this.limit = limit;
-        this.paginationField = paginationField;
-        this.primaryKeyField = primaryKeyField;
-        this.paginationFieldIsNonId = paginationFieldIsNonId;
+        // this.primaryKeyField = 'created_at';
+        // this.paginationField = 'created_at';
+        this.paginationField = sortBy;
+        this.primaryKeyField = primaryKey;
+        this.paginationFieldIsNonId = this.paginationField !== this.primaryKeyField;
     }
     /*       METHODS       */
     /***********************/

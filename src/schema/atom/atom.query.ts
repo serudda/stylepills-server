@@ -67,6 +67,7 @@ interface IAtomPaginationArgs {
     after: string;
     last: number;
     before: string;
+    primaryKey: string;
 }
 
 /**
@@ -98,6 +99,7 @@ export const typeDef = `
         after: String
         last: Int
         before: String
+        primaryKey: String
     }
 
     type Cursor {
@@ -205,18 +207,11 @@ export const resolver = {
         }: IAtomQueryArgs) {
 
             // VARIABLES
-            let { first, after, last, before } = pagination;
+            let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
-            let primaryKeyField = 'id';
-            let paginationField = sortBy;
-            // let primaryKeyField = 'created_at';
-            // let paginationField = 'created_at';
             let where = {};
             let include: any = [];
             let limit: number = first || last;
-            let desc = true;
-
-            const paginationFieldIsNonId = paginationField !== primaryKeyField;
 
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
@@ -233,8 +228,14 @@ export const resolver = {
             where = Object.assign({}, where, filterQuery);
 
             // Init Pagination instance
-            let paginationInstance = new Pagination(
-                before, after, desc, limit, paginationField, primaryKeyField, paginationFieldIsNonId);
+            let paginationInstance = new Pagination({
+                before, 
+                after, 
+                desc: true, 
+                limit, 
+                sortBy, 
+                primaryKey
+            });
             
             // Build pagination query
             let { paginationQuery, order } = paginationInstance.buildPaginationQuery();
