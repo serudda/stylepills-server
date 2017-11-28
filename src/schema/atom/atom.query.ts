@@ -14,6 +14,9 @@ import { IAtomInstance } from './../../models/atom.model';
 function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, text: string): IQueryFilters {
 
     // Init Filter
+    /* TODO: Deberiamos incluir dos tipos de filtros: solo devuelvame los componentes 
+    privados (isPrivate), y otro que devuelvame todos los componentes, incluyendo los 
+    privados (includePrivate) */
     let queryFilter: IQueryFilters = {
         active: true,
         private: isPrivate
@@ -56,6 +59,7 @@ interface IQueryFilters {
  */
 interface IAtomIncludeArgs {
     model: string;
+    as: string | null;
     where: WhereOptions<any>;
 }
 
@@ -101,6 +105,7 @@ export const typeDef = `
 
     input AtomInclude {
         model: String!
+        as: String
         where: JSON!
     }
 
@@ -210,11 +215,11 @@ export const resolver = {
          * @method Method searchAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
          * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
          * @param {IAtomFilterArgs} filter - a set of filters
          * @param {String} sortBy - sort list by a passed parameter
-         * @param {number} limit - limit number of results returned
+         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
+         * @param {IAtomIncludeArgs} include - include model to filter nested object
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
         searchAtoms(parent: any, {
@@ -234,9 +239,11 @@ export const resolver = {
 
             // Build include query
             if (include) {
+                // TODO: Validar cuando include.as sea null, eso no se valido
                 includeQuery = [
                     {
                         model: (<any> models)[include.model],
+                        as: include.as,
                         where: include.where
                     }
                 ];
@@ -287,6 +294,7 @@ export const resolver = {
                     results,
                     cursors
                 };
+
             });
 
         }
@@ -297,7 +305,10 @@ export const resolver = {
             return atom.getComments();
         },
         author(atom: any) {
-            return atom.getUser();
+            return atom.getAuthor();
+        },
+        owner(atom: any) {
+            return atom.getOwner();
         },
         category(atom: any) {
             return atom.getAtomCategory();

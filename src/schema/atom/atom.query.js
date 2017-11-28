@@ -6,6 +6,9 @@ const appConfig = require("./../../core/constants/app.constants");
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
     // Init Filter
+    /* TODO: Deberiamos incluir dos tipos de filtros: solo devuelvame los componentes
+    privados (isPrivate), y otro que devuelvame todos los componentes, incluyendo los
+    privados (includePrivate) */
     let queryFilter = {
         active: true,
         private: isPrivate
@@ -29,6 +32,7 @@ exports.typeDef = `
 
     input AtomInclude {
         model: String!
+        as: String
         where: JSON!
     }
 
@@ -127,11 +131,11 @@ exports.resolver = {
          * @method Method searchAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
          * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
          * @param {IAtomFilterArgs} filter - a set of filters
          * @param {String} sortBy - sort list by a passed parameter
-         * @param {number} limit - limit number of results returned
+         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
+         * @param {IAtomIncludeArgs} include - include model to filter nested object
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
         searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {}, include = null }) {
@@ -144,9 +148,11 @@ exports.resolver = {
             let limit = first || last;
             // Build include query
             if (include) {
+                // TODO: Validar cuando include.as sea null, eso no se valido
                 includeQuery = [
                     {
                         model: index_1.models[include.model],
+                        as: include.as,
                         where: include.where
                     }
                 ];
@@ -196,7 +202,10 @@ exports.resolver = {
             return atom.getComments();
         },
         author(atom) {
-            return atom.getUser();
+            return atom.getAuthor();
+        },
+        owner(atom) {
+            return atom.getOwner();
         },
         category(atom) {
             return atom.getAtomCategory();
