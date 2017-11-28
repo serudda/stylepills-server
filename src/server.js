@@ -27,7 +27,7 @@ const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
-    user.dataValues.avatar = profile.image.url;
+    user.dataValues.avatar = profile.image.url.replace('?sz=50', '?sz=200');
     return user;
 };
 // Generate JWT
