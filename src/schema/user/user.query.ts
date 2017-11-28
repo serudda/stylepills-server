@@ -9,6 +9,7 @@ import { models, sequelize } from './../../models/index';
 /************************************/    
 interface IUserArgs {
     id: number;
+    username: string;
     filter: IFilterArgs;
     limit: number;
 }
@@ -25,6 +26,7 @@ interface IFilterArgs {
 export const typeDef = `
     extend type Query {
         userById(id: ID!): User!
+        userByUsername(username: String!): User!
         allUsers(limit: Int): [User!]!
     }
 `;
@@ -48,6 +50,23 @@ export const resolver = {
          */
         userById(parent: any, { id }: IUserArgs) {
             return models.User.findById(id);
+        },
+
+        /**
+         * @desc Get User by Username
+         * @method Method userByUsername
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IUserArgs} args - destructuring: username
+         * @param {number} username - User's username
+         * @returns {IUser} User entity
+         */
+        userByUsername(parent: any, { username }: IUserArgs) {
+            return models.User.findOne({
+                where: {
+                    username
+                }
+            });
         },
 
         /**

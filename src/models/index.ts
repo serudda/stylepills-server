@@ -50,10 +50,6 @@ class Database {
         this._basename = path.basename(module.filename);
         let dbConfig = config.getDatabaseConfig();
 
-        if (dbConfig.logging) {
-            dbConfig.logging = logger.info;
-        }
-
         (SequelizeStatic as any).cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username,
             dbConfig.password, dbConfig);

@@ -1,16 +1,22 @@
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
-import { models, sequelize } from './../../models/index';
+import { WhereOptions } from 'sequelize';
 import { Buffer } from 'buffer';
-import { pagination as paginationUtils }  from './../../core/utils/pagination';
+
+import { models, sequelize } from './../../models/index';
+import { Pagination, ICursorsResult }  from './../../core/utils/pagination';
 import * as appConfig from './../../core/constants/app.constants';
+import { IAtomInstance } from './../../models/atom.model';
 
 
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, text: string): IQueryFilters {
 
     // Init Filter
+    /* TODO: Deberiamos incluir dos tipos de filtros: solo devuelvame los componentes 
+    privados (isPrivate), y otro que devuelvame todos los componentes, incluyendo los 
+    privados (includePrivate) */
     let queryFilter: IQueryFilters = {
         active: true,
         private: isPrivate
@@ -49,6 +55,15 @@ interface IQueryFilters {
 }
 
 /**
+ * Arguments passed to Atom include model
+ */
+interface IAtomIncludeArgs {
+    model: string;
+    as: string | null;
+    where: WhereOptions<any>;
+}
+
+/**
  * Arguments passed to Atom filter
  */
 interface IAtomFilterArgs {
@@ -66,6 +81,7 @@ interface IAtomPaginationArgs {
     after: string;
     last: number;
     before: string;
+    primaryKey: string;
 }
 
 /**
@@ -75,6 +91,7 @@ interface IAtomQueryArgs {
     id: number;
     pagination: IAtomPaginationArgs;
     filter: IAtomFilterArgs;
+    include: IAtomIncludeArgs;
     sortBy: string;
     limit: number;
 }
@@ -86,8 +103,14 @@ interface IAtomQueryArgs {
 
 export const typeDef = `
 
+    input AtomInclude {
+        model: String!
+        as: String
+        where: JSON!
+    }
+
     input AtomFilter {
-        isPrivate: Boolean        
+        isPrivate: Boolean     
         atomCategoryId: Int
         text: String
     }
@@ -97,6 +120,7 @@ export const typeDef = `
         after: String
         last: Int
         before: String
+        primaryKey: String
     }
 
     type Cursor {
@@ -117,6 +141,7 @@ export const typeDef = `
         atomsByCategory(filter: AtomFilter, limit: Int): [Atom!]!
         searchAtoms(pagination: PaginationInput!
                     filter: AtomFilter, 
+                    include: AtomInclude,
                     sortBy: String): AtomPaginated!
     }
 
@@ -190,104 +215,86 @@ export const resolver = {
          * @method Method searchAtoms
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
          * @param {IAtomQueryArgs} args - destructuring: filter, limit, sortBy
          * @param {IAtomFilterArgs} filter - a set of filters
          * @param {String} sortBy - sort list by a passed parameter
-         * @param {number} limit - limit number of results returned
+         * @param {IAtomPaginationArgs} pagination - include: first, last, before, and after parameters
+         * @param {IAtomIncludeArgs} include - include model to filter nested object
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
-        searchAtoms(parent: any, { 
+        searchAtoms(parent: any, {
             filter = <IAtomFilterArgs> {}, 
             sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, 
-            pagination = <IAtomPaginationArgs> {}
+            pagination = <IAtomPaginationArgs> {},
+            include = <IAtomIncludeArgs> null
         }: IAtomQueryArgs) {
 
             // VARIABLES
-            let { first, after, last, before } = pagination;
+            let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
-            let primaryKeyField = 'id';
-            let paginationField = sortBy;
-            // let primaryKeyField = 'created_at';
-            // let paginationField = 'created_at';
             let where = {};
-            let include: any = []; 
+            let sortByQuery = {};
+            let includeQuery: any = [];
             let limit: number = first || last;
-            let desc = true;
 
-            const paginationFieldIsNonId = paginationField !== primaryKeyField;
+            // Build include query
+            if (include) {
+                // TODO: Validar cuando include.as sea null, eso no se valido
+                includeQuery = [
+                    {
+                        model: (<any> models)[include.model],
+                        as: include.as,
+                        where: include.where
+                    }
+                ];
+            }
 
             // Build filter query
             let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
 
             // Build main Where
             if (sortBy !== 'created_at') {
-                where = {
+                sortByQuery = {
                     [sortBy]: {
                         $gte: 0
                     }
                 };
             }
 
-            where = Object.assign({}, where, filterQuery);
+            where = Object.assign({}, where, sortByQuery, filterQuery);
+
+            // Init Pagination instance
+            let paginationInstance = new Pagination({
+                before, 
+                after, 
+                desc: true, 
+                limit, 
+                sortBy, 
+                primaryKey
+            });
             
             // Build pagination query
-            let { paginationQuery, order } = paginationUtils.buildPaginationQuery(
-                before,
-                after,
-                desc,
-                paginationField,
-                primaryKeyField,
-                paginationFieldIsNonId);
+            let { paginationQuery, order } = paginationInstance.buildPaginationQuery();
 
-            /* TODO: Si quito el 'any' me da error de type, ya que WhereOption del model 
-             no acepta: $and */
+            // Build where query joining filters and pagination
             const whereQuery: any = paginationQuery ? { $and: [paginationQuery, where] } : where;
-
 
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
             return models.Atom.findAll({
                 where: whereQuery,
-                include,
+                include: includeQuery,
                 limit: limit + 1,
                 order,
-            }).then((results: any) => { // TODO: Add type
-                const hasMore = results.length > limit;
-          
-                if (hasMore) {
-                    results.pop();
-                }
-        
-                if (before) {
-                    results.reverse();
-                }
-          
-                const hasNext = !!before || hasMore;
-                const hasPrevious = !!after || (!!before && hasMore);
-        
-                let beforeCursor = null;
-                let afterCursor = null;
-        
-                if (results.length > 0) {
-                    beforeCursor = paginationFieldIsNonId 
-                    ? paginationUtils.encodeCursor([results[0][paginationField], results[0][primaryKeyField]])
-                    : paginationUtils.encodeCursor([results[0][paginationField]]);
-        
-                    afterCursor = paginationFieldIsNonId
-                    // tslint:disable-next-line:max-line-length
-                    ? paginationUtils.encodeCursor([results[results.length - 1][paginationField], results[results.length - 1][primaryKeyField]])
-                    : paginationUtils.encodeCursor([results[results.length - 1][paginationField]]);
-                }
-        
+            }).then((results: Array<IAtomInstance>) => {
+                
+                // Build cursors
+                let cursors = paginationInstance.buildCursors(results);
+
                 return {
                     results,
-                    cursors: {
-                        hasNext,
-                        hasPrevious,
-                        before: beforeCursor,
-                        after: afterCursor,
-                    },
+                    cursors
                 };
+
             });
 
         }
@@ -298,7 +305,10 @@ export const resolver = {
             return atom.getComments();
         },
         author(atom: any) {
-            return atom.getUser();
+            return atom.getAuthor();
+        },
+        owner(atom: any) {
+            return atom.getOwner();
         },
         category(atom: any) {
             return atom.getAtomCategory();

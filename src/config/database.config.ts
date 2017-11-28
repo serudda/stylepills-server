@@ -73,8 +73,8 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 username: 'ucltubusynwrsu',
                 password: 'f14c4838c1b7af63fbf45f25799e8c45f319a1f4c618142f19d09fb019a8eb60',
                 database: 'dcgfiqehd78k6c',
-                port:     port,
-                host:     host,
+                port,
+                host,
                 dialect: 'postgres',
                 operatorsAliases,
                 define: {
@@ -89,8 +89,8 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 username: 'lgitfxqxcmmqox',
                 password: 'dbd65a1bc01384d08aa148ecb8e0e937b2ed15214c15e09c9a79f6e4f87661d1',
                 database: 'd6g22ske5oult0',
-                port:     port,
-                host:     host,
+                port,
+                host,
                 dialect: 'postgres',
                 operatorsAliases,
                 define: {

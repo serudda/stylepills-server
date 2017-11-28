@@ -18,12 +18,20 @@ import * as atomTypes from './atom/atom.type';
 import * as atomQuery from './atom/atom.query';
 import * as atomMutation from './atom/atom.mutation';
 
+import * as GraphQLJSON from 'graphql-type-json';
+
+const scalarJSON: any = {
+    JSON: GraphQLJSON
+};
+
 
 /**********************************/
 /*           ROOT TYPES           */
 /**********************************/
 // TODO: Remover estos types 'Base' que no sirven para nada. Convertir a User como Type Base
 const typeDefs = [`
+    #Scalar
+    scalar JSON
 
     # Type
     type Base {
@@ -52,6 +60,7 @@ const typeDefs = [`
         mutation: Mutation
     }
 `,
+
     userTypes.typeDef,
     userQuery.typeDef,
     userMutation.typeDef,
@@ -74,6 +83,8 @@ const typeDefs = [`
 /*****************************************/
 const resolvers: any = merge(
 
+    scalarJSON,
+    
     userMutation.resolver,
     userQuery.resolver,
 
