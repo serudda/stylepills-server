@@ -41,7 +41,7 @@ export interface IAtom {
 
 
 export interface IAtomAttributes {
-    id: number | null;
+    id?: number | null;
     name: string;
     html: string;
     css: string;
@@ -50,8 +50,11 @@ export interface IAtomAttributes {
     stores: number;
     views: number;
     likes: number;
+    authorId: number;
+    ownerId: number;
     atomCategoryId: number;
     active: boolean;
+    private: boolean;
 }
 
 
