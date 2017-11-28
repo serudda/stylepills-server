@@ -12,6 +12,7 @@ import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import * as appConfig from './core/constants/app.constants';
+import * as error from './core/errorHandler/errors';
 import { config } from './config/config';
 
 import { functionsUtil } from './core/utils/functionsUtil';
@@ -21,6 +22,8 @@ import schema from './schema/index';
 import { models } from './models/index';
 import { IUser, IUserInstance } from './models/user.model';
 import { accessSync } from 'fs';
+
+const apolloError = require('apollo-errors');
 
 // TODO: Pasar esta interface en una carpeta /auth
 // INTERFACES
@@ -112,32 +115,28 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
                     // Create new User
                     newUser.save().then(() => {
 
-                        // Save authenticaton method asociated to the new user
+                        // Save authentication method asociated to the new user
                         newUser.createAuthenticationMethod({
                             type: 'google',
                             externalId: profile.id,
                             token: accessToken,
                             displayName: profile.displayName
-                        }).then(
+                        })
+                        .then(
                             () => {
-                                console.log('USER CREATED SUCCESSFULL!');
                                 done(null, generateJWT(newUser, accessToken));
-                            }).catch(err => { 
-                                // throw err;
-                                return done(err);
-                            });
-
+                            }
+                        ).catch(err => { 
+                            throw new error.UnknownError();
+                        });
                     }).catch(err => {
-                        // throw err;
-                        return done(err);
+                        throw new error.UnknownError();
                     });
                 }
 
             })
-            .catch((err: any) => {
-
-                if (err) { return done(err); }
-
+            .catch((err) => {
+                throw new error.UnknownError();
             });
 
         });
@@ -163,7 +162,7 @@ graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
 
 // INIT GRAPHQL SERVER
-graphQLServer.use(appConfig.DATA, bodyParser.json(), graphqlExpress({ schema }));
+graphQLServer.use(appConfig.DATA, bodyParser.json(), graphqlExpress({ formatError: apolloError.formatError , schema }));
 graphQLServer.use(appConfig.GRAPHIQL, graphiqlExpress({ endpointURL: appConfig.DATA }));
 
 // SET UP GOOGLE AUTH ROUTES
