@@ -3,7 +3,7 @@
 /**************************************/
 import { models } from './../../models/index';
 import { IAtom, IAtomAttributes } from './../../models/atom.model';
-import { Errors, BaseError } from 'sequelize';
+import * as error from './../../core/errorHandler/errors';
 
 // TODO: Asignar una descripcion y mover al lugar adecuado
 function buildNewAtom(atom: IAtomAttributes, userId: number): IAtomAttributes {
@@ -12,9 +12,9 @@ function buildNewAtom(atom: IAtomAttributes, userId: number): IAtomAttributes {
         html: atom.html,
         css: atom.css,
         contextualBg: atom.contextualBg,
-        stores: atom.stores,
-        views: atom.views,
-        likes: atom.likes,
+        stores: 0,
+        views: 0,
+        likes: 0,
         download: atom.download,
         active: true,
         private: false,
@@ -31,7 +31,7 @@ function buildNewAtom(atom: IAtomAttributes, userId: number): IAtomAttributes {
 gestionar los objetos anidados (categoria, author, comments, etc) */
 
 interface IStatus {
-    status: string;
+    ok: boolean;
     message?: string;
 }
 
@@ -52,7 +52,7 @@ interface IDuplicateAtomArgs {
 export const typeDef = `
 # Status
 type Status {
-    status: String!,
+    ok: Boolean!,
     message: String
 }
 
@@ -90,11 +90,18 @@ export const resolver = {
             return models.Atom.create(args.input)
             .then(
                 (result) => {
-                    return result;
+                    return {
+                        ok: true,
+                        message: 'created successful'
+                    };
                 }
             ).catch(
                 (err) => {
-                    return err;
+                    throw new error.UnknownError({
+                        data: {
+                            ok: false
+                        }
+                    });
                 }
             );
         },
@@ -125,39 +132,29 @@ export const resolver = {
                     .then(
                         () => {
                             return {
-                                status: 'ok',
+                                ok: true,
                                 message: 'duplicated successfull!'
                             };
                         }
                     ).catch(
                         (err) => {
-
-                            let message = 'Something wrong';
-
-                            if (err.errors) {
-                                message = err.errors[0];
-                            } else if (err.message) {
-                                message = err.message;
-                            }
-
-                            return {
-                                status: 'error',
-                                message
-                            };
+                            throw new error.UnknownError({
+                                data: {
+                                    ok: false
+                                }
+                            });
                         }
                     );
                 }
             ).catch(
-                (err: Error) => {
-                    return {
-                        status: 'error',
-                        message: err
-                    };
+                (err) => {
+                    throw new error.UnknownError({
+                        data: {
+                            ok: false
+                        }
+                    });
                 }
             );
         }
-
-        
-
     },
 };

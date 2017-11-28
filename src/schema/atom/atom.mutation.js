@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*            DEPENDENCIES            */
 /**************************************/
 const index_1 = require("./../../models/index");
+const error = require("./../../core/errorHandler/errors");
 // TODO: Asignar una descripcion y mover al lugar adecuado
 function buildNewAtom(atom, userId) {
     return {
@@ -11,9 +12,9 @@ function buildNewAtom(atom, userId) {
         html: atom.html,
         css: atom.css,
         contextualBg: atom.contextualBg,
-        stores: atom.stores,
-        views: atom.views,
-        likes: atom.likes,
+        stores: 0,
+        views: 0,
+        likes: 0,
         download: atom.download,
         active: true,
         private: false,
@@ -28,7 +29,7 @@ function buildNewAtom(atom, userId) {
 exports.typeDef = `
 # Status
 type Status {
-    status: String!,
+    ok: Boolean!,
     message: String
 }
 
@@ -64,9 +65,16 @@ exports.resolver = {
         createAtom(root, args) {
             return index_1.models.Atom.create(args.input)
                 .then((result) => {
-                return result;
+                return {
+                    ok: true,
+                    message: 'created successful'
+                };
             }).catch((err) => {
-                return err;
+                throw new error.UnknownError({
+                    data: {
+                        ok: false
+                    }
+                });
             });
         },
         /**
@@ -86,27 +94,22 @@ exports.resolver = {
                 return index_1.models.Atom.create(newAtom)
                     .then(() => {
                     return {
-                        status: 'ok',
+                        ok: true,
                         message: 'duplicated successfull!'
                     };
                 }).catch((err) => {
-                    let message = 'Something wrong';
-                    if (err.errors) {
-                        message = err.errors[0];
-                    }
-                    else if (err.message) {
-                        message = err.message;
-                    }
-                    return {
-                        status: 'error',
-                        message
-                    };
+                    throw new error.UnknownError({
+                        data: {
+                            ok: false
+                        }
+                    });
                 });
             }).catch((err) => {
-                return {
-                    status: 'error',
-                    message: err
-                };
+                throw new error.UnknownError({
+                    data: {
+                        ok: false
+                    }
+                });
             });
         }
     },
