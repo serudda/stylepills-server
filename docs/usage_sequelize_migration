@@ -70,6 +70,8 @@ USE SEQUELIZE MIGRATION REMOTELY
 
 1. Correr el comando: 
 heroku run bash --app <nombre_de_la_app>
+DEV: heroku run bash --app stylepills-server-dev
+PRD: heroku run bash --app stylepills-server
 
 2. Para correr las migraciones pendientes, correr el comando:
 npm run sequelize db:migrate
