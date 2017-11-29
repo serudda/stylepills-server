@@ -1,0 +1,2 @@
+# command to deploy in Heroku:
+git push heroku master
