@@ -8,7 +8,6 @@ const fs = require("fs");
 const path = require("path");
 const SequelizeStatic = require("sequelize");
 const config_1 = require("../config/config");
-const logger_1 = require("../core/utils/logger");
 /****************************************/
 /*            DATABASE CLASS            */
 /****************************************/
@@ -18,9 +17,6 @@ class Database {
     constructor() {
         this._basename = path.basename(module.filename);
         let dbConfig = config_1.config.getDatabaseConfig();
-        if (dbConfig.logging) {
-            dbConfig.logging = logger_1.logger.info;
-        }
         SequelizeStatic.cls = cls.createNamespace('sequelize-transaction');
         this._sequelize = new SequelizeStatic(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
         this._models = {};

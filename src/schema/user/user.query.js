@@ -10,6 +10,7 @@ const index_1 = require("./../../models/index");
 exports.typeDef = `
     extend type Query {
         userById(id: ID!): User!
+        userByUsername(username: String!): User!
         allUsers(limit: Int): [User!]!
     }
 `;
@@ -29,6 +30,22 @@ exports.resolver = {
          */
         userById(parent, { id }) {
             return index_1.models.User.findById(id);
+        },
+        /**
+         * @desc Get User by Username
+         * @method Method userByUsername
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IUserArgs} args - destructuring: username
+         * @param {number} username - User's username
+         * @returns {IUser} User entity
+         */
+        userByUsername(parent, { username }) {
+            return index_1.models.User.findOne({
+                where: {
+                    username
+                }
+            });
         },
         /**
          * @desc Get all Users

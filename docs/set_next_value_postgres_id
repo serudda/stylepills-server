@@ -1,0 +1,15 @@
+# Algunas veces cuando llenamos la base desde un archivo SQL o una sentencia SQL
+# Postgres tiene el habito de no restablecer el siguiente numero en la secuencia autoincremental
+
+# Abrir TablePlus y abrir la terminal para escribir comandos SQL
+# Ver el proximo valor en la sequencia de ID autoincrementables
+SELECT nextval('atom_id_seq');
+
+# Cambiamos 'atom_id_seq' por el id que este fallando: <tabla>_id_seq
+
+# Volver a restablecer los ID autoincrementables
+SELECT setval('atom_id_seq', (select max(id) from atom));
+
+# SELECT setval('<tabla>_id_seq', (select max(<primaryKey>) from <tabla>));
+
+# Referencias: https://stackoverflow.com/questions/35029052/sequelize-throwing-id-must-be-unique-on-create
