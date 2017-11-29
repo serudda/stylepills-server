@@ -17,6 +17,7 @@ type Atom {
     active: Boolean
     private: Boolean
     author: User!
+    owner: User!
     category: AtomCategory!
 }
 `;

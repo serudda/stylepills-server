@@ -1,1 +1,1 @@
-{"version":3,"file":"interfaces.js","sourceRoot":"/Users/sergioruizdavila/Documents/Projects/Stylepills/stylepills-server/src/","sources":["utils/interfaces.ts"],"names":[],"mappings":""}
+{"version":3,"file":"interfaces.js","sourceRoot":"/Users/sergioruizdavila/Documents/Projects/Stylepills/stylepills-server/src/","sources":["core/utils/interfaces.ts"],"names":[],"mappings":""}

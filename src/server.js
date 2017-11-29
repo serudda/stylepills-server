@@ -11,10 +11,12 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
 const appConfig = require("./core/constants/app.constants");
+const error = require("./core/errorHandler/errors");
 const config_1 = require("./config/config");
 const functionsUtil_1 = require("./core/utils/functionsUtil");
 const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
+const apolloError = require('apollo-errors');
 // VARIABLES
 let serverConfig = config_1.config.getServerConfig();
 // CONSTANTS
@@ -25,7 +27,7 @@ const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
-    user.dataValues.avatar = profile.image.url;
+    user.dataValues.avatar = profile.image.url.replace('?sz=50', '?sz=200');
     return user;
 };
 // Generate JWT
@@ -71,29 +73,25 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
                 newUser.dataValues.username = functionsUtil_1.functionsUtil.generateUsername(firstname, lastname);
                 // Create new User
                 newUser.save().then(() => {
-                    // Save authenticaton method asociated to the new user
+                    // Save authentication method asociated to the new user
                     newUser.createAuthenticationMethod({
                         type: 'google',
                         externalId: profile.id,
                         token: accessToken,
                         displayName: profile.displayName
-                    }).then(() => {
-                        console.log('USER CREATED SUCCESSFULL!');
+                    })
+                        .then(() => {
                         done(null, generateJWT(newUser, accessToken));
                     }).catch(err => {
-                        // throw err;
-                        return done(err);
+                        throw new error.UnknownError();
                     });
                 }).catch(err => {
-                    // throw err;
-                    return done(err);
+                    throw new error.UnknownError();
                 });
             }
         })
             .catch((err) => {
-            if (err) {
-                return done(err);
-            }
+            throw new error.UnknownError();
         });
     });
 }));
@@ -109,7 +107,7 @@ graphQLServer.use('*', cors());
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
 // INIT GRAPHQL SERVER
-graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({ schema: index_1.default }));
+graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({ formatError: apolloError.formatError, schema: index_1.default }));
 graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ endpointURL: appConfig.DATA }));
 // SET UP GOOGLE AUTH ROUTES
 graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
