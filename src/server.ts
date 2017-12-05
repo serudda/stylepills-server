@@ -83,8 +83,6 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
     (accessToken, refreshToken, profile, done) => {
 
-        console.log('PROFILE DATA: ', profile);
-
         // asynchronous
         process.nextTick(() => {
 

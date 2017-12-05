@@ -49,7 +49,6 @@ const generateJWT = (user, accessToken) => {
 };
 // Register Google Passport strategy
 passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth, (accessToken, refreshToken, profile, done) => {
-    console.log('PROFILE DATA: ', profile);
     // asynchronous
     process.nextTick(() => {
         // Find if the user exists
