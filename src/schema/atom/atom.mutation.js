@@ -5,24 +5,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**************************************/
 const index_1 = require("./../../models/index");
 const error = require("./../../core/errorHandler/errors");
-// TODO: Asignar una descripcion y mover al lugar adecuado
-function buildNewAtom(atom, userId) {
-    return {
-        name: atom.name,
-        html: atom.html,
-        css: atom.css,
-        contextualBg: atom.contextualBg,
-        stores: 0,
-        views: 0,
-        likes: 0,
-        download: atom.download,
-        active: true,
-        private: false,
-        authorId: atom.authorId,
-        ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
-    };
-}
 /*****************************************/
 /*             ATOM MUTATION             */
 /*****************************************/
@@ -34,6 +16,16 @@ type Status {
 }
 
 # Input
+input CodeProps {
+    code: String!,
+    libs: [String]
+}
+
+input AtomCodeProps {
+    codeType: String!,
+    codeProps: CodeProps!
+}
+
 input CreateAtomInput {
     name: String 
     css: String
@@ -47,7 +39,7 @@ extend type Mutation {
 
     createAtom(input: CreateAtomInput!): Atom!
 
-    duplicateAtom(atomId: ID!, userId: ID!): Status!
+    duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
 
     activeAtom(
         id: ID!
@@ -82,15 +74,17 @@ exports.resolver = {
          * @method Method duplicateAtom
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomQueryArgs} args - destructuring: id
-         * @param {number} id - Atom id
+         * @param {IDuplicateAtomArgs} args - destructuring: atomId, userId, atomCode
+         * @param {number} atomId - Atom id
+         * @param {number} userId - User id
+         * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Status} Atom entity
          */
-        duplicateAtom(parent, { atomId, userId }) {
+        duplicateAtom(parent, { atomId, userId, atomCode = null }) {
             return index_1.models.Atom.findById(atomId)
                 .then((result) => {
                 // Build a new atom in order to create on database
-                let newAtom = buildNewAtom(result.dataValues, userId);
+                let newAtom = _buildNewAtom(result.dataValues, userId, atomCode);
                 return index_1.models.Atom.create(newAtom)
                     .then(() => {
                     return {
@@ -113,5 +107,56 @@ exports.resolver = {
             });
         }
     },
+};
+/*****************************************/
+/*            EXTRA FUNCTIONS            */
+/*****************************************/
+/**
+ * @desc Build New Atom Object
+ * @function _buildNewAtom
+ * @private
+ * @param {IAtomAttributes} atom - Atom data object
+ * @param {number} userId - owner id
+ * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
+ * @returns {IAtomAttributes} New Atom data object
+ */
+const _buildNewAtom = (atom, userId, atomCode) => {
+    const html = _extractCode('html', atomCode) || atom.html;
+    const css = _extractCode('css', atomCode) || atom.css;
+    return {
+        name: atom.name,
+        html,
+        css,
+        contextualBg: atom.contextualBg,
+        stores: 0,
+        views: 0,
+        likes: 0,
+        download: atom.download,
+        active: true,
+        private: false,
+        authorId: atom.authorId,
+        ownerId: userId,
+        atomCategoryId: atom.atomCategoryId
+    };
+};
+/**
+ * @desc Extract new code
+ * @function _extractCode
+ * @private
+ * @param {string} type - source code type (html, css, etc)
+ * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
+ * @returns {any}
+ */
+const _extractCode = (type, atomCode) => {
+    let code = null;
+    if (!atomCode) {
+        return code;
+    }
+    atomCode.forEach(atomCodeObj => {
+        if (atomCodeObj.codeType === type) {
+            code = atomCodeObj.codeProps.code;
+        }
+    });
+    return code;
 };
 //# sourceMappingURL=atom.mutation.js.map

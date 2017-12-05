@@ -18,3 +18,7 @@ Commands:
   migration:generate --name <name>  Generates a new migration file       [aliases: migration:create]
   model:generate                    Generates a model and its migration  [aliases: model:create]
   seed:generate                     Generates a new seed file 
+
+
+  PRD Example:
+  npm run sequelize db:migrate

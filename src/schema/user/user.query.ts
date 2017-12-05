@@ -25,8 +25,8 @@ interface IFilterArgs {
 
 export const typeDef = `
     extend type Query {
-        userById(id: ID!): User!
-        userByUsername(username: String!): User!
+        userById(id: ID!): User
+        userByUsername(username: String!): User
         allUsers(limit: Int): [User!]!
     }
 `;
