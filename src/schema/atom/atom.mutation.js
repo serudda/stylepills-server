@@ -148,14 +148,15 @@ const _buildNewAtom = (atom, userId, atomCode) => {
  * @returns {any}
  */
 const _extractCode = (type, atomCode) => {
+    let code = null;
     if (!atomCode) {
-        return null;
+        return code;
     }
-    atomCode.forEach(code => {
-        if (code.codeType === type) {
-            return code.codeProps.code;
+    atomCode.forEach(atomCodeObj => {
+        if (atomCodeObj.codeType === type) {
+            code = atomCodeObj.codeProps.code;
         }
     });
-    return null;
+    return code;
 };
 //# sourceMappingURL=atom.mutation.js.map

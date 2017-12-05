@@ -214,15 +214,17 @@ const _buildNewAtom =
 
 const _extractCode = 
     (type: string, atomCode: Array<IAtomCodeProps>): string => {
+    
+    let code = null;
+    
+    if (!atomCode) { return code; }
 
-    if (!atomCode) { return null; }
-
-    atomCode.forEach(code => {
-        if (code.codeType === type) {
-            return code.codeProps.code;
+    atomCode.forEach(atomCodeObj => {
+        if (atomCodeObj.codeType === type) {
+            code = atomCodeObj.codeProps.code;
         }
     });
 
-    return null;
+    return code;
 
 };
