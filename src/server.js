@@ -28,6 +28,7 @@ const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
     user.dataValues.avatar = profile.image.url.replace('?sz=50', '?sz=200');
+    user.dataValues.about = profile.tagline;
     return user;
 };
 // Generate JWT
@@ -48,6 +49,7 @@ const generateJWT = (user, accessToken) => {
 };
 // Register Google Passport strategy
 passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth, (accessToken, refreshToken, profile, done) => {
+    console.log('PROFILE DATA: ', profile);
     // asynchronous
     process.nextTick(() => {
         // Find if the user exists

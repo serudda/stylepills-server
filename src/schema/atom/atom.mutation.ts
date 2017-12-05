@@ -5,30 +5,19 @@ import { models } from './../../models/index';
 import { IAtom, IAtomAttributes } from './../../models/atom.model';
 import * as error from './../../core/errorHandler/errors';
 
-// TODO: Asignar una descripcion y mover al lugar adecuado
-function buildNewAtom(atom: IAtomAttributes, userId: number): IAtomAttributes {
-    return {
-        name: atom.name,
-        html: atom.html,
-        css: atom.css,
-        contextualBg: atom.contextualBg,
-        stores: 0,
-        views: 0,
-        likes: 0,
-        download: atom.download,
-        active: true,
-        private: false,
-        authorId: atom.authorId,
-        ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
-    };
-}
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
-/* TODO: Analizar muy bien la asignación de la Interface, ya que no estoy seguro como 
-gestionar los objetos anidados (categoria, author, comments, etc) */
+interface ICodeProps {
+    code: string;
+    libs?: Array<string>;
+}
+
+interface IAtomCodeProps {
+    codeType: string;
+    codeProps: ICodeProps;
+}
 
 interface IStatus {
     ok: boolean;
@@ -43,6 +32,7 @@ interface ICreateAtomArgs {
 interface IDuplicateAtomArgs {
     atomId: number;
     userId: number;
+    atomCode: Array<IAtomCodeProps> | null;
 }
 
 
@@ -57,6 +47,16 @@ type Status {
 }
 
 # Input
+input CodeProps {
+    code: String!,
+    libs: [String]
+}
+
+input AtomCodeProps {
+    codeType: String!,
+    codeProps: CodeProps!
+}
+
 input CreateAtomInput {
     name: String 
     css: String
@@ -70,7 +70,7 @@ extend type Mutation {
 
     createAtom(input: CreateAtomInput!): Atom!
 
-    duplicateAtom(atomId: ID!, userId: ID!): Status!
+    duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
 
     activeAtom(
         id: ID!
@@ -112,11 +112,14 @@ export const resolver = {
          * @method Method duplicateAtom
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IAtomQueryArgs} args - destructuring: id
-         * @param {number} id - Atom id
+         * @param {IDuplicateAtomArgs} args - destructuring: atomId, userId, atomCode
+         * @param {number} atomId - Atom id
+         * @param {number} userId - User id
+         * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Status} Atom entity
          */
-        duplicateAtom(parent: any, { atomId, userId }: IDuplicateAtomArgs) {
+
+        duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs) {
             return models.Atom.findById(
                 atomId
             )
@@ -124,7 +127,7 @@ export const resolver = {
                 (result) => {
 
                     // Build a new atom in order to create on database
-                    let newAtom = buildNewAtom(result.dataValues, userId);
+                    let newAtom = _buildNewAtom(result.dataValues, userId, atomCode);
 
                     return models.Atom.create(
                         newAtom
@@ -157,4 +160,69 @@ export const resolver = {
             );
         }
     },
+};
+
+
+/*****************************************/
+/*            EXTRA FUNCTIONS            */
+/*****************************************/
+
+
+/**
+ * @desc Build New Atom Object
+ * @function _buildNewAtom
+ * @private
+ * @param {IAtomAttributes} atom - Atom data object
+ * @param {number} userId - owner id
+ * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
+ * @returns {IAtomAttributes} New Atom data object
+ */
+
+const _buildNewAtom = 
+    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCodeProps>): IAtomAttributes => {
+
+    const html = _extractCode('html', atomCode) || atom.html;
+    const css = _extractCode('css', atomCode) || atom.css;
+    
+    return {
+        name: atom.name,
+        html,
+        css,
+        contextualBg: atom.contextualBg,
+        stores: 0,
+        views: 0,
+        likes: 0,
+        download: atom.download,
+        active: true,
+        private: false,
+        authorId: atom.authorId,
+        ownerId: userId,
+        atomCategoryId: atom.atomCategoryId
+    };
+
+};
+
+
+/**
+ * @desc Extract new code
+ * @function _extractCode
+ * @private
+ * @param {string} type - source code type (html, css, etc)
+ * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
+ * @returns {any}
+ */
+
+const _extractCode = 
+    (type: string, atomCode: Array<IAtomCodeProps>): string => {
+
+    if (!atomCode) { return null; }
+
+    atomCode.forEach(code => {
+        if (code.codeType === type) {
+            return code.codeProps.code;
+        }
+    });
+
+    return null;
+
 };
