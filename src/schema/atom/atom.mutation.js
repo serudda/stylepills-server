@@ -92,6 +92,7 @@ exports.resolver = {
                         message: 'duplicated successfull!'
                     };
                 }).catch((err) => {
+                    console.log(err);
                     throw new error.UnknownError({
                         data: {
                             ok: false,
@@ -100,6 +101,7 @@ exports.resolver = {
                     });
                 });
             }).catch((err) => {
+                console.log(err);
                 throw new error.UnknownError({
                     data: {
                         ok: false,

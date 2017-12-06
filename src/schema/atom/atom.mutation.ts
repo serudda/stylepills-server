@@ -141,6 +141,7 @@ export const resolver = {
                         }
                     ).catch(
                         (err) => {
+                            console.log(err);
                             throw new error.UnknownError({
                                 data: {
                                     ok: false,
@@ -152,6 +153,7 @@ export const resolver = {
                 }
             ).catch(
                 (err) => {
+                    console.log(err);
                     throw new error.UnknownError({
                         data: {
                             ok: false,
