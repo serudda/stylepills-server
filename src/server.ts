@@ -53,6 +53,7 @@ const transformGoogleProfile = (user: any, profile: any, token: string) => {
     user.dataValues.firstname = profile.name.givenName;
     user.dataValues.lastname = profile.name.familyName;
     user.dataValues.avatar = profile.image.url.replace('?sz=50', '?sz=200');
+    user.dataValues.about = profile.tagline;
     
     return user;
 };
