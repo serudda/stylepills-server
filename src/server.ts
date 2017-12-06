@@ -41,6 +41,7 @@ export interface IJwtDecoded {
 
 // VARIABLES
 let serverConfig = config.getServerConfig();
+console.log('serverConfig on server.ts: ', serverConfig.googleAuth.redirectURL);
 
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
@@ -171,8 +172,11 @@ graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope
 
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
 graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK,
-  passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
-  (req, res) => res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`));
+    passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
+    (req, res) => {
+        console.log('redirectURL on Callback: ', serverConfig.googleAuth.redirectURL);
+        res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
+    });
 
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function(req: any, res: any){

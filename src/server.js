@@ -19,6 +19,7 @@ const index_2 = require("./models/index");
 const apolloError = require('apollo-errors');
 // VARIABLES
 let serverConfig = config_1.config.getServerConfig();
+console.log('serverConfig on server.ts: ', serverConfig.googleAuth.redirectURL);
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
@@ -113,7 +114,10 @@ graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ 
 // SET UP GOOGLE AUTH ROUTES
 graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
-graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`));
+graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => {
+    console.log('redirectURL on Callback: ', serverConfig.googleAuth.redirectURL);
+    res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
+});
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function (req, res) {
     req.logout(); // provided by passport
