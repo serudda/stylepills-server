@@ -132,6 +132,7 @@ export const typeDef = `
 
     type AtomPaginated {
         results: [Atom],
+        count: Int,
         cursors: Cursor
     }
 
@@ -280,18 +281,19 @@ export const resolver = {
             const whereQuery: any = paginationQuery ? { $and: [paginationQuery, where] } : where;
 
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
-            return models.Atom.findAll({
+            return models.Atom.findAndCountAll({
                 where: whereQuery,
                 include: includeQuery,
                 limit: limit + 1,
                 order,
-            }).then((results: Array<IAtomInstance>) => {
+            }).then(({rows, count}) => {
                 
                 // Build cursors
-                let cursors = paginationInstance.buildCursors(results);
+                let cursors = paginationInstance.buildCursors(rows);
 
                 return {
-                    results,
+                    results: rows,
+                    count,
                     cursors
                 };
 

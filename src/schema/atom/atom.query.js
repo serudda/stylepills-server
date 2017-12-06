@@ -59,6 +59,7 @@ exports.typeDef = `
 
     type AtomPaginated {
         results: [Atom],
+        count: Int,
         cursors: Cursor
     }
 
@@ -182,16 +183,17 @@ exports.resolver = {
             // Build where query joining filters and pagination
             const whereQuery = paginationQuery ? { $and: [paginationQuery, where] } : where;
             // GET ATOMS BASED ON FILTERS AND PAGINATION ARGUMENTS
-            return index_1.models.Atom.findAll({
+            return index_1.models.Atom.findAndCountAll({
                 where: whereQuery,
                 include: includeQuery,
                 limit: limit + 1,
                 order,
-            }).then((results) => {
+            }).then(({ rows, count }) => {
                 // Build cursors
-                let cursors = paginationInstance.buildCursors(results);
+                let cursors = paginationInstance.buildCursors(rows);
                 return {
-                    results,
+                    results: rows,
+                    count,
                     cursors
                 };
             });
