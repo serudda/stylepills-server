@@ -30,8 +30,8 @@ export const PRD_SERVER_URL = 'https://stylepills-server.herokuapp.com';
 export const LOCAL_CLIENT_URL = 'http://localhost:3000';
 export const DEV_CLIENT_URL = 'https://stylepills-dev.netlify.com';
 export const PRD_CLIENT_URL = 'http://stylepills.co';
-export const ALPHA_CLIENT_URL = 'http://alpha.stylepills.co';
-export const BETA_CLIENT_URL = 'http://beta.stylepills.co';
+export const ALPHA_CLIENT_URL = 'https://alpha.stylepills.co';
+export const BETA_CLIENT_URL = 'https://beta.stylepills.co';
 
 /* Data Base Endpoints */
 export const LOCAL_DATA_URL = `${LOCAL_SERVER_URL}${DATA}`;
