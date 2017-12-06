@@ -41,12 +41,11 @@ export interface IJwtDecoded {
 
 // VARIABLES
 let serverConfig = config.getServerConfig();
-console.log('serverConfig on server.ts: ', serverConfig.googleAuth.redirectURL);
 
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
-
+console.log('BASE_AUTH_GOOGLE_CALLBACK: ', BASE_AUTH_GOOGLE_CALLBACK);
 
 // Transform Google profile into user object
 const transformGoogleProfile = (user: any, profile: any, token: string) => {

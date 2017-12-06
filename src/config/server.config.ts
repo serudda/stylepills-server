@@ -1,4 +1,3 @@
-import { ALPHA } from './../core/constants/app.constants';
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -26,6 +25,7 @@ export interface IServerConfig {
 }
 
 function _getCallBackUrl(env: string): string {
+
     switch (env) {
         case appConfig.LOCAL:
             return appConfig.LOCAL_AUTH_GOOGLE_CALLBACK_URL;
@@ -41,6 +41,7 @@ function _getCallBackUrl(env: string): string {
         default:
             return appConfig.LOCAL_AUTH_GOOGLE_CALLBACK_URL;
     }
+    
 }
 
 function _getRedirectUrl(env: string): string {
@@ -71,8 +72,6 @@ function _getRedirectUrl(env: string): string {
 /*            SERVER CONFIG             */
 /****************************************/
 export function serverConfig(env: string): IServerConfig {
-
-    console.log('ENV: ', env);
 
     return {
         port: appConfig.PORT,
