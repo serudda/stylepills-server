@@ -50,6 +50,12 @@ function _getRedirectUrl(env: string): string {
         
         case appConfig.PRD:
             return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
+        
+        case appConfig.ALPHA:
+            return appConfig.ALPHA_GOOGLE_AUTH_REDIRECT_URL;
+
+        case appConfig.BETA:
+            return appConfig.BETA_GOOGLE_AUTH_REDIRECT_URL;
 
         default:
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
