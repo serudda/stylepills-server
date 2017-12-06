@@ -94,14 +94,16 @@ exports.resolver = {
                 }).catch((err) => {
                     throw new error.UnknownError({
                         data: {
-                            ok: false
+                            ok: false,
+                            message: err
                         }
                     });
                 });
             }).catch((err) => {
                 throw new error.UnknownError({
                     data: {
-                        ok: false
+                        ok: false,
+                        message: err
                     }
                 });
             });

@@ -143,7 +143,8 @@ export const resolver = {
                         (err) => {
                             throw new error.UnknownError({
                                 data: {
-                                    ok: false
+                                    ok: false,
+                                    message: err
                                 }
                             });
                         }
@@ -153,7 +154,8 @@ export const resolver = {
                 (err) => {
                     throw new error.UnknownError({
                         data: {
-                            ok: false
+                            ok: false,
+                            message: err
                         }
                     });
                 }
