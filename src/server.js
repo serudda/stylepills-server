@@ -19,10 +19,10 @@ const index_2 = require("./models/index");
 const apolloError = require('apollo-errors');
 // VARIABLES
 let serverConfig = config_1.config.getServerConfig();
-console.log('serverConfig on server.ts: ', serverConfig.googleAuth.redirectURL);
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
+console.log('BASE_AUTH_GOOGLE_CALLBACK: ', BASE_AUTH_GOOGLE_CALLBACK);
 // Transform Google profile into user object
 const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;

@@ -10,6 +10,8 @@ function _getCallBackUrl(env) {
             return appConfig.LOCAL_AUTH_GOOGLE_CALLBACK_URL;
         case appConfig.DEV:
             return appConfig.DEV_AUTH_GOOGLE_CALLBACK_URL;
+        case appConfig.ALPHA:
+        case appConfig.BETA:
         case appConfig.PRD:
             return appConfig.PRD_AUTH_GOOGLE_CALLBACK_URL;
         default:
@@ -18,31 +20,24 @@ function _getCallBackUrl(env) {
 }
 function _getRedirectUrl(env) {
     switch (env) {
-        case appConfig.LOCAL: {
-            console.log('LOCAL');
+        case appConfig.LOCAL:
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
-        }
         case appConfig.DEV:
             return appConfig.DEV_GOOGLE_AUTH_REDIRECT_URL;
         case appConfig.PRD:
             return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
-        case appConfig.ALPHA: {
-            console.log('ALPHA', appConfig.ALPHA_GOOGLE_AUTH_REDIRECT_URL);
+        case appConfig.ALPHA:
             return appConfig.ALPHA_GOOGLE_AUTH_REDIRECT_URL;
-        }
         case appConfig.BETA:
             return appConfig.BETA_GOOGLE_AUTH_REDIRECT_URL;
-        default: {
-            console.log('DEFAULT', appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL);
+        default:
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
-        }
     }
 }
 /****************************************/
 /*            SERVER CONFIG             */
 /****************************************/
 function serverConfig(env) {
-    console.log('ENV: ', env);
     return {
         port: appConfig.PORT,
         auth: {
