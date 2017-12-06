@@ -11,6 +11,8 @@ export const PORT = 4000;
 export const LOCAL = 'local';
 export const DEV = 'development';
 export const PRD = 'production';
+export const ALPHA = 'alpha';
+export const BETA = 'beta';
 
 /* Base Endpoints */
 export const DATA = '/graphql';
@@ -28,6 +30,8 @@ export const PRD_SERVER_URL = 'https://stylepills-server.herokuapp.com';
 export const LOCAL_CLIENT_URL = 'http://localhost:3000';
 export const DEV_CLIENT_URL = 'https://stylepills-dev.netlify.com';
 export const PRD_CLIENT_URL = 'http://stylepills.co';
+export const ALPHA_CLIENT_URL = 'https://alpha.stylepill.io';
+export const BETA_CLIENT_URL = 'https://beta.stylepill.io';
 
 /* Data Base Endpoints */
 export const LOCAL_DATA_URL = `${LOCAL_SERVER_URL}${DATA}`;
@@ -52,6 +56,8 @@ export const PRD_AUTH_GOOGLE_CALLBACK_URL = `${PRD_AUTH_GOOGLE_URL}${AUTH_CALLBA
 export const LOCAL_GOOGLE_AUTH_REDIRECT_URL = `${LOCAL_CLIENT_URL}/explore?token=`;
 export const DEV_GOOGLE_AUTH_REDIRECT_URL = `${DEV_CLIENT_URL}/explore?token=`;
 export const PRD_GOOGLE_AUTH_REDIRECT_URL = `${PRD_CLIENT_URL}/explore?token=`;
+export const ALPHA_GOOGLE_AUTH_REDIRECT_URL = `${ALPHA_CLIENT_URL}/explore?token=`;
+export const BETA_GOOGLE_AUTH_REDIRECT_URL = `${BETA_CLIENT_URL}/explore?token=`;
 
 /* Auth Logout Base Endpoints */
 export const LOCAL_AUTH_LOGOUT_URL = `${LOCAL_SERVER_URL}${AUTH_LOGOUT}`;

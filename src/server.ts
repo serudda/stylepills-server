@@ -46,7 +46,6 @@ let serverConfig = config.getServerConfig();
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
 
-
 // Transform Google profile into user object
 const transformGoogleProfile = (user: any, profile: any, token: string) => {
     user.dataValues.email = profile.emails[0].value;
@@ -171,8 +170,10 @@ graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope
 
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
 graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK,
-  passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
-  (req, res) => res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`));
+    passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
+    (req, res) => {
+        res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
+    });
 
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function(req: any, res: any){

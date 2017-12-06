@@ -113,7 +113,9 @@ graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ 
 // SET UP GOOGLE AUTH ROUTES
 graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
-graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`));
+graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => {
+    res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
+});
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function (req, res) {
     req.logout(); // provided by passport

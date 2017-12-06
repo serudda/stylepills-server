@@ -24,6 +24,8 @@ function databaseConfig(env) {
     let host = null;
     let port = null;
     if (env === 'production' ||
+        env === 'alpha' ||
+        env === 'beta' ||
         env === 'development') {
         match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
         host = match[3];
@@ -59,6 +61,8 @@ function databaseConfig(env) {
                 },
                 logging: true
             };
+        case 'alpha':
+        case 'beta':
         case 'production':
             return {
                 use_env_variable: 'DATABASE_URL',
