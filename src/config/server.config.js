@@ -18,24 +18,31 @@ function _getCallBackUrl(env) {
 }
 function _getRedirectUrl(env) {
     switch (env) {
-        case appConfig.LOCAL:
+        case appConfig.LOCAL: {
+            console.log('LOCAL');
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+        }
         case appConfig.DEV:
             return appConfig.DEV_GOOGLE_AUTH_REDIRECT_URL;
         case appConfig.PRD:
             return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
-        case appConfig.ALPHA:
+        case appConfig.ALPHA: {
+            console.log('ALPHA', appConfig.ALPHA_GOOGLE_AUTH_REDIRECT_URL);
             return appConfig.ALPHA_GOOGLE_AUTH_REDIRECT_URL;
+        }
         case appConfig.BETA:
             return appConfig.BETA_GOOGLE_AUTH_REDIRECT_URL;
-        default:
+        default: {
+            console.log('DEFAULT', appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL);
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
+        }
     }
 }
 /****************************************/
 /*            SERVER CONFIG             */
 /****************************************/
 function serverConfig(env) {
+    console.log('ENV: ', env);
     return {
         port: appConfig.PORT,
         auth: {
