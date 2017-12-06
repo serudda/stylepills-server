@@ -100,6 +100,13 @@ exports.resolver = {
                     });
                 });
             }).catch((err) => {
+                /* TODO: El sistema de throw error no funciona muy bien. No es diciente.
+                Para saber cual era el error tuve que poner un console log con 'err'
+                malisimo. Una manera de testar esto, es cambiando el id del usuario
+                logueado en el localStorage por unmo que no exista en la base, asi cuando
+                quiero duplicar, va a fallar aqui diciendo que el user con id X no existe en
+                base. Asi puedo arreglar el tema de Throw exception, lo que deberia pasar, es que
+                me mande el ok: false, y un mensaje explicito para poder actuar rapidamente */
                 throw new error.UnknownError({
                     data: {
                         ok: false,
