@@ -4,6 +4,7 @@
 
 import * as SequelizeStatic from 'sequelize';
 
+
 // Accepted Operators aliases
 const Op = SequelizeStatic.Op;
 const operatorsAliases = {
@@ -30,7 +31,7 @@ export interface IDatabaseConfig {
     dialect: string;
     operatorsAliases: any;
     define: {underscored: boolean};
-    logging: boolean | Function;
+    logging: boolean;
 }
 
 

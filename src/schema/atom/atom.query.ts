@@ -6,7 +6,10 @@ import { Buffer } from 'buffer';
 
 import { models, sequelize } from './../../models/index';
 import { Pagination, ICursorsResult }  from './../../core/utils/pagination';
+
 import * as appConfig from './../../core/constants/app.constants';
+import { functionsUtil } from './../../core/utils/functionsUtil';
+
 import { IAtomInstance } from './../../models/atom.model';
 
 
@@ -228,6 +231,8 @@ export const resolver = {
             pagination = <IAtomPaginationArgs> {},
             include = <IAtomIncludeArgs> null
         }: IAtomQueryArgs) {
+
+            functionsUtil.consoleLog('LOG: TEST');
 
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;

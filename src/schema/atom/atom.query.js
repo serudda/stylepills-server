@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./../../models/index");
 const pagination_1 = require("./../../core/utils/pagination");
 const appConfig = require("./../../core/constants/app.constants");
+const functionsUtil_1 = require("./../../core/utils/functionsUtil");
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
     // Init Filter
@@ -139,6 +140,7 @@ exports.resolver = {
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
         searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {}, include = null }) {
+            functionsUtil_1.functionsUtil.consoleLog('LOG: TEST');
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;

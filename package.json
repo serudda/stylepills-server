@@ -28,6 +28,7 @@
     "@types/jsonwebtoken": "^7.2.3",
     "@types/lodash": "^4.14.74",
     "@types/mkdirp": "^0.5.1",
+    "@types/morgan": "^1.7.35",
     "@types/passport": "^0.4.1",
     "@types/passport-google-oauth": "^1.0.36",
     "@types/passport-oauth2": "^1.4.3",
@@ -65,6 +66,7 @@
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
+    "morgan": "^1.9.0",
     "nodemon": "^1.9.1",
     "npm-run-all": "^4.1.1",
     "passport": "^0.4.0",
@@ -99,24 +101,5 @@
     "nodemon": "^1.9.1",
     "npm-run-all": "^4.1.1",
     "tsc-watch": "^1.0.8"
-  },
-  "peerDependencies": {
-    "graphql": "^0.5.0 || ^0.6.0"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "airbnb/base",
-      "plugin:import/errors"
-    ],
-    "rules": {
-      "no-use-before-define": 0,
-      "arrow-body-style": 0,
-      "dot-notation": 0,
-      "no-console": 0
-    },
-    "env": {
-      "mocha": true
-    }
   }
 }

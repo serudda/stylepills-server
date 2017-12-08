@@ -5,16 +5,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /****************************************/
 exports.loggingConfig = {
     file: {
-        level: 'error',
-        filename: 'stylepills_db.log',
+        level: 'silly',
+        filename: 'all-logs.log',
         handleExceptions: true,
         json: true,
         maxsize: 5242880,
-        maxFiles: 100,
-        colorize: false
+        maxFiles: 5,
+        colorize: true
     },
     console: {
-        level: 'error',
+        level: 'silly',
         handleExceptions: true,
         json: false,
         colorize: true

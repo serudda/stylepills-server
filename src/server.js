@@ -10,9 +10,11 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
+const morgan = require("morgan");
 const appConfig = require("./core/constants/app.constants");
 const error = require("./core/errorHandler/errors");
 const config_1 = require("./config/config");
+const logger_1 = require("./core/utils/logger");
 const functionsUtil_1 = require("./core/utils/functionsUtil");
 const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
@@ -104,6 +106,8 @@ passport.deserializeUser((user, done) => done(null, user));
 const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
+// ADD CUSTOM LOGGER
+graphQLServer.use(morgan('dev'));
 // INIT PASSPORT
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
@@ -121,7 +125,7 @@ graphQLServer.get(appConfig.AUTH_LOGOUT, function (req, res) {
     req.logout(); // provided by passport
     res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
 });
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(`GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`));
+graphQLServer.listen(GRAPHQL_PORT, () => logger_1.logger.info(`GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`));
 /*
     guides used to manage auth with passportJS:
     https://scotch.io/tutorials/easy-node-authentication-setup-and-local

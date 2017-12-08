@@ -10,11 +10,13 @@ import * as cookieParser from 'cookie-parser';
 import * as jwt from 'jsonwebtoken';
 import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
+import * as morgan from 'morgan';
 
 import * as appConfig from './core/constants/app.constants';
 import * as error from './core/errorHandler/errors';
 import { config } from './config/config';
 
+import { logger } from './core/utils/logger';
 import { functionsUtil } from './core/utils/functionsUtil';
 
 import schema from './schema/index';
@@ -157,6 +159,9 @@ const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
 
+// ADD CUSTOM LOGGER
+graphQLServer.use(morgan('dev'));
+
 // INIT PASSPORT
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
@@ -181,7 +186,7 @@ graphQLServer.get(appConfig.AUTH_LOGOUT, function(req: any, res: any){
     res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
 });
 
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(
+graphQLServer.listen(GRAPHQL_PORT, () => logger.info(
     `GraphiQL is now running on http://localhost:${GRAPHQL_PORT}/graphiql`
 ));
 
