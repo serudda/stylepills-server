@@ -37,6 +37,7 @@
     "@types/sequelize": "^4.0.78",
     "@types/uuid": "^3.4.3",
     "@types/winston": "^2.3.5",
+    "apollo-engine": "^0.6.1",
     "apollo-errors": "^1.5.1",
     "apollo-server-express": "^1.0.2",
     "babel-cli": "^6.5.1",

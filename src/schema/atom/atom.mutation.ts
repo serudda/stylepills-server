@@ -5,7 +5,6 @@ import { logger } from './../../core/utils/logger';
 
 import { models } from './../../models/index';
 import { IAtom, IAtomAttributes } from './../../models/atom.model';
-import * as error from './../../core/errorHandler/errors';
 
 
 /************************************/
@@ -103,11 +102,8 @@ export const resolver = {
                 }
             ).catch(
                 (err) => {
-                    throw new error.UnknownError({
-                        data: {
-                            ok: false
-                        }
-                    });
+                    // LOG
+                    logger.log('error', 'Mutation: createAtom', { err });
                 }
             );
         },
@@ -152,33 +148,14 @@ export const resolver = {
                     ).catch(
                         (err) => {
                             // LOG
-                            logger.log('error', 'Mutation: duplicateAtom', err);
-                            throw new error.UnknownError({
-                                data: {
-                                    ok: false,
-                                    message: err
-                                }
-                            });
+                            logger.log('error', 'Mutation: duplicateAtom', { err });
                         }
                     );
                 }
             ).catch(
                 (err) => {
-                    /* TODO: El sistema de throw error no funciona muy bien. No es diciente.
-                    Para saber cual era el error tuve que poner un console log con 'err'
-                    malisimo. Una manera de testar esto, es cambiando el id del usuario
-                    logueado en el localStorage por unmo que no exista en la base, asi cuando
-                    quiero duplicar, va a fallar aqui diciendo que el user con id X no existe en
-                    base. Asi puedo arreglar el tema de Throw exception, lo que deberia pasar, es que
-                    me mande el ok: false, y un mensaje explicito para poder actuar rapidamente */
                     // LOG
-                    logger.log('error', 'Mutation: duplicateAtom', err);
-                    throw new error.UnknownError({
-                        data: {
-                            ok: false,
-                            message: err
-                        }
-                    });
+                    logger.log('error', 'Mutation: duplicateAtom', { err });
                 }
             );
         }

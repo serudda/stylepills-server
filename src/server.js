@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const express = require("express");
 const apollo_server_express_1 = require("apollo-server-express");
+const apollo_engine_1 = require("apollo-engine");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
@@ -13,19 +14,29 @@ const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
 const morgan = require("morgan");
 const appConfig = require("./core/constants/app.constants");
-const error = require("./core/errorHandler/errors");
 const config_1 = require("./config/config");
 const logger_1 = require("./core/utils/logger");
 const functionsUtil_1 = require("./core/utils/functionsUtil");
 const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
-const apolloError = require('apollo-errors');
 // VARIABLES
 let accessLogStream = fs.createWriteStream(__dirname + '/logs/access.log', { flags: 'a' });
 let serverConfig = config_1.config.getServerConfig();
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
 const BASE_AUTH_GOOGLE_CALLBACK = `${appConfig.AUTH_GOOGLE}${appConfig.AUTH_CALLBACK}`;
+const engine = new apollo_engine_1.Engine({
+    graphqlPort: parseInt(process.env.PORT, 10) || serverConfig.port,
+    engineConfig: {
+        apiKey: 'service:sruda-stylepills-production:SqjTHDVozUZ1VrirYhcpIw',
+        logging: {
+            level: 'debug'
+        }
+    },
+    endpoint: appConfig.DATA,
+    dumpTraffic: true
+});
+engine.start();
 // Transform Google profile into user object
 const transformGoogleProfile = (user, profile, token) => {
     user.dataValues.email = profile.emails[0].value;
@@ -96,15 +107,18 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
                         logger_1.logger.log('info', 'Google Auth: user created successfull', { email: newUser.getDataValue('email') });
                         done(null, generateJWT(newUser, accessToken));
                     }).catch(err => {
-                        throw new error.UnknownError();
+                        // LOG
+                        logger_1.logger.log('error', 'Google Auth: newUser.createAuthenticationMethod', { err });
                     });
                 }).catch(err => {
-                    throw new error.UnknownError();
+                    // LOG
+                    logger_1.logger.log('error', 'Google Auth: newUser.save', { err });
                 });
             }
         })
             .catch(err => {
-            throw new error.UnknownError();
+            // LOG
+            logger_1.logger.log('error', 'Google Auth: models.User.findOne', { err });
         });
     });
 }));
@@ -116,32 +130,21 @@ passport.deserializeUser((user, done) => done(null, user));
 const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
-// ADD CUSTOM LOGGER
-// graphQLServer.use(morgan('dev'));
-/*graphQLServer.use(morgan(`
-    {
-        "remote_addr": ":remote-addr",
-        "remote_user": ":remote-user",
-        "date": ":date[clf]",
-        "method": ":method",
-        "url": ":url",
-        "http_version": ":http-version",
-        "status": ":status",
-        "result_length": ":res[content-length]",
-        "referrer": ":referrer",
-        "user_agent": ":user-agent",
-        "response_time": ":response-time"
-    }`,
-    {stream: accessLogStream}));*/
+// ADD CUSTOM MIDDLEWARES (LOGGER, EXCEPTION AND APOLLO ENGINE TRACING)
 graphQLServer.use(logger_1.loggerMiddleware);
 graphQLServer.use(logger_1.exceptionMiddleware);
+graphQLServer.use(engine.expressMiddleware());
+process.on('uncaughtException', logger_1.logAndCrash);
 graphQLServer.use(morgan('combined', { stream: accessLogStream }));
 // INIT PASSPORT
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
-process.on('uncaughtException', logger_1.logAndCrash);
 // INIT GRAPHQL SERVER
-graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({ formatError: apolloError.formatError, schema: index_1.default }));
+graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({
+    schema: index_1.default,
+    context: {},
+    tracing: true
+}));
 graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ endpointURL: appConfig.DATA }));
 // SET UP GOOGLE AUTH ROUTES
 graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
