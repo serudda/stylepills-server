@@ -67,7 +67,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true // NOTE: 1
                 },
-                logging: true
+                logging: false // NOTE: 2
             };
 
         case 'development':
@@ -83,7 +83,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
     
         case 'alpha':
@@ -116,7 +116,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
     }
 
@@ -128,4 +128,8 @@ export function databaseConfig(env: string): IDatabaseConfig {
 generadas por Sequelize e.g. created_at, updated_at, user_id, etc. se generarian camelCase, y no es 
 recomendable ese Naming Conventions
 references: https://www.youtube.com/watch?v=Q-hyZDW8S0E
+
+(2) Al activarlo lo que logramos hacer es poder ver las sentencias SQL en la terminal. Esto deberia
+activarse y desactivarse dependiendo lo que se necesite en su momento. (IMPORTANTE: Esto no 
+deshabilita el logger por consola)
 */

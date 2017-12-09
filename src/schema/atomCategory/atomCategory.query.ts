@@ -2,6 +2,7 @@
 /*           DEPENDENCIES           */
 /************************************/
 import { models, sequelize } from './../../models/index';
+import { logger } from './../../core/utils/logger';
 
 
 /************************************/
@@ -38,6 +39,8 @@ export const resolver = {
          * @returns {Array<IAtomCategory>} Atom's categories list
          */
         allAtomCategories() {
+            // LOG
+            logger.log('info', 'Query: allAtomCategories');
             return models.AtomCategory.findAll({
                 where: {
                     active: true
@@ -47,6 +50,8 @@ export const resolver = {
     },
     AtomCategory: {
         atoms(atomCategory: any) {
+            // LOG
+            logger.log('info', 'Query (AtomCategory): getAtoms');
             return atomCategory.getAtoms();
         }
     }

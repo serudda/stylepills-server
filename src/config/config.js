@@ -1,8 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/***************************************/
-/*            DEPENDENCIES             */
-/***************************************/
 const database_config_1 = require("./database.config");
 const logging_config_1 = require("./logging.config");
 const server_config_1 = require("./server.config");

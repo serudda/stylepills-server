@@ -7,6 +7,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as csurf from 'csurf';
 import * as cookieParser from 'cookie-parser';
+import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
 import * as passport from 'passport';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
@@ -16,7 +17,7 @@ import * as appConfig from './core/constants/app.constants';
 import * as error from './core/errorHandler/errors';
 import { config } from './config/config';
 
-import { logger } from './core/utils/logger';
+import { logger, exceptionMiddleware, loggerMiddleware, logAndCrash } from './core/utils/logger';
 import { functionsUtil } from './core/utils/functionsUtil';
 
 import schema from './schema/index';
@@ -42,6 +43,7 @@ export interface IJwtDecoded {
 }
 
 // VARIABLES
+let accessLogStream = fs.createWriteStream(__dirname + '/logs/access.log', {flags: 'a'});
 let serverConfig = config.getServerConfig();
 
 // CONSTANTS
@@ -84,6 +86,9 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
     (accessToken, refreshToken, profile, done) => {
 
+        // LOG
+        logger.log('info', 'Google Auth: Register requested', { accessToken });
+
         // asynchronous
         process.nextTick(() => {
 
@@ -97,11 +102,15 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
 
                 // If user exists
                 if (user) {
-
+                    // LOG
+                    logger.log('info', 'Google Auth: user already exists', { email: user.getDataValue('email') });
                     return done(null, generateJWT(user, accessToken));
 
                 // If user does not exists
                 } else {
+
+                    // LOG
+                    logger.log('info', 'Google Auth: creating user...');
                     
                     // create a new User instance
                     let newUser = models.User.build(null, {include: [{
@@ -126,6 +135,13 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
                         })
                         .then(
                             () => {
+                                // LOG
+                                logger.log(
+                                    'info', 
+                                    'Google Auth: user created successfull', 
+                                    { email: newUser.getDataValue('email') }
+                                );
+
                                 done(null, generateJWT(newUser, accessToken));
                             }
                         ).catch(err => { 
@@ -137,7 +153,7 @@ passport.use(new GoogleStrategy(serverConfig.googleAuth,
                 }
 
             })
-            .catch((err) => {
+            .catch(err => {
                 throw new error.UnknownError();
             });
 
@@ -160,11 +176,33 @@ const graphQLServer = express();
 graphQLServer.use('*', cors());
 
 // ADD CUSTOM LOGGER
-graphQLServer.use(morgan('dev'));
+// graphQLServer.use(morgan('dev'));
+/*graphQLServer.use(morgan(`
+    {
+        "remote_addr": ":remote-addr", 
+        "remote_user": ":remote-user", 
+        "date": ":date[clf]", 
+        "method": ":method", 
+        "url": ":url", 
+        "http_version": ":http-version", 
+        "status": ":status", 
+        "result_length": ":res[content-length]", 
+        "referrer": ":referrer", 
+        "user_agent": ":user-agent", 
+        "response_time": ":response-time"
+    }`, 
+    {stream: accessLogStream}));*/
+
+graphQLServer.use(loggerMiddleware);
+graphQLServer.use(exceptionMiddleware);
+
+graphQLServer.use(morgan('combined', {stream: accessLogStream}));
 
 // INIT PASSPORT
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
+
+process.on('uncaughtException', logAndCrash);
 
 // INIT GRAPHQL SERVER
 graphQLServer.use(appConfig.DATA, bodyParser.json(), graphqlExpress({ formatError: apolloError.formatError , schema }));
@@ -177,11 +215,15 @@ graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope
 graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK,
     passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
     (req, res) => {
+        // LOG
+        logger.log('info', 'Google Auth: Log In finished');
         res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
     });
 
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function(req: any, res: any){
+    // LOG
+    logger.log('info', 'Log Out request');
     req.logout(); // provided by passport
     res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
 });

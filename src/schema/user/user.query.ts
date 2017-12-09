@@ -2,6 +2,7 @@
 /*           DEPENDENCIES           */
 /************************************/
 import { models, sequelize } from './../../models/index';
+import { logger } from './../../core/utils/logger';
 
 
 /************************************/
@@ -49,6 +50,8 @@ export const resolver = {
          * @returns {IUser} User entity
          */
         userById(parent: any, { id }: IUserArgs) {
+            // LOG
+            logger.log('info', 'Query: userById');
             return models.User.findById(id);
         },
 
@@ -62,6 +65,8 @@ export const resolver = {
          * @returns {IUser} User entity
          */
         userByUsername(parent: any, { username }: IUserArgs) {
+            // LOG
+            logger.log('info', 'Query: userByUsername');
             return models.User.findOne({
                 where: {
                     username
@@ -79,6 +84,8 @@ export const resolver = {
          * @returns {Array<IUser>} Users list
          */
         allUsers(parent: any, { limit }: IUserArgs) {
+            // LOG
+            logger.log('info', 'Query: allUsers');
             return models.User.findAll({
                 limit,
                 where: {
@@ -89,6 +96,8 @@ export const resolver = {
     },
     User: {
         atoms(user: any) {
+            // LOG
+            logger.log('info', 'Query (User): getAtoms');
             return user.getAtoms();
         }
     }

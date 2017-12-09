@@ -1,5 +1,9 @@
 "use strict";
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
 /****************************************/
 /*            LOGGING CONFIG            */
 /****************************************/
@@ -11,13 +15,23 @@ exports.loggingConfig = {
         json: true,
         maxsize: 5242880,
         maxFiles: 5,
-        colorize: true
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     console: {
         level: 'silly',
         handleExceptions: true,
         json: false,
-        colorize: true
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     directory: __dirname
 };

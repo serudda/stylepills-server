@@ -1,6 +1,8 @@
 /***************************************/
 /*            DEPENDENCIES             */
 /***************************************/
+import { logger } from './../core/utils/logger';
+
 import { databaseConfig, IDatabaseConfig } from './database.config';
 import { loggingConfig, ILoggingConfig } from './logging.config';
 import { serverConfig, IServerConfig } from './server.config';

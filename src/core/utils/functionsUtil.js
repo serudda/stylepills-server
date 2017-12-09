@@ -99,6 +99,18 @@ class FunctionsUtil {
             logger_1.logger.warn(message);
         }
     }
+    extend(origin, add) {
+        // Don't do anything if add isn't an object
+        if (!add || typeof add !== 'object') {
+            return origin;
+        }
+        var keys = Object.keys(add);
+        var i = keys.length;
+        while (i--) {
+            origin[keys[i]] = add[keys[i]];
+        }
+        return origin;
+    }
 }
 /* Export FunctionUtils instance */
 exports.functionsUtil = new FunctionsUtil();

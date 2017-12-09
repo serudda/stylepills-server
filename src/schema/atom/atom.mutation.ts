@@ -1,6 +1,8 @@
 /**************************************/
 /*            DEPENDENCIES            */
 /**************************************/
+import { logger } from './../../core/utils/logger';
+
 import { models } from './../../models/index';
 import { IAtom, IAtomAttributes } from './../../models/atom.model';
 import * as error from './../../core/errorHandler/errors';
@@ -87,6 +89,10 @@ extend type Mutation {
 export const resolver = {
     Mutation: {
         createAtom(root: any, args: ICreateAtomArgs) {
+
+            // LOG
+            logger.log('info', 'Mutation: createAtom');
+            
             return models.Atom.create(args.input)
             .then(
                 (result) => {
@@ -120,6 +126,10 @@ export const resolver = {
          */
 
         duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs) {
+
+            // LOG
+            logger.log('info', 'Mutation: duplicateAtom');
+
             return models.Atom.findById(
                 atomId
             )

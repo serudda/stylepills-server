@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /**************************************/
 /*            DEPENDENCIES            */
 /**************************************/
+const logger_1 = require("./../../core/utils/logger");
 const index_1 = require("./../../models/index");
 const error = require("./../../core/errorHandler/errors");
 /*****************************************/
@@ -55,6 +56,8 @@ extend type Mutation {
 exports.resolver = {
     Mutation: {
         createAtom(root, args) {
+            // LOG
+            logger_1.logger.log('info', 'Mutation: createAtom');
             return index_1.models.Atom.create(args.input)
                 .then((result) => {
                 return {
@@ -81,6 +84,8 @@ exports.resolver = {
          * @returns {Status} Atom entity
          */
         duplicateAtom(parent, { atomId, userId, atomCode = null }) {
+            // LOG
+            logger_1.logger.log('info', 'Mutation: duplicateAtom');
             return index_1.models.Atom.findById(atomId)
                 .then((result) => {
                 // Build a new atom in order to create on database

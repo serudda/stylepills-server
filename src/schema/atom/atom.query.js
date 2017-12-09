@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./../../models/index");
 const pagination_1 = require("./../../core/utils/pagination");
 const appConfig = require("./../../core/constants/app.constants");
-const functionsUtil_1 = require("./../../core/utils/functionsUtil");
+const logger_1 = require("./../../core/utils/logger");
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
 function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
     // Init Filter
@@ -89,6 +89,8 @@ exports.resolver = {
          * @returns {IAtom} Atom entity
          */
         atomById(parent, { id }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: atomById');
             return index_1.models.Atom.findById(id);
         },
         /**
@@ -101,6 +103,8 @@ exports.resolver = {
          * @returns {Array<IAtom>} Atoms list
          */
         allAtoms(parent, { limit = appConfig.ATOM_SEARCH_LIMIT }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: allAtoms');
             return index_1.models.Atom.findAll({
                 limit,
                 where: {
@@ -119,6 +123,8 @@ exports.resolver = {
          * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
          */
         atomsByCategory(parent, { filter, limit = appConfig.ATOM_SEARCH_LIMIT }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: atomsByCategory');
             return index_1.models.Atom.findAll({
                 limit,
                 where: {
@@ -140,7 +146,8 @@ exports.resolver = {
          * @returns {Array<Atom>} Atoms List based on a pagination params
          */
         searchAtoms(parent, { filter = {}, sortBy = appConfig.ATOM_SEARCH_ORDER_BY_DEFAULT, pagination = {}, include = null }) {
-            functionsUtil_1.functionsUtil.consoleLog('LOG: TEST');
+            // LOG
+            logger_1.logger.log('info', 'Query: searchAtoms');
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
             let { isPrivate = false, atomCategoryId, text } = filter;
@@ -196,20 +203,30 @@ exports.resolver = {
                     results,
                     cursors
                 };
+            }).catch((err) => {
+                // throw err;
             });
         }
     },
     Atom: {
         comments(atom) {
+            // LOG
+            logger_1.logger.log('info', 'Query: (Atom) getComments');
             return atom.getComments();
         },
         author(atom) {
+            // LOG
+            logger_1.logger.log('info', 'Query: (Atom) getAuthor');
             return atom.getAuthor();
         },
         owner(atom) {
+            // LOG
+            logger_1.logger.log('info', 'Query: (Atom) getOwner');
             return atom.getOwner();
         },
         category(atom) {
+            // LOG
+            logger_1.logger.log('info', 'Query: (Atom) getAtomCategory');
             return atom.getAtomCategory();
         }
     }

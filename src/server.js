@@ -7,6 +7,7 @@ const express = require("express");
 const apollo_server_express_1 = require("apollo-server-express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const passport_google_oauth_1 = require("passport-google-oauth");
@@ -20,6 +21,7 @@ const index_1 = require("./schema/index");
 const index_2 = require("./models/index");
 const apolloError = require('apollo-errors');
 // VARIABLES
+let accessLogStream = fs.createWriteStream(__dirname + '/logs/access.log', { flags: 'a' });
 let serverConfig = config_1.config.getServerConfig();
 // CONSTANTS
 const GRAPHQL_PORT = process.env.PORT || serverConfig.port;
@@ -51,6 +53,8 @@ const generateJWT = (user, accessToken) => {
 };
 // Register Google Passport strategy
 passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth, (accessToken, refreshToken, profile, done) => {
+    // LOG
+    logger_1.logger.log('info', 'Google Auth: Register requested', { accessToken });
     // asynchronous
     process.nextTick(() => {
         // Find if the user exists
@@ -62,10 +66,14 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
         }).then((user) => {
             // If user exists
             if (user) {
+                // LOG
+                logger_1.logger.log('info', 'Google Auth: user already exists', { email: user.getDataValue('email') });
                 return done(null, generateJWT(user, accessToken));
                 // If user does not exists
             }
             else {
+                // LOG
+                logger_1.logger.log('info', 'Google Auth: creating user...');
                 // create a new User instance
                 let newUser = index_2.models.User.build(null, { include: [{
                             model: index_2.models.AuthenticationMethod
@@ -84,6 +92,8 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
                         displayName: profile.displayName
                     })
                         .then(() => {
+                        // LOG
+                        logger_1.logger.log('info', 'Google Auth: user created successfull', { email: newUser.getDataValue('email') });
                         done(null, generateJWT(newUser, accessToken));
                     }).catch(err => {
                         throw new error.UnknownError();
@@ -93,7 +103,7 @@ passport.use(new passport_google_oauth_1.OAuth2Strategy(serverConfig.googleAuth,
                 });
             }
         })
-            .catch((err) => {
+            .catch(err => {
             throw new error.UnknownError();
         });
     });
@@ -107,10 +117,29 @@ const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
 // ADD CUSTOM LOGGER
-graphQLServer.use(morgan('dev'));
+// graphQLServer.use(morgan('dev'));
+/*graphQLServer.use(morgan(`
+    {
+        "remote_addr": ":remote-addr",
+        "remote_user": ":remote-user",
+        "date": ":date[clf]",
+        "method": ":method",
+        "url": ":url",
+        "http_version": ":http-version",
+        "status": ":status",
+        "result_length": ":res[content-length]",
+        "referrer": ":referrer",
+        "user_agent": ":user-agent",
+        "response_time": ":response-time"
+    }`,
+    {stream: accessLogStream}));*/
+graphQLServer.use(logger_1.loggerMiddleware);
+graphQLServer.use(logger_1.exceptionMiddleware);
+graphQLServer.use(morgan('combined', { stream: accessLogStream }));
 // INIT PASSPORT
 graphQLServer.use(passport.initialize());
 graphQLServer.use(passport.session());
+process.on('uncaughtException', logger_1.logAndCrash);
 // INIT GRAPHQL SERVER
 graphQLServer.use(appConfig.DATA, bodyParser.json(), apollo_server_express_1.graphqlExpress({ formatError: apolloError.formatError, schema: index_1.default }));
 graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ endpointURL: appConfig.DATA }));
@@ -118,10 +147,14 @@ graphQLServer.use(appConfig.GRAPHIQL, apollo_server_express_1.graphiqlExpress({ 
 graphQLServer.get(appConfig.AUTH_GOOGLE, passport.authenticate('google', { scope: ['profile', 'email'] }));
 // MANAGE REDIRECTION AFTER LOGIN OR SIGNUP
 graphQLServer.get(BASE_AUTH_GOOGLE_CALLBACK, passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }), (req, res) => {
+    // LOG
+    logger_1.logger.log('info', 'Google Auth: Log In finished');
     res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
 });
 // LOGOUT
 graphQLServer.get(appConfig.AUTH_LOGOUT, function (req, res) {
+    // LOG
+    logger_1.logger.log('info', 'Log Out request');
     req.logout(); // provided by passport
     res.status(200).json({ status: 'OK', message: 'LOGOUT SUCCESSFULL!' });
 });

@@ -1,3 +1,11 @@
+
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
+
+import * as moment from 'moment';
+
+
 /************************************/
 /*            INTERFACE             */
 /************************************/
@@ -9,13 +17,19 @@ export interface ILoggingConfig {
         json: boolean,
         maxsize: number,
         maxFiles: number,
-        colorize: boolean
+        colorize: boolean,
+        prettyPrint: boolean,
+        humanReadableUnhandledException: boolean,
+        timestamp: () => string
     };
     console: {
         level: string,
         handleExceptions: boolean,
         json: boolean,
-        colorize: boolean
+        colorize: boolean,
+        prettyPrint: boolean,
+        humanReadableUnhandledException: boolean,
+        timestamp: () => string
     };
     directory: string;
 }
@@ -32,13 +46,23 @@ export const loggingConfig: ILoggingConfig = {
         json: true,
         maxsize: 5242880,
         maxFiles: 5,
-        colorize: true
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     console: {
         level: 'silly',
         handleExceptions: true,
         json: false,
-        colorize: true
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     directory: __dirname
 };
