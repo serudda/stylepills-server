@@ -34,6 +34,7 @@ export interface ILoggingConfig {
     error: {
         name: string,
         filename: string,
+        handleExceptions: boolean,
         level: string,
         colorize: boolean,
         timestamp: () => string,
@@ -77,16 +78,17 @@ export const loggingConfig: ILoggingConfig = {
     },
     error: {
         name: 'ErrorHandler',
-        filename: 'errors.log',
         level: 'error',
+        filename: 'errors.log',
+        handleExceptions: true,
         colorize: true,
-        timestamp: () => {
-            return moment.utc().format();
-        },
-        maxsize: 10000,
+        maxsize: 5242880,
         maxFiles: 5,
         tailable: true,
-        zippedArchive: true
+        zippedArchive: false,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     directory: __dirname
 };
