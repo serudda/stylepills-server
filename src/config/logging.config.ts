@@ -31,6 +31,17 @@ export interface ILoggingConfig {
         humanReadableUnhandledException: boolean,
         timestamp: () => string
     };
+    error: {
+        name: string,
+        filename: string,
+        level: string,
+        colorize: boolean,
+        timestamp: () => string,
+        maxsize: number,
+        maxFiles: number,
+        tailable: boolean,
+        zippedArchive: boolean
+    };
     directory: string;
 }
 
@@ -63,6 +74,19 @@ export const loggingConfig: ILoggingConfig = {
         timestamp: () => {
             return moment.utc().format();
         }
+    },
+    error: {
+        name: 'ErrorHandler',
+        filename: 'errors.log',
+        level: 'error',
+        colorize: true,
+        timestamp: () => {
+            return moment.utc().format();
+        },
+        maxsize: 10000,
+        maxFiles: 5,
+        tailable: true,
+        zippedArchive: true
     },
     directory: __dirname
 };

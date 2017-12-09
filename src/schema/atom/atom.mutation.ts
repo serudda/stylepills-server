@@ -151,6 +151,8 @@ export const resolver = {
                         }
                     ).catch(
                         (err) => {
+                            // LOG
+                            logger.log('error', 'Mutation: duplicateAtom', err);
                             throw new error.UnknownError({
                                 data: {
                                     ok: false,
@@ -169,6 +171,8 @@ export const resolver = {
                     quiero duplicar, va a fallar aqui diciendo que el user con id X no existe en
                     base. Asi puedo arreglar el tema de Throw exception, lo que deberia pasar, es que
                     me mande el ok: false, y un mensaje explicito para poder actuar rapidamente */
+                    // LOG
+                    logger.log('error', 'Mutation: duplicateAtom', err);
                     throw new error.UnknownError({
                         data: {
                             ok: false,

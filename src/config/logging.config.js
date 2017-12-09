@@ -33,6 +33,19 @@ exports.loggingConfig = {
             return moment.utc().format();
         }
     },
+    error: {
+        name: 'ErrorHandler',
+        filename: 'errors.log',
+        level: 'error',
+        colorize: true,
+        timestamp: () => {
+            return moment.utc().format();
+        },
+        maxsize: 10000,
+        maxFiles: 5,
+        tailable: true,
+        zippedArchive: true
+    },
     directory: __dirname
 };
 //# sourceMappingURL=logging.config.js.map

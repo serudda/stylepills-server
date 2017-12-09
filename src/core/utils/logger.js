@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const winston_1 = require("winston");
-const moment = require("moment");
 const os = require("os");
 const config_1 = require("../../config/config");
 let configs = config_1.config.getLoggingConfig();
 configs.file.filename = `${path.join(configs.directory, '../logs')}/${configs.file.filename}`;
+configs.error.filename = `${path.join(configs.directory, '../logs')}/${configs.error.filename}`;
 let errorMeta = {
     hostname: os.hostname(),
     pid: process.pid,
@@ -14,24 +14,11 @@ let errorMeta = {
     uptime: process.uptime(),
     env: process.env.NODE_ENV || 'local'
 };
-let errorFileTransport = new winston_1.transports.File({
-    name: 'ErrorHandler',
-    filename: `${path.join(__dirname, '../logs')}/errors.log`,
-    level: 'error',
-    colorize: true,
-    timestamp: () => {
-        return moment.utc().format();
-    },
-    maxsize: 10000,
-    maxFiles: 5,
-    tailable: true,
-    zippedArchive: true
-});
 exports.logger = new winston_1.Logger({
     transports: [
         new winston_1.transports.File(configs.file),
         new winston_1.transports.Console(configs.console),
-        errorFileTransport
+        new winston_1.transports.File(configs.error)
     ],
     exitOnError: false
 });

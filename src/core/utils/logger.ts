@@ -11,6 +11,7 @@ import { functionsUtil } from './functionsUtil';
 
 let configs = config.getLoggingConfig();
 configs.file.filename = `${path.join(configs.directory, '../logs')}/${configs.file.filename}`;
+configs.error.filename = `${path.join(configs.directory, '../logs')}/${configs.error.filename}`;
 
 let errorMeta = {
     hostname: os.hostname(),
@@ -20,25 +21,11 @@ let errorMeta = {
     env: process.env.NODE_ENV || 'local'
 };
 
-let errorFileTransport = new transports.File({
-    name: 'ErrorHandler',
-    filename: `${path.join(__dirname, '../logs')}/errors.log`,
-    level: 'error',
-    colorize: true,
-    timestamp: () => {
-        return moment.utc().format();
-    },
-    maxsize: 10000,
-    maxFiles: 5,
-    tailable: true,
-    zippedArchive: true
-});
-
 export const logger = new Logger({
     transports: [
         new transports.File(configs.file),
         new transports.Console(configs.console),
-        errorFileTransport
+        new transports.File(configs.error)
     ],
     exitOnError: false
 });
