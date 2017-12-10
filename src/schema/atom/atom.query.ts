@@ -309,7 +309,8 @@ export const resolver = {
                 };
 
             }).catch((err) => {
-                // throw err;
+                // LOG
+                logger.log('error', 'Query: searchAtoms', { err });
             });
 
         }
