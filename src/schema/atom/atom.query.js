@@ -204,7 +204,8 @@ exports.resolver = {
                     cursors
                 };
             }).catch((err) => {
-                // throw err;
+                // LOG
+                logger_1.logger.log('error', 'Query: searchAtoms', { err });
             });
         }
     },
