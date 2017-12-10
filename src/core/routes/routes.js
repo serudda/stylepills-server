@@ -30,7 +30,7 @@ function default_1(app, passport) {
     // =========================
     // LOG OUT =================
     // =========================
-    app.get(appConfig.AUTH_LOGOUT, function (req, res) {
+    app.get(appConfig.AUTH_LOGOUT, (req, res) => {
         // LOG
         logger_1.logger.log('info', 'Log Out request');
         req.logout(); // provided by passport

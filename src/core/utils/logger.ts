@@ -1,3 +1,7 @@
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
+
 import * as mkdirp from 'mkdirp';
 import * as path from 'path';
 import { transports, Logger } from 'winston';
@@ -8,6 +12,9 @@ import * as os from 'os';
 import { config } from '../../config/config';
 
 import { functionsUtil } from './functionsUtil';
+
+// -----------------------------------
+
 
 let configs = config.getLoggingConfig();
 configs.file.filename = `${path.join(configs.directory, '../logs')}/${configs.file.filename}`;
@@ -29,16 +36,6 @@ export const logger = new Logger({
     ],
     exitOnError: false
 });
-
-/*logger.log = () => {
-    let args = arguments;
-    let level = args[0];
-
-    if (level === 'error') {
-        let originalMeta = args[2] || {};
-        args[2] = functionsUtil.extend(originalMeta, errorMeta);
-    }
-};*/
 
 logger.on('error', (err) => {
     console.error('Error occurred', err);

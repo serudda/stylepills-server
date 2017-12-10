@@ -42,19 +42,26 @@ export default function(app: Express, passport: PassportStatic): void {
     // ===============================================
     // GOOGLE AUTH REDIRECTION AFTER LOGIN OR SIGNUP =
     // ===============================================
-    app.get(BASE_AUTH_GOOGLE_CALLBACK,
-    passport.authenticate('google', { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }),
-    (req, res) => {
-        // LOG
-        logger.log('info', 'Google Auth: Log In finished');
-        res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
-    });
+    app.get(
+        BASE_AUTH_GOOGLE_CALLBACK,
+        passport.authenticate(
+            'google', 
+            { failureRedirect: appConfig.AUTH_GOOGLE, failureFlash: true }
+        ),
+        (req, res) => {
+            // LOG
+            logger.log('info', 'Google Auth: Log In finished');
+            res.redirect(`${serverConfig.googleAuth.redirectURL}${JSON.stringify(req.user)}`);
+        }
+    );
 
 
     // =========================
     // LOG OUT =================
     // =========================
-    app.get(appConfig.AUTH_LOGOUT, function(req: any, res: any){
+    app.get(
+        appConfig.AUTH_LOGOUT, 
+        (req, res) => {
         // LOG
         logger.log('info', 'Log Out request');
         req.logout(); // provided by passport
