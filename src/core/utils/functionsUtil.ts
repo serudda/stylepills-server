@@ -2,6 +2,7 @@
 /*           DEPENDENCIES           */
 /************************************/
 import * as appConfig from './../constants/app.constants';
+import { logger } from './logger';
 
 
 /************************************/
@@ -10,6 +11,7 @@ import * as appConfig from './../constants/app.constants';
 interface IFunctionUtil {
     normalizeString: (str: string) => string;
     generateUsername: (firstName: string, lastName: string) => string;
+    consoleLog: (message: string, value?: any) => void;
 }
 
 
@@ -111,6 +113,23 @@ class FunctionsUtil implements IFunctionUtil {
         username = alias + '-' + randomCode;
 
         return username;
+    }
+
+
+    /**
+     * consoleLog
+     * @description - generic console log 
+     * @use - this.consoleLog('AtomDetailsBox is actived');
+     * @function
+     * @param {string} message - console log message
+     * @param {any} value - values or object to show on console.log
+     * @return {void}
+     */
+
+    consoleLog(message: string, value: any = ''): void {
+        if (appConfig.DEBUG) {
+            logger.warn(message);
+        }
     }
 
 }

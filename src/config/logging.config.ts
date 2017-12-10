@@ -1,3 +1,11 @@
+
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
+
+import * as moment from 'moment';
+
+
 /************************************/
 /*            INTERFACE             */
 /************************************/
@@ -9,13 +17,31 @@ export interface ILoggingConfig {
         json: boolean,
         maxsize: number,
         maxFiles: number,
-        colorize: boolean
+        colorize: boolean,
+        prettyPrint: boolean,
+        humanReadableUnhandledException: boolean,
+        timestamp: () => string
     };
     console: {
         level: string,
         handleExceptions: boolean,
         json: boolean,
-        colorize: boolean
+        colorize: boolean,
+        prettyPrint: boolean,
+        humanReadableUnhandledException: boolean,
+        timestamp: () => string
+    };
+    error: {
+        name: string,
+        filename: string,
+        handleExceptions: boolean,
+        level: string,
+        colorize: boolean,
+        timestamp: () => string,
+        maxsize: number,
+        maxFiles: number,
+        tailable: boolean,
+        zippedArchive: boolean
     };
     directory: string;
 }
@@ -26,19 +52,43 @@ export interface ILoggingConfig {
 /****************************************/
 export const loggingConfig: ILoggingConfig = {
     file: {
-        level: 'error',
-        filename: 'stylepills_db.log',
+        level: 'silly',
+        filename: 'all-logs.log',
         handleExceptions: true,
         json: true,
         maxsize: 5242880,
-        maxFiles: 100,
-        colorize: false
+        maxFiles: 5,
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     console: {
-        level: 'error',
+        level: 'silly',
         handleExceptions: true,
         json: false,
-        colorize: true
+        colorize: true,
+        prettyPrint: true,
+        humanReadableUnhandledException: true,
+        timestamp: () => {
+            return moment.utc().format();
+        }
+    },
+    error: {
+        name: 'ErrorHandler',
+        level: 'error',
+        filename: 'errors.log',
+        handleExceptions: true,
+        colorize: true,
+        maxsize: 5242880,
+        maxFiles: 5,
+        tailable: true,
+        zippedArchive: false,
+        timestamp: () => {
+            return moment.utc().format();
+        }
     },
     directory: __dirname
 };

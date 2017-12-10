@@ -44,7 +44,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true // NOTE: 1
                 },
-                logging: true
+                logging: false // NOTE: 2
             };
         case 'development':
             return {
@@ -59,7 +59,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
         case 'alpha':
         case 'beta':
@@ -90,7 +90,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true
                 },
-                logging: true
+                logging: false
             };
     }
 }
@@ -100,5 +100,9 @@ exports.databaseConfig = databaseConfig;
 generadas por Sequelize e.g. created_at, updated_at, user_id, etc. se generarian camelCase, y no es
 recomendable ese Naming Conventions
 references: https://www.youtube.com/watch?v=Q-hyZDW8S0E
+
+(2) Al activarlo lo que logramos hacer es poder ver las sentencias SQL en la terminal. Esto deberia
+activarse y desactivarse dependiendo lo que se necesite en su momento. (IMPORTANTE: Esto no
+deshabilita el logger por consola)
 */ 
 //# sourceMappingURL=database.config.js.map
