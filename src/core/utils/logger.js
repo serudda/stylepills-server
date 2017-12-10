@@ -1,9 +1,13 @@
 "use strict";
+/************************************/
+/*           DEPENDENCIES           */
+/************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const winston_1 = require("winston");
 const os = require("os");
 const config_1 = require("../../config/config");
+// -----------------------------------
 let configs = config_1.config.getLoggingConfig();
 configs.file.filename = `${path.join(configs.directory, '../logs')}/${configs.file.filename}`;
 configs.error.filename = `${path.join(configs.directory, '../logs')}/${configs.error.filename}`;
@@ -22,15 +26,6 @@ exports.logger = new winston_1.Logger({
     ],
     exitOnError: false
 });
-/*logger.log = () => {
-    let args = arguments;
-    let level = args[0];
-
-    if (level === 'error') {
-        let originalMeta = args[2] || {};
-        args[2] = functionsUtil.extend(originalMeta, errorMeta);
-    }
-};*/
 exports.logger.on('error', (err) => {
     console.error('Error occurred', err);
 });
