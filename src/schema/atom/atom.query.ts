@@ -6,7 +6,11 @@ import { Buffer } from 'buffer';
 
 import { models, sequelize } from './../../models/index';
 import { Pagination, ICursorsResult }  from './../../core/utils/pagination';
+
 import * as appConfig from './../../core/constants/app.constants';
+import { functionsUtil } from './../../core/utils/functionsUtil';
+import { logger } from './../../core/utils/logger';
+
 import { IAtomInstance } from './../../models/atom.model';
 
 
@@ -166,6 +170,8 @@ export const resolver = {
          * @returns {IAtom} Atom entity
          */
         atomById(parent: any, { id }: IAtomQueryArgs) {
+            // LOG
+            logger.log('info', 'Query: atomById');
             return models.Atom.findById(id);
         },
 
@@ -180,6 +186,8 @@ export const resolver = {
          * @returns {Array<IAtom>} Atoms list
          */
         allAtoms(parent: any, { limit = appConfig.ATOM_SEARCH_LIMIT }: IAtomQueryArgs) {
+            // LOG
+            logger.log('info', 'Query: allAtoms');
             return models.Atom.findAll({
                 limit,
                 where: {
@@ -200,6 +208,8 @@ export const resolver = {
          * @returns {Array<Atom>} Atoms List of a specific category (Buttons, Inputs, Labels, etc.)
          */
         atomsByCategory(parent: any, { filter, limit = appConfig.ATOM_SEARCH_LIMIT }: IAtomQueryArgs) {
+            // LOG
+            logger.log('info', 'Query: atomsByCategory');
             return models.Atom.findAll({
                 limit,
                 where: {
@@ -228,6 +238,9 @@ export const resolver = {
             pagination = <IAtomPaginationArgs> {},
             include = <IAtomIncludeArgs> null
         }: IAtomQueryArgs) {
+
+            // LOG
+            logger.log('info', 'Query: searchAtoms');
 
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
@@ -295,6 +308,9 @@ export const resolver = {
                     cursors
                 };
 
+            }).catch((err) => {
+                // LOG
+                logger.log('error', 'Query: searchAtoms', { err });
             });
 
         }
@@ -302,15 +318,23 @@ export const resolver = {
     },
     Atom: {
         comments(atom: any) {
+            // LOG
+            logger.log('info', 'Query: (Atom) getComments');
             return atom.getComments();
         },
         author(atom: any) {
+            // LOG
+            logger.log('info', 'Query: (Atom) getAuthor');
             return atom.getAuthor();
         },
         owner(atom: any) {
+            // LOG
+            logger.log('info', 'Query: (Atom) getOwner');
             return atom.getOwner();
         },
         category(atom: any) {
+            // LOG
+            logger.log('info', 'Query: (Atom) getAtomCategory');
             return atom.getAtomCategory();
         }
     }

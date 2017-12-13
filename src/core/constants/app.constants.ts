@@ -3,9 +3,13 @@
  * (e.g. server urls, domain, google Map Key, accessKeyIdS3, etc.)
  * @type constants
  */
+const { NODE_ENV = 'local' } = process.env;
 
 /* Server config */
 export const PORT = 4000;
+
+/* DEBUG */
+export const DEBUG = NODE_ENV === 'local';
 
 /* Environments */
 export const LOCAL = 'local';

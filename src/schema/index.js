@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const lodash_1 = require("lodash");
 const graphql_tools_1 = require("graphql-tools");
+const logger_1 = require("./../core/utils/logger");
 const userTypes = require("./user/user.type");
 const userQuery = require("./user/user.query");
 const userMutation = require("./user/user.mutation");
@@ -72,15 +73,18 @@ const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.re
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/
-// TODO: Agregar un simple de log mas robusto para que me facilite ver los errores del server
-const logger = { log: (error) => console.log(error) };
+const loggerSchema = {
+    log: (error) => logger_1.logger.log('error', 'Error occurred', error)
+};
 /*****************************************/
 /*                SCHEMA                 */
 /*****************************************/
 const schema = graphql_tools_1.makeExecutableSchema({
-    logger,
+    logger: loggerSchema,
     resolvers: resolvers,
     typeDefs: typeDefs,
 });
+// LOG
+logger_1.logger.log('info', 'GraphQL Schema activated');
 exports.default = schema;
 //# sourceMappingURL=index.js.map

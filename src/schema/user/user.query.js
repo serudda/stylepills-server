@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const index_1 = require("./../../models/index");
+const logger_1 = require("./../../core/utils/logger");
 /**************************************/
 /*         USER QUERY TYPEDEF         */
 /**************************************/
@@ -29,6 +30,8 @@ exports.resolver = {
          * @returns {IUser} User entity
          */
         userById(parent, { id }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: userById');
             return index_1.models.User.findById(id);
         },
         /**
@@ -41,6 +44,8 @@ exports.resolver = {
          * @returns {IUser} User entity
          */
         userByUsername(parent, { username }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: userByUsername');
             return index_1.models.User.findOne({
                 where: {
                     username
@@ -57,6 +62,8 @@ exports.resolver = {
          * @returns {Array<IUser>} Users list
          */
         allUsers(parent, { limit }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: allUsers');
             return index_1.models.User.findAll({
                 limit,
                 where: {
@@ -67,6 +74,8 @@ exports.resolver = {
     },
     User: {
         atoms(user) {
+            // LOG
+            logger_1.logger.log('info', 'Query (User): getAtoms');
             return user.getAtoms();
         }
     }

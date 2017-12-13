@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /*           DEPENDENCIES           */
 /************************************/
 const appConfig = require("./../constants/app.constants");
+const logger_1 = require("./logger");
 /************************************/
 /*         CLASS DEFINITION         */
 /************************************/
@@ -83,6 +84,20 @@ class FunctionsUtil {
         // build username
         username = alias + '-' + randomCode;
         return username;
+    }
+    /**
+     * consoleLog
+     * @description - generic console log
+     * @use - this.consoleLog('AtomDetailsBox is actived');
+     * @function
+     * @param {string} message - console log message
+     * @param {any} value - values or object to show on console.log
+     * @return {void}
+     */
+    consoleLog(message, value = '') {
+        if (appConfig.DEBUG) {
+            logger_1.logger.warn(message);
+        }
     }
 }
 /* Export FunctionUtils instance */

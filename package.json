@@ -28,13 +28,16 @@
     "@types/jsonwebtoken": "^7.2.3",
     "@types/lodash": "^4.14.74",
     "@types/mkdirp": "^0.5.1",
+    "@types/morgan": "^1.7.35",
     "@types/passport": "^0.4.1",
     "@types/passport-google-oauth": "^1.0.36",
     "@types/passport-oauth2": "^1.4.3",
     "@types/passport-strategy": "^0.2.32",
     "@types/pg": "^7.1.1",
     "@types/sequelize": "^4.0.78",
+    "@types/uuid": "^3.4.3",
     "@types/winston": "^2.3.5",
+    "apollo-engine": "^0.6.1",
     "apollo-errors": "^1.5.1",
     "apollo-server-express": "^1.0.2",
     "babel-cli": "^6.5.1",
@@ -65,6 +68,7 @@
     "jsonwebtoken": "^8.1.0",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
+    "morgan": "^1.9.0",
     "nodemon": "^1.9.1",
     "npm-run-all": "^4.1.1",
     "passport": "^0.4.0",
@@ -77,6 +81,7 @@
     "sequelize-cli": "^3.0.0",
     "sqlite": "^2.8.0",
     "tsc-watch": "^1.0.8",
+    "uuid": "^3.1.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {
@@ -99,24 +104,5 @@
     "nodemon": "^1.9.1",
     "npm-run-all": "^4.1.1",
     "tsc-watch": "^1.0.8"
-  },
-  "peerDependencies": {
-    "graphql": "^0.5.0 || ^0.6.0"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "airbnb/base",
-      "plugin:import/errors"
-    ],
-    "rules": {
-      "no-use-before-define": 0,
-      "arrow-body-style": 0,
-      "dot-notation": 0,
-      "no-console": 0
-    },
-    "env": {
-      "mocha": true
-    }
   }
 }

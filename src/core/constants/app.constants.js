@@ -1,12 +1,15 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @desc App constants: Keep centralize every global app constant here
  * (e.g. server urls, domain, google Map Key, accessKeyIdS3, etc.)
  * @type constants
  */
-Object.defineProperty(exports, "__esModule", { value: true });
+const { NODE_ENV = 'local' } = process.env;
 /* Server config */
 exports.PORT = 4000;
+/* DEBUG */
+exports.DEBUG = NODE_ENV === 'local';
 /* Environments */
 exports.LOCAL = 'local';
 exports.DEV = 'development';

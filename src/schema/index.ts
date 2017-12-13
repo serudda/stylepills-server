@@ -4,6 +4,8 @@
 import { merge } from 'lodash';
 import { makeExecutableSchema } from 'graphql-tools';
 
+import { logger } from './../core/utils/logger';
+
 import * as userTypes from './user/user.type';
 import * as userQuery from './user/user.query';
 import * as userMutation from './user/user.mutation';
@@ -100,17 +102,21 @@ const resolvers: any = merge(
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/
-// TODO: Agregar un simple de log mas robusto para que me facilite ver los errores del server
-const logger = { log: (error: Error) => console.log(error) };
+const loggerSchema = { 
+    log: (error: Error) => logger.log('error', 'Error occurred', error)
+};
 
 
 /*****************************************/
 /*                SCHEMA                 */
 /*****************************************/
 const schema = makeExecutableSchema({
-  logger,
-  resolvers: resolvers,
-  typeDefs: typeDefs,
+    logger: loggerSchema,
+    resolvers: resolvers,
+    typeDefs: typeDefs,
 });
+
+// LOG
+logger.log('info', 'GraphQL Schema activated');
 
 export default schema;
