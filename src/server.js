@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 const express = require("express");
 const apollo_server_express_1 = require("apollo-server-express");
-const apollo_engine_1 = require("apollo-engine");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
@@ -28,7 +27,7 @@ const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
 // Configure Apollo Engine
-const engine = new apollo_engine_1.Engine({
+/*const engine = new Engine({
     graphqlPort: parseInt(process.env.PORT, 10) || serverConfig.port,
     engineConfig: {
         apiKey: 'service:sruda-stylepills-production:SqjTHDVozUZ1VrirYhcpIw',
@@ -39,11 +38,11 @@ const engine = new apollo_engine_1.Engine({
     endpoint: appConfig.DATA,
     dumpTraffic: true
 });
-engine.start();
+engine.start();*/
 // ADD CUSTOM MIDDLEWARES (LOGGER, EXCEPTION AND APOLLO ENGINE TRACING)
 graphQLServer.use(logger_1.loggerMiddleware);
 graphQLServer.use(logger_1.exceptionMiddleware);
-graphQLServer.use(engine.expressMiddleware());
+// graphQLServer.use(engine.expressMiddleware());
 graphQLServer.use(morgan('combined', { stream: accessLogStream }));
 process.on('uncaughtException', logger_1.logAndCrash);
 // INIT PASSPORT
