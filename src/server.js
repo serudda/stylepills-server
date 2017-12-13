@@ -27,6 +27,8 @@ const graphQLServer = express();
 // ADD CORS
 graphQLServer.use('*', cors());
 // Configure Apollo Engine
+/* NOTE: It has an open issue: https://github.com/apollographql/apollo-engine-js/issues/66
+For that reason was neccesary to disabled temporary */
 /*const engine = new Engine({
     graphqlPort: parseInt(process.env.PORT, 10) || serverConfig.port,
     engineConfig: {
@@ -42,6 +44,8 @@ engine.start();*/
 // ADD CUSTOM MIDDLEWARES (LOGGER, EXCEPTION AND APOLLO ENGINE TRACING)
 graphQLServer.use(logger_1.loggerMiddleware);
 graphQLServer.use(logger_1.exceptionMiddleware);
+/* NOTE: It has an open issue: https://github.com/apollographql/apollo-engine-js/issues/66
+For that reason was neccesary to disabled temporary */
 // graphQLServer.use(engine.expressMiddleware());
 graphQLServer.use(morgan('combined', { stream: accessLogStream }));
 process.on('uncaughtException', logger_1.logAndCrash);
