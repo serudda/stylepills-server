@@ -20,5 +20,12 @@ Commands:
   seed:generate                     Generates a new seed file 
 
 
-  PRD Example:
-  npm run sequelize db:migrate
+PRD Example:
+npm run sequelize db:migrate
+
+-------------------------------------------------------------------------
+
+To see the files on Heroku:
+  heroku run bash
+
+After that, you have access to use commands such as: ls, less (see long files), cat (see short files) 
