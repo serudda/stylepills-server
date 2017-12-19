@@ -1,0 +1,32 @@
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2017-12-19T17:00:32Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2017-12-19T17:00:33Z"}
+{"level":"info","message":"Query: searchAtoms","timestamp":"2017-12-19T17:06:57Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getComments","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAuthor","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2017-12-19T17:09:20Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2017-12-19T17:09:22Z"}
