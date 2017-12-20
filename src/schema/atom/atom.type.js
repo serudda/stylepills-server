@@ -17,6 +17,7 @@ type Atom {
     download: String
     active: Boolean
     private: Boolean
+    duplicated: Boolean
     author: User!
     owner: User!
     category: AtomCategory!

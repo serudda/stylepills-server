@@ -33,6 +33,10 @@ function default_1(sequelize, dataTypes) {
             type: dataTypes.INTEGER,
             defaultValue: 0
         },
+        duplicated: {
+            type: dataTypes.BOOLEAN,
+            defaultValue: false
+        },
         download: {
             type: dataTypes.TEXT
         },

@@ -15,16 +15,26 @@ import { IAtomInstance } from './../../models/atom.model';
 
 
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
-function buildQueryFilter(isPrivate: boolean = false, atomCategoryId: number, text: string): IQueryFilters {
+function buildQueryFilter(
+    isDuplicated: boolean | null, 
+    isPrivate: boolean | null, 
+    atomCategoryId: number, 
+    text: string): IQueryFilters {
 
     // Init Filter
-    /* TODO: Deberiamos incluir dos tipos de filtros: solo devuelvame los componentes 
-    privados (isPrivate), y otro que devuelvame todos los componentes, incluyendo los 
-    privados (includePrivate) */
     let queryFilter: IQueryFilters = {
-        active: true,
-        private: isPrivate
+        active: true
     };
+
+    // If isPrivate is a boolean
+    if (typeof isPrivate === 'boolean') {
+        queryFilter.private = isPrivate;
+    }
+
+    // If isDuplicated is a boolean
+    if (typeof isDuplicated === 'boolean') {
+        queryFilter.duplicated = isDuplicated;
+    }
 
     // Add 'atomCategoryId' filter if it exists or is different from 0
     if (atomCategoryId && atomCategoryId !== 0) {
@@ -55,7 +65,8 @@ interface IQueryFilters {
     };
     atomCategoryId?: number;
     active: boolean;
-    private: boolean;
+    private?: boolean;
+    duplicated?: boolean;
 }
 
 /**
@@ -68,13 +79,21 @@ interface IAtomIncludeArgs {
 }
 
 /**
+ * Arguments passed to Atom type
+ */
+interface IAtomTypeArgs {
+    isDuplicated: boolean | null;
+    isPrivate: boolean | null;
+}
+
+/**
  * Arguments passed to Atom filter
  */
 interface IAtomFilterArgs {
     atomCategoryId?: number;
-    active: boolean;
-    isPrivate: boolean;
+    type?: IAtomTypeArgs;
     text?: string;
+    active: boolean;
 }
 
 /**
@@ -113,8 +132,13 @@ export const typeDef = `
         where: JSON!
     }
 
-    input AtomFilter {
-        isPrivate: Boolean     
+    input AtomType {
+        isPrivate: Boolean
+        isDuplicated: Boolean
+    }
+
+    input AtomFilter { 
+        type: AtomType   
         atomCategoryId: Int
         text: String
     }
@@ -244,7 +268,8 @@ export const resolver = {
 
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
-            let { isPrivate = false, atomCategoryId, text } = filter;
+            let { type = <IAtomTypeArgs> {}, atomCategoryId, text } = filter;
+            let { isDuplicated = null, isPrivate = null } = type;
             let where = {};
             let sortByQuery = {};
             let includeQuery: any = [];
@@ -263,7 +288,7 @@ export const resolver = {
             }
 
             // Build filter query
-            let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
+            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text);
 
             // Build main Where
             if (sortBy !== 'created_at') {

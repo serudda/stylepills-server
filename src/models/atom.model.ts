@@ -29,6 +29,7 @@ export interface IAtom {
     stores: number;
     views: number;
     likes: number;
+    duplicated: boolean;
     comments: Array<IComment>;
     download: string;
     active: boolean;
@@ -50,6 +51,7 @@ export interface IAtomAttributes {
     stores: number;
     views: number;
     likes: number;
+    duplicated: boolean;
     authorId: number;
     ownerId: number;
     atomCategoryId: number;
@@ -97,6 +99,10 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
             likes: {
                 type: dataTypes.INTEGER,
                 defaultValue: 0
+            },
+            duplicated: {
+                type: dataTypes.BOOLEAN,
+                defaultValue: false
             },
             download: {
                 type: dataTypes.TEXT
