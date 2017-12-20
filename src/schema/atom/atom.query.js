@@ -5,15 +5,19 @@ const pagination_1 = require("./../../core/utils/pagination");
 const appConfig = require("./../../core/constants/app.constants");
 const logger_1 = require("./../../core/utils/logger");
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
-function buildQueryFilter(isPrivate = false, atomCategoryId, text) {
+function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text) {
     // Init Filter
-    /* TODO: Deberiamos incluir dos tipos de filtros: solo devuelvame los componentes
-    privados (isPrivate), y otro que devuelvame todos los componentes, incluyendo los
-    privados (includePrivate) */
     let queryFilter = {
-        active: true,
-        private: isPrivate
+        active: true
     };
+    // If isPrivate is a boolean
+    if (typeof isPrivate === 'boolean') {
+        queryFilter.private = isPrivate;
+    }
+    // If isDuplicated is a boolean
+    if (typeof isDuplicated === 'boolean') {
+        queryFilter.duplicated = isDuplicated;
+    }
     // Add 'atomCategoryId' filter if it exists or is different from 0
     if (atomCategoryId && atomCategoryId !== 0) {
         queryFilter.atomCategoryId = atomCategoryId;
@@ -37,8 +41,13 @@ exports.typeDef = `
         where: JSON!
     }
 
-    input AtomFilter {
-        isPrivate: Boolean     
+    input AtomType {
+        isPrivate: Boolean
+        isDuplicated: Boolean
+    }
+
+    input AtomFilter { 
+        type: AtomType   
         atomCategoryId: Int
         text: String
     }
@@ -150,7 +159,8 @@ exports.resolver = {
             logger_1.logger.log('info', 'Query: searchAtoms');
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
-            let { isPrivate = false, atomCategoryId, text } = filter;
+            let { type = {}, atomCategoryId, text } = filter;
+            let { isDuplicated = null, isPrivate = null } = type;
             let where = {};
             let sortByQuery = {};
             let includeQuery = [];
@@ -167,7 +177,7 @@ exports.resolver = {
                 ];
             }
             // Build filter query
-            let filterQuery = buildQueryFilter(isPrivate, atomCategoryId, text);
+            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text);
             // Build main Where
             if (sortBy !== 'created_at') {
                 sortByQuery = {

@@ -129,6 +129,7 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         download: atom.download,
         active: true,
         private: false,
+        duplicated: true,
         authorId: atom.authorId,
         ownerId: userId,
         atomCategoryId: atom.atomCategoryId
