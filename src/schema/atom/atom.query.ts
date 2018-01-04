@@ -44,7 +44,7 @@ function buildQueryFilter(
     // Add 'name' filter if 'text' exists
     if (text) {
         queryFilter.name = {
-            $like: `%${text}%`
+            $iLike: `%${text}%`
         };
     }
 
@@ -61,7 +61,7 @@ function buildQueryFilter(
  */
 interface IQueryFilters {
     name?: {
-        $like: string
+        $iLike: string
     };
     atomCategoryId?: number;
     active: boolean;

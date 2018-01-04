@@ -11,6 +11,7 @@ const operatorsAliases = {
     $and: Op.and,
     $or: Op.or,
     $like: Op.like,
+    $iLike: Op.iLike,
     $gt: Op.gt,
     $gte: Op.gte,
     $lt: Op.lt,

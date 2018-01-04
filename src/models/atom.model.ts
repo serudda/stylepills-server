@@ -128,15 +128,6 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     /*********************************/
     Atom.associate = (models: ISequelizeModels) => {
 
-        // one Atom belongs to many owners (N:M)
-        /*Atom.belongsToMany(models.User, {
-            through: 'owner',
-            foreignKey: {
-                name: 'atomId',
-                field: 'atom_id'
-            }
-        });*/
-
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
             as: 'Author',
