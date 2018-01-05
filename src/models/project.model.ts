@@ -93,10 +93,10 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
 
         // one Project belongs to one author (1:M)
         Project.belongsTo(models.User, {
-            as: 'ProjectAuthor',
+            as: 'Author',
             foreignKey: {
-                name: 'projectAuthorId',
-                field: 'project_author_id'
+                name: 'authorId',
+                field: 'author_id'
             }
         });
 

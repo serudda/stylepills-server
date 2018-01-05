@@ -16,6 +16,14 @@ const atomCategoryQuery = require("./atomCategory/atomCategory.query");
 const atomTypes = require("./atom/atom.type");
 const atomQuery = require("./atom/atom.query");
 const atomMutation = require("./atom/atom.mutation");
+const projectTypes = require("./project/project.type");
+const projectQuery = require("./project/project.query");
+const projectCategoryTypes = require("./projectCategory/projectCategory.type");
+const projectCategoryQuery = require("./projectCategory/projectCategory.query");
+const colorTypes = require("./color/color.type");
+const colorQuery = require("./color/color.query");
+const rgbaColorTypes = require("./rgbaColor/rgbaColor.type");
+const rgbaColorQuery = require("./rgbaColor/rgbaColor.query");
 const GraphQLJSON = require("graphql-type-json");
 const scalarJSON = {
     JSON: GraphQLJSON
@@ -65,11 +73,19 @@ const typeDefs = [`
     atomTypes.typeDef,
     atomQuery.typeDef,
     atomMutation.typeDef,
+    projectTypes.typeDef,
+    projectQuery.typeDef,
+    projectCategoryTypes.typeDef,
+    projectCategoryQuery.typeDef,
+    colorTypes.typeDef,
+    colorQuery.typeDef,
+    rgbaColorTypes.typeDef,
+    rgbaColorQuery.typeDef
 ];
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver);
+const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver, projectQuery.resolver, projectCategoryQuery.resolver, colorQuery.resolver, rgbaColorQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

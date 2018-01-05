@@ -4,7 +4,7 @@ const index_1 = require("./../../models/index");
 const appConfig = require("./../../core/constants/app.constants");
 const logger_1 = require("./../../core/utils/logger");
 /**************************************/
-/*       PROJECT QUERY TYPEDEF       */
+/*       PROJECT QUERY TYPEDEF        */
 /**************************************/
 exports.typeDef = `
 
@@ -58,11 +58,6 @@ exports.resolver = {
             // LOG
             logger_1.logger.log('info', 'Query (Project): getAtoms');
             return project.getAtoms();
-        },
-        comments(project) {
-            // LOG
-            logger_1.logger.log('info', 'Query: (Project) getComments');
-            return project.getComments();
         },
         colorPalette(project) {
             // LOG

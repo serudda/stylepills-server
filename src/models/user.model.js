@@ -89,18 +89,18 @@ function default_1(sequelize, dataTypes) {
         });
         // One user is author of many Atoms (1:M)
         User.hasMany(models.Atom, {
-            as: 'AtomAuthor',
+            as: 'Author',
             foreignKey: {
-                name: 'atomAuthorId',
-                field: 'atom_author_id'
+                name: 'authorId',
+                field: 'author_id'
             }
         });
         // One user is author of many Projects (1:M)
         User.hasMany(models.Project, {
             as: 'ProjectAuthor',
             foreignKey: {
-                name: 'projectAuthorId',
-                field: 'project_author_id'
+                name: 'authorId',
+                field: 'author_id'
             }
         });
         // One user has many authentication methods (1:M)

@@ -58,10 +58,10 @@ function default_1(sequelize, dataTypes) {
     Atom.associate = (models) => {
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
-            as: 'AtomAuthor',
+            as: 'Author',
             foreignKey: {
-                name: 'atomAuthorId',
-                field: 'atom_author_id'
+                name: 'authorId',
+                field: 'author_id'
             }
         });
         // one Atom belongs to one Project (1:M)

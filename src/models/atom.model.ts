@@ -130,10 +130,10 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
 
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
-            as: 'AtomAuthor',
+            as: 'Author',
             foreignKey: {
-                name: 'atomAuthorId',
-                field: 'atom_author_id'
+                name: 'authorId',
+                field: 'author_id'
             }
         });
 

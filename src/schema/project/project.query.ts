@@ -93,11 +93,6 @@ export const resolver = {
             logger.log('info', 'Query (Project): getAtoms');
             return project.getAtoms();
         },
-        comments(project: any) {
-            // LOG
-            logger.log('info', 'Query: (Project) getComments');
-            return project.getComments();
-        },
         colorPalette(project: any) {
             // LOG
             logger.log('info', 'Query (Project): getColorPalette');
