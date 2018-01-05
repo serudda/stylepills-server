@@ -25,7 +25,7 @@ function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text) {
     // Add 'name' filter if 'text' exists
     if (text) {
         queryFilter.name = {
-            $like: `%${text}%`
+            $iLike: `%${text}%`
         };
     }
     return queryFilter;

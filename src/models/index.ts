@@ -15,6 +15,10 @@ import { IAuthenticationMethodAttributes, IAuthenticationMethodInstance } from '
 import { IAtomAttributes, IAtomInstance } from './atom.model';
 import { IAtomCategoryAttributes, IAtomCategoryInstance } from './atomCategory.model';
 import { ICommentAttributes, ICommentInstance } from './comment.model';
+import { IProjectAttributes, IProjectInstance } from './project.model';
+import { IProjectCategoryAttributes, IProjectCategoryInstance } from './projectCategory.model';
+import { IColorAttributes, IColorInstance } from './color.model';
+import { IRgbaColorAttributes, IRgbaColorInstance } from './rgbaColor.model';
 
 
 /************************************/
@@ -26,6 +30,10 @@ export interface ISequelizeModels {
     Atom: SequelizeStatic.Model<IAtomInstance, IAtomAttributes>;
     AtomCategory: SequelizeStatic.Model<IAtomCategoryInstance, IAtomCategoryAttributes>;
     Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;
+    Project: SequelizeStatic.Model<IProjectInstance, IProjectAttributes>;
+    ProjectCategory: SequelizeStatic.Model<IProjectCategoryInstance, IProjectCategoryAttributes>;
+    Color: SequelizeStatic.Model<IProjectCategoryInstance, IProjectCategoryAttributes>;
+    RgbaColor: SequelizeStatic.Model<IRgbaColorInstance, IRgbaColorAttributes>;
 }
 
 

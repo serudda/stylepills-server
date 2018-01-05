@@ -130,7 +130,7 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         active: true,
         private: false,
         duplicated: true,
-        authorId: atom.authorId,
+        atomAuthorId: atom.atomAuthorId,
         ownerId: userId,
         atomCategoryId: atom.atomCategoryId
     };

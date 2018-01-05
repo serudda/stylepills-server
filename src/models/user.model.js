@@ -79,14 +79,6 @@ function default_1(sequelize, dataTypes) {
     /*      CREATE RELATIONSHIP      */
     /*********************************/
     User.associate = (models) => {
-        // one User belongs to many Atoms (N:M)
-        /*User.belongsToMany(models.Atom, {
-            through: 'owner',
-            foreignKey: {
-                name: 'userId',
-                field: 'user_id'
-            }
-        });*/
         // One user is owner of many Atoms (1:M)
         User.hasMany(models.Atom, {
             as: 'Owner',
@@ -98,6 +90,14 @@ function default_1(sequelize, dataTypes) {
         // One user is author of many Atoms (1:M)
         User.hasMany(models.Atom, {
             as: 'Author',
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
+        });
+        // One user is author of many Projects (1:M)
+        User.hasMany(models.Project, {
+            as: 'ProjectAuthor',
             foreignKey: {
                 name: 'authorId',
                 field: 'author_id'

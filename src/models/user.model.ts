@@ -8,6 +8,7 @@ import { ISequelizeModels } from './index';
 import * as appConfig from './../core/constants/app.constants';
 
 import { IAtom } from './atom.model';
+import { IProject } from './project.model';
 
 
 /************************************/
@@ -25,6 +26,7 @@ export interface IUser {
     avatar: string;
     about: string;
     atoms: Array<IAtom>;
+    projects: Array<IProject>;
     active: boolean;
     isBetaMember: boolean;
     createdAt: string;
@@ -139,15 +141,6 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
     /*********************************/
     User.associate = (models: ISequelizeModels) => {
 
-        // one User belongs to many Atoms (N:M)
-        /*User.belongsToMany(models.Atom, {
-            through: 'owner',
-            foreignKey: {
-                name: 'userId',
-                field: 'user_id'
-            }
-        });*/
-
         // One user is owner of many Atoms (1:M)
         User.hasMany(models.Atom, {
             as: 'Owner',
@@ -160,6 +153,15 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
         // One user is author of many Atoms (1:M)
         User.hasMany(models.Atom, {
             as: 'Author',
+            foreignKey: {
+                name: 'authorId',
+                field: 'author_id'
+            }
+        });
+
+        // One user is author of many Projects (1:M)
+        User.hasMany(models.Project, {
+            as: 'ProjectAuthor',
             foreignKey: {
                 name: 'authorId',
                 field: 'author_id'

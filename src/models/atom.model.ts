@@ -52,7 +52,7 @@ export interface IAtomAttributes {
     views: number;
     likes: number;
     duplicated: boolean;
-    authorId: number;
+    atomAuthorId: number;
     ownerId: number;
     atomCategoryId: number;
     active: boolean;
@@ -128,21 +128,20 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     /*********************************/
     Atom.associate = (models: ISequelizeModels) => {
 
-        // one Atom belongs to many owners (N:M)
-        /*Atom.belongsToMany(models.User, {
-            through: 'owner',
-            foreignKey: {
-                name: 'atomId',
-                field: 'atom_id'
-            }
-        });*/
-
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
             as: 'Author',
             foreignKey: {
                 name: 'authorId',
                 field: 'author_id'
+            }
+        });
+
+        // one Atom belongs to one Project (1:M)
+        Atom.belongsTo(models.Project, {
+            foreignKey: {
+                name: 'projectId',
+                field: 'project_id'
             }
         });
 
