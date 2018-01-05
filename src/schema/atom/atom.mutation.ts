@@ -196,7 +196,7 @@ const _buildNewAtom =
         active: true,
         private: false,
         duplicated: true,
-        authorId: atom.authorId,
+        atomAuthorId: atom.atomAuthorId,
         ownerId: userId,
         atomCategoryId: atom.atomCategoryId
     };
