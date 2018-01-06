@@ -18,6 +18,7 @@ const atomQuery = require("./atom/atom.query");
 const atomMutation = require("./atom/atom.mutation");
 const projectTypes = require("./project/project.type");
 const projectQuery = require("./project/project.query");
+const projectMutation = require("./project/project.mutation");
 const projectCategoryTypes = require("./projectCategory/projectCategory.type");
 const projectCategoryQuery = require("./projectCategory/projectCategory.query");
 const colorTypes = require("./color/color.type");
@@ -45,6 +46,12 @@ const typeDefs = [`
     # Input
     input CreateBaseInput {
         base: String
+    }
+
+    # Status
+    type Status {
+        ok: Boolean!,
+        message: String
     }
     
     # Query
@@ -75,6 +82,7 @@ const typeDefs = [`
     atomMutation.typeDef,
     projectTypes.typeDef,
     projectQuery.typeDef,
+    projectMutation.typeDef,
     projectCategoryTypes.typeDef,
     projectCategoryQuery.typeDef,
     colorTypes.typeDef,
@@ -85,7 +93,7 @@ const typeDefs = [`
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver, projectQuery.resolver, projectCategoryQuery.resolver, colorQuery.resolver, rgbaColorQuery.resolver);
+const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver, projectMutation.resolver, projectQuery.resolver, projectCategoryQuery.resolver, colorQuery.resolver, rgbaColorQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

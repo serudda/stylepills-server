@@ -22,6 +22,7 @@ import * as atomMutation from './atom/atom.mutation';
 
 import * as projectTypes from './project/project.type';
 import * as projectQuery from './project/project.query';
+import * as projectMutation from './project/project.mutation';
 
 import * as projectCategoryTypes from './projectCategory/projectCategory.type';
 import * as projectCategoryQuery from './projectCategory/projectCategory.query';
@@ -57,6 +58,12 @@ const typeDefs = [`
     input CreateBaseInput {
         base: String
     }
+
+    # Status
+    type Status {
+        ok: Boolean!,
+        message: String
+    }
     
     # Query
     type Query {
@@ -91,6 +98,7 @@ const typeDefs = [`
 
     projectTypes.typeDef,
     projectQuery.typeDef,
+    projectMutation.typeDef,
 
     projectCategoryTypes.typeDef,
     projectCategoryQuery.typeDef,
@@ -121,6 +129,7 @@ const resolvers: any = merge(
     atomMutation.resolver,
     atomQuery.resolver,
 
+    projectMutation.resolver,
     projectQuery.resolver,
 
     projectCategoryQuery.resolver,

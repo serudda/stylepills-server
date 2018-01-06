@@ -1,9 +1,12 @@
 /**************************************/
 /*            DEPENDENCIES            */
 /**************************************/
+import * as Bluebird from 'bluebird';
 import { logger } from './../../core/utils/logger';
 
 import { models } from './../../models/index';
+
+import { IStatus } from './../../core/interfaces/interfaces';
 import { IAtom, IAtomAttributes } from './../../models/atom.model';
 
 
@@ -20,14 +23,19 @@ interface IAtomCodeProps {
     codeProps: ICodeProps;
 }
 
-interface IStatus {
-    ok: boolean;
-    message?: string;
+interface ICreateAtomInput {
+    authorId: number;
+    name: string;
+    css: string;
+    html: string;
+    contextualBg: string;
+    download: string;
+    private: boolean;
+    atomCategoryId: number;
 }
 
 interface ICreateAtomArgs {
-    /*input: IAtom;*/
-    input: any;
+    input: ICreateAtomInput;
 }
 
 interface IDuplicateAtomArgs {
@@ -41,12 +49,6 @@ interface IDuplicateAtomArgs {
 /*             ATOM MUTATION             */
 /*****************************************/
 export const typeDef = `
-# Status
-type Status {
-    ok: Boolean!,
-    message: String
-}
-
 # Input
 input CodeProps {
     code: String!,
@@ -87,12 +89,32 @@ extend type Mutation {
 
 export const resolver = {
     Mutation: {
-        createAtom(root: any, args: ICreateAtomArgs) {
+
+        /**
+         * @desc Create Atom
+         * @method Method createAtom
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {ICreateAtomArgs} args - destructuring: input
+         * @param {ICreateAtomInput} input - destructuring: authorId, name, css, html, 
+         * contextualBg, download, private, atomCategoryId
+         * @param {number} authorId - Author id
+         * @param {string} name - Atom name
+         * @param {string} css - Atom css
+         * @param {string} html - Atom html
+         * @param {string} contextualBg - Atom contextual background
+         * @param {download} download - download atom url
+         * @param {boolean} private - the atom is private or not
+         * @param {number} atomCategoryId - the atom category
+         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         */
+
+        createAtom(parent: any, { input }: ICreateAtomArgs): Bluebird<IStatus> {
 
             // LOG
             logger.log('info', 'Mutation: createAtom');
             
-            return models.Atom.create(args.input)
+            return models.Atom.create(input)
             .then(
                 (result) => {
                     return {
@@ -102,8 +124,13 @@ export const resolver = {
                 }
             ).catch(
                 (err) => {
+
                     // LOG
                     logger.log('error', 'Mutation: createAtom', { err });
+
+                    return {
+                        ok: false
+                    };
                 }
             );
         },
@@ -118,10 +145,10 @@ export const resolver = {
          * @param {number} atomId - Atom id
          * @param {number} userId - User id
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
-         * @returns {Status} Atom entity
+         * @returns {Bluebird<IStatus>} Atom entity
          */
 
-        duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs) {
+        duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs): Bluebird<IStatus> {
 
             // LOG
             logger.log('info', 'Mutation: duplicateAtom');
@@ -147,15 +174,25 @@ export const resolver = {
                         }
                     ).catch(
                         (err) => {
+
                             // LOG
                             logger.log('error', 'Mutation: duplicateAtom', { err });
+
+                            return {
+                                ok: false
+                            };
                         }
                     );
                 }
             ).catch(
                 (err) => {
+
                     // LOG
                     logger.log('error', 'Mutation: duplicateAtom', { err });
+
+                    return {
+                        ok: false
+                    };
                 }
             );
         }
@@ -189,14 +226,11 @@ const _buildNewAtom =
         html,
         css,
         contextualBg: atom.contextualBg,
-        stores: 0,
-        views: 0,
-        likes: 0,
         download: atom.download,
         active: true,
         private: false,
         duplicated: true,
-        atomAuthorId: atom.atomAuthorId,
+        authorId: atom.authorId,
         ownerId: userId,
         atomCategoryId: atom.atomCategoryId
     };

@@ -34,10 +34,10 @@ export interface IProject {
 export interface IProjectAttributes {
     id?: number | null;
     name: string;
-    website: string;
-    projectAuthorId: number;
+    website?: string;
+    authorId: number;
     projectCategoryId: number;
-    active: boolean;
+    active?: boolean;
     private: boolean;
 }
 
