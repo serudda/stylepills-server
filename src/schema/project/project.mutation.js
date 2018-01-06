@@ -27,7 +27,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
-    ColorPalette: [ColorInput]
+    colorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -85,11 +85,36 @@ exports.resolver = {
                     as: 'categories'
                 }]
             });
+
+            return Product.create({
+                title: 'Chair',
+                user: {
+                    first_name: 'Mick',
+                    last_name: 'Broadstone',
+                    addresses: [{
+                    type: 'home',
+                    line_1: '100 Main St.',
+                    city: 'Austin',
+                    state: 'TX',
+                    zip: '78704'
+                    }]
+                }
+                }, {
+                include: [{
+                    association: Product.User,
+                    include: [ User.Addresses ]
+                }]
+            });
+
             */
             return index_1.models.Project.create(input, {
                 include: [{
                         model: index_1.models.Color,
-                        as: 'ColorPalette'
+                        as: 'colorPalette',
+                        include: [{
+                                model: index_1.models.RgbaColor,
+                                as: 'rgba'
+                            }]
                     }]
             })
                 .then(() => {

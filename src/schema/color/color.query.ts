@@ -50,8 +50,8 @@ export const resolver = {
     Color: {
         rgba(color: any) {
             // LOG
-            logger.log('info', 'Query (Color): getRgbaColor');
-            return color.getRgbaColor();
+            logger.log('info', 'Query (Color): getRgba');
+            return color.getRgba();
         }
     }
 };

@@ -19,7 +19,7 @@ interface ICreateProjectInput {
     authorId: number;
     name: string;
     website?: string;
-    ColorPalette: Array<IColor>;
+    colorPalette: Array<IColor>;
     private: boolean;
     projectCategoryId: number;
 }
@@ -54,7 +54,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
-    ColorPalette: [ColorInput]
+    colorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -117,6 +117,27 @@ export const resolver = {
                     as: 'categories'
                 }]
             });
+
+            return Product.create({
+                title: 'Chair',
+                user: {
+                    first_name: 'Mick',
+                    last_name: 'Broadstone',
+                    addresses: [{
+                    type: 'home',
+                    line_1: '100 Main St.',
+                    city: 'Austin',
+                    state: 'TX',
+                    zip: '78704'
+                    }]
+                }
+                }, {
+                include: [{
+                    association: Product.User,
+                    include: [ User.Addresses ]
+                }]
+            });
+
             */
 
             return models.Project.create(
@@ -124,7 +145,11 @@ export const resolver = {
                 {
                     include: [{
                         model: models.Color, 
-                        as: 'ColorPalette'
+                        as: 'colorPalette',
+                        include: [ { 
+                            model: models.RgbaColor,
+                            as: 'rgba'
+                        }]
                     }]
                 }
             )

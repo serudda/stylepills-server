@@ -123,7 +123,7 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
 
         // One project has many colors (1:M)
         Project.hasMany(models.Color, {
-            as: 'ColorPalette',
+            as: 'colorPalette',
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'
