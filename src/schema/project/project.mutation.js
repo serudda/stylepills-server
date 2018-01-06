@@ -27,7 +27,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
-    colorPalette: [ColorInput]
+    ColorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -69,8 +69,28 @@ exports.resolver = {
         createProject(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createProject');
+            /*
+            const Categories = Product.hasMany(Tag, {as: 'categories'});
+
+            Product.create({
+                id: 1,
+                title: 'Chair',
+                categories: [
+                    {id: 1, name: 'Alpha'},
+                    {id: 2, name: 'Beta'}
+                ]
+                }, {
+                include: [{
+                    model: Categories,
+                    as: 'categories'
+                }]
+            });
+            */
             return index_1.models.Project.create(input, {
-                include: [{ model: index_1.models.Color, as: 'ColorPalette' }]
+                include: [{
+                        model: index_1.models.Color,
+                        as: 'ColorPalette'
+                    }]
             })
                 .then(() => {
                 return {

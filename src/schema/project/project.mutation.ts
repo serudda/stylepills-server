@@ -19,7 +19,7 @@ interface ICreateProjectInput {
     authorId: number;
     name: string;
     website?: string;
-    colorPalette: Array<IColor>;
+    ColorPalette: Array<IColor>;
     private: boolean;
     projectCategoryId: number;
 }
@@ -54,7 +54,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
-    colorPalette: [ColorInput]
+    ColorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -101,10 +101,31 @@ export const resolver = {
             // LOG
             logger.log('info', 'Mutation: createProject');
 
+            /*
+            const Categories = Product.hasMany(Tag, {as: 'categories'});
+
+            Product.create({
+                id: 1,
+                title: 'Chair',
+                categories: [
+                    {id: 1, name: 'Alpha'},
+                    {id: 2, name: 'Beta'}
+                ]
+                }, {
+                include: [{
+                    model: Categories,
+                    as: 'categories'
+                }]
+            });
+            */
+
             return models.Project.create(
                 input,
                 {
-                    include: [ { model: models.Color, as: 'ColorPalette' } ]
+                    include: [{
+                        model: models.Color, 
+                        as: 'ColorPalette'
+                    }]
                 }
             )
             .then(
