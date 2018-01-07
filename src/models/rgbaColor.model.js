@@ -38,6 +38,7 @@ function default_1(sequelize, dataTypes) {
     RgbaColor.associate = (models) => {
         // one RgbaColor belongs to one Color (1:M)
         RgbaColor.belongsTo(models.Color, {
+            as: 'rgba',
             foreignKey: {
                 name: 'colorId',
                 field: 'color_id'
