@@ -7,13 +7,16 @@ import { logger } from './../../core/utils/logger';
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
-import { IProject, IProjectAttributes } from './../../models/project.model';
+import { IProject, IProjectAttributes, IProjectInstance } from './../../models/project.model';
 import { IColor } from './../../models/color.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
+interface IProjectStatus extends IStatus {
+    id?: number;
+}
 
 interface ICreateProjectInput {
     authorId: number;
@@ -33,6 +36,12 @@ interface ICreateProjectArgs {
 /*             ATOM MUTATION             */
 /*****************************************/
 export const typeDef = `
+
+# Custom Status
+
+extend type Status {
+    id: ID
+}
 
 # Input
 
@@ -96,49 +105,10 @@ export const resolver = {
          * @returns {Bluebird<IStatus>} status response (OK or Error)
          */
 
-        createProject(parent: any, { input }: ICreateProjectArgs): Bluebird<IStatus> {
+        createProject(parent: any, { input }: ICreateProjectArgs): Bluebird<IProjectStatus> {
 
             // LOG
             logger.log('info', 'Mutation: createProject');
-
-            /*
-            const Categories = Product.hasMany(Tag, {as: 'categories'});
-
-            Product.create({
-                id: 1,
-                title: 'Chair',
-                categories: [
-                    {id: 1, name: 'Alpha'},
-                    {id: 2, name: 'Beta'}
-                ]
-                }, {
-                include: [{
-                    model: Categories,
-                    as: 'categories'
-                }]
-            });
-
-            return Product.create({
-                title: 'Chair',
-                user: {
-                    first_name: 'Mick',
-                    last_name: 'Broadstone',
-                    addresses: [{
-                    type: 'home',
-                    line_1: '100 Main St.',
-                    city: 'Austin',
-                    state: 'TX',
-                    zip: '78704'
-                    }]
-                }
-                }, {
-                include: [{
-                    association: Product.User,
-                    include: [ User.Addresses ]
-                }]
-            });
-
-            */
 
             return models.Project.create(
                 input,
@@ -154,11 +124,29 @@ export const resolver = {
                 }
             )
             .then(
-                () => {
-                    return {
-                        ok: true,
-                        message: 'created successfull!'
+                (result: IProjectInstance) => {
+                    /* TODO: Me gusta esta implementación para los demás .then, 
+                        Si funciona bien, implementar en todo el proyecto.
+                    */
+
+                    const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
+                    
+                    let response: IProjectStatus = {
+                        ok: false
                     };
+
+                    if (result.dataValues) {
+                        response = {
+                            ok: true,
+                            id: result.dataValues.id,
+                            message: 'created successfull!'
+                        };
+                    } else {
+                        // LOG
+                        logger.log('error', ERROR_MESSAGE, result);
+                    }
+
+                    return response;
                 }
             ).catch(
                 (err) => {

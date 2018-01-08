@@ -7,6 +7,12 @@ const index_1 = require("./../../models/index");
 /*****************************************/
 exports.typeDef = `
 
+# Custom Status
+
+extend type Status {
+    id: ID
+}
+
 # Input
 
 input RgbaColorInput {
@@ -69,44 +75,6 @@ exports.resolver = {
         createProject(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createProject');
-            /*
-            const Categories = Product.hasMany(Tag, {as: 'categories'});
-
-            Product.create({
-                id: 1,
-                title: 'Chair',
-                categories: [
-                    {id: 1, name: 'Alpha'},
-                    {id: 2, name: 'Beta'}
-                ]
-                }, {
-                include: [{
-                    model: Categories,
-                    as: 'categories'
-                }]
-            });
-
-            return Product.create({
-                title: 'Chair',
-                user: {
-                    first_name: 'Mick',
-                    last_name: 'Broadstone',
-                    addresses: [{
-                    type: 'home',
-                    line_1: '100 Main St.',
-                    city: 'Austin',
-                    state: 'TX',
-                    zip: '78704'
-                    }]
-                }
-                }, {
-                include: [{
-                    association: Product.User,
-                    include: [ User.Addresses ]
-                }]
-            });
-
-            */
             return index_1.models.Project.create(input, {
                 include: [{
                         model: index_1.models.Color,
@@ -117,11 +85,26 @@ exports.resolver = {
                             }]
                     }]
             })
-                .then(() => {
-                return {
-                    ok: true,
-                    message: 'created successfull!'
+                .then((result) => {
+                /* TODO: Me gusta esta implementación para los demás .then,
+                    Si funciona bien, implementar en todo el proyecto.
+                */
+                const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
+                let response = {
+                    ok: false
                 };
+                if (result.dataValues) {
+                    response = {
+                        ok: true,
+                        id: result.dataValues.id,
+                        message: 'created successfull!'
+                    };
+                }
+                else {
+                    // LOG
+                    logger_1.logger.log('error', ERROR_MESSAGE, result);
+                }
+                return response;
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: createProject', { err });

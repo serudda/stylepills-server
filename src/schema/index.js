@@ -37,14 +37,14 @@ const typeDefs = [`
     #Scalar
     scalar JSON
 
-    # Type
-    type Base {
-        id: ID!
+    # Input
+    input CreateBaseInput {
         base: String
     }
 
-    # Input
-    input CreateBaseInput {
+    # Type
+    type Base {
+        id: ID!
         base: String
     }
 
