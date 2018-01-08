@@ -12,10 +12,11 @@ function default_1(sequelize, dataTypes) {
         },
         website: {
             type: dataTypes.STRING,
+            allowNull: true,
             validate: {
                 isUrl: {
                     args: true,
-                    msg: URL_INVALID_MSG,
+                    msg: URL_INVALID_MSG
                 }
             }
         },
@@ -64,7 +65,7 @@ function default_1(sequelize, dataTypes) {
         });
         // One project has many colors (1:M)
         Project.hasMany(models.Color, {
-            as: 'ColorPalette',
+            as: 'colorPalette',
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'

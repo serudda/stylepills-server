@@ -34,10 +34,10 @@ export interface IProject {
 export interface IProjectAttributes {
     id?: number | null;
     name: string;
-    website: string;
-    projectAuthorId: number;
+    website?: string;
+    authorId: number;
     projectCategoryId: number;
-    active: boolean;
+    active?: boolean;
     private: boolean;
 }
 
@@ -63,10 +63,11 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
             },
             website: {
                 type: dataTypes.STRING,
+                allowNull: true,
                 validate: {
                     isUrl: {
                         args: true,
-                        msg: URL_INVALID_MSG,
+                        msg: URL_INVALID_MSG
                     }
                 }
             },
@@ -123,7 +124,7 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
 
         // One project has many colors (1:M)
         Project.hasMany(models.Color, {
-            as: 'ColorPalette',
+            as: 'colorPalette',
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'

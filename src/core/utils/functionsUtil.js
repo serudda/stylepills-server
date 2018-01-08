@@ -99,6 +99,29 @@ class FunctionsUtil {
             logger_1.logger.warn(message);
         }
     }
+    /**
+     * emptyStringsToNull
+     * @description - Parse empty string to null
+     * @use - this.emptyStringsToNull('');
+     * @function
+     * @param {any} value - Value to validated if is empty
+     * @return {any} Value parsed to null (if it contains empty value)
+     */
+    emptyStringsToNull(value) {
+        if (typeof value === 'string') {
+            if (value === '') {
+                value = null;
+            }
+        }
+        else if (typeof value === 'object') {
+            for (var key in value) {
+                if (value[key] === '') {
+                    value[key] = null;
+                }
+            }
+        }
+        return value;
+    }
 }
 /* Export FunctionUtils instance */
 exports.functionsUtil = new FunctionsUtil();

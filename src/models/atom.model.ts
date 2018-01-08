@@ -48,14 +48,11 @@ export interface IAtomAttributes {
     css: string;
     contextualBg: string;
     download: string;
-    stores: number;
-    views: number;
-    likes: number;
-    duplicated: boolean;
-    atomAuthorId: number;
-    ownerId: number;
+    duplicated?: boolean;
+    authorId: number;
+    ownerId?: number;
     atomCategoryId: number;
-    active: boolean;
+    active?: boolean;
     private: boolean;
 }
 

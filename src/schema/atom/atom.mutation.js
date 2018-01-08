@@ -1,20 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/**************************************/
-/*            DEPENDENCIES            */
-/**************************************/
 const logger_1 = require("./../../core/utils/logger");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
 /*****************************************/
 exports.typeDef = `
-# Status
-type Status {
-    ok: Boolean!,
-    message: String
-}
-
 # Input
 input CodeProps {
     code: String!,
@@ -54,10 +45,28 @@ extend type Mutation {
 `;
 exports.resolver = {
     Mutation: {
-        createAtom(root, args) {
+        /**
+         * @desc Create Atom
+         * @method Method createAtom
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {ICreateAtomArgs} args - destructuring: input
+         * @param {ICreateAtomInput} input - destructuring: authorId, name, css, html,
+         * contextualBg, download, private, atomCategoryId
+         * @param {number} authorId - Author id
+         * @param {string} name - Atom name
+         * @param {string} css - Atom css
+         * @param {string} html - Atom html
+         * @param {string} contextualBg - Atom contextual background
+         * @param {download} download - download atom url
+         * @param {boolean} private - the atom is private or not
+         * @param {number} atomCategoryId - the atom category
+         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         */
+        createAtom(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createAtom');
-            return index_1.models.Atom.create(args.input)
+            return index_1.models.Atom.create(input)
                 .then((result) => {
                 return {
                     ok: true,
@@ -66,6 +75,9 @@ exports.resolver = {
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: createAtom', { err });
+                return {
+                    ok: false
+                };
             });
         },
         /**
@@ -77,7 +89,7 @@ exports.resolver = {
          * @param {number} atomId - Atom id
          * @param {number} userId - User id
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
-         * @returns {Status} Atom entity
+         * @returns {Bluebird<IStatus>} Atom entity
          */
         duplicateAtom(parent, { atomId, userId, atomCode = null }) {
             // LOG
@@ -95,10 +107,16 @@ exports.resolver = {
                 }).catch((err) => {
                     // LOG
                     logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
+                    return {
+                        ok: false
+                    };
                 });
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
+                return {
+                    ok: false
+                };
             });
         }
     },
@@ -123,14 +141,11 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         html,
         css,
         contextualBg: atom.contextualBg,
-        stores: 0,
-        views: 0,
-        likes: 0,
         download: atom.download,
         active: true,
         private: false,
         duplicated: true,
-        atomAuthorId: atom.atomAuthorId,
+        authorId: atom.authorId,
         ownerId: userId,
         atomCategoryId: atom.atomCategoryId
     };

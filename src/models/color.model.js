@@ -38,6 +38,7 @@ function default_1(sequelize, dataTypes) {
         });
         // one Color has one RgbaColor (1:1)
         Color.hasOne(models.RgbaColor, {
+            as: 'rgba',
             foreignKey: {
                 name: 'colorId',
                 field: 'color_id'

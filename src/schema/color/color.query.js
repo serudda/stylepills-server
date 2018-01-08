@@ -36,8 +36,8 @@ exports.resolver = {
     Color: {
         rgba(color) {
             // LOG
-            logger_1.logger.log('info', 'Query (Color): getRgbaColor');
-            return color.getRgbaColor();
+            logger_1.logger.log('info', 'Query (Color): getRgba');
+            return color.getRgba();
         }
     }
 };

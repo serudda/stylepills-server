@@ -76,6 +76,7 @@ SequelizeStatic.Model<IRgbaColorInstance, IRgbaColorAttributes> {
 
         // one RgbaColor belongs to one Color (1:M)
         RgbaColor.belongsTo(models.Color, {
+            as: 'rgba',
             foreignKey: {
                 name: 'colorId',
                 field: 'color_id'
