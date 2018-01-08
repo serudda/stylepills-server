@@ -18,7 +18,8 @@ import { IAtomInstance } from './../../models/atom.model';
 function buildQueryFilter(
     isDuplicated: boolean | null, 
     isPrivate: boolean | null, 
-    atomCategoryId: number, 
+    atomCategoryId: number,
+    projectId: number, 
     text: string): IQueryFilters {
 
     // Init Filter
@@ -39,6 +40,11 @@ function buildQueryFilter(
     // Add 'atomCategoryId' filter if it exists or is different from 0
     if (atomCategoryId && atomCategoryId !== 0) {
         queryFilter.atomCategoryId = atomCategoryId;
+    }
+
+    // Add 'projectId' filter if it exists
+    if (projectId) {
+        queryFilter.projectId = projectId;
     }
 
     // Add 'name' filter if 'text' exists
@@ -64,6 +70,7 @@ interface IQueryFilters {
         $iLike: string
     };
     atomCategoryId?: number;
+    projectId?: number;
     active: boolean;
     private?: boolean;
     duplicated?: boolean;
@@ -91,6 +98,7 @@ interface IAtomTypeArgs {
  */
 interface IAtomFilterArgs {
     atomCategoryId?: number;
+    projectId?: number;
     type?: IAtomTypeArgs;
     text?: string;
     active: boolean;
@@ -140,6 +148,7 @@ export const typeDef = `
     input AtomFilter { 
         type: AtomType   
         atomCategoryId: Int
+        projectId: Int
         text: String
     }
 
@@ -268,7 +277,7 @@ export const resolver = {
 
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
-            let { type = <IAtomTypeArgs> {}, atomCategoryId, text } = filter;
+            let { type = <IAtomTypeArgs> {}, atomCategoryId, projectId, text } = filter;
             let { isDuplicated = null, isPrivate = null } = type;
             let where = {};
             let sortByQuery = {};
@@ -288,7 +297,7 @@ export const resolver = {
             }
 
             // Build filter query
-            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text);
+            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, projectId, text);
 
             // Build main Where
             if (sortBy !== 'created_at') {

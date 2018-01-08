@@ -52,6 +52,7 @@ export interface IAtomAttributes {
     authorId: number;
     ownerId?: number;
     atomCategoryId: number;
+    projectId?: number;
     active?: boolean;
     private: boolean;
 }
