@@ -63,10 +63,11 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
             },
             website: {
                 type: dataTypes.STRING,
+                allowNull: true,
                 validate: {
                     isUrl: {
                         args: true,
-                        msg: URL_INVALID_MSG,
+                        msg: URL_INVALID_MSG
                     }
                 }
             },

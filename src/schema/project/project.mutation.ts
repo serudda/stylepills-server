@@ -4,6 +4,7 @@
 import * as Bluebird from 'bluebird';
 import { logger } from './../../core/utils/logger';
 
+import { functionsUtil } from './../../core/utils/functionsUtil';
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
@@ -110,6 +111,9 @@ export const resolver = {
             // LOG
             logger.log('info', 'Mutation: createProject');
 
+            // NOTE: 1
+            input = functionsUtil.emptyStringsToNull(input);
+
             return models.Project.create(
                 input,
                 {
@@ -161,3 +165,9 @@ export const resolver = {
         }
     },
 };
+
+
+/* 
+(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
+references: https://github.com/sequelize/sequelize/issues/3958
+*/

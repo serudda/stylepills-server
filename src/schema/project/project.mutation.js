@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("./../../core/utils/logger");
+const functionsUtil_1 = require("./../../core/utils/functionsUtil");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
@@ -75,6 +76,8 @@ exports.resolver = {
         createProject(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createProject');
+            // NOTE: 1
+            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
             return index_1.models.Project.create(input, {
                 include: [{
                         model: index_1.models.Color,
@@ -115,4 +118,8 @@ exports.resolver = {
         }
     },
 };
+/*
+(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
+references: https://github.com/sequelize/sequelize/issues/3958
+*/ 
 //# sourceMappingURL=project.mutation.js.map
