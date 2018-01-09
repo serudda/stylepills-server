@@ -10,6 +10,7 @@ exports.typeDef = `
 
     extend type Query {
         projectById(id: ID!): Project!
+        basicProjectsByUserId(userId: ID!): [Project!]!
         allProjects(limit: Int): [Project!]!
     }
 
@@ -34,6 +35,24 @@ exports.resolver = {
             return index_1.models.Project.findById(id);
         },
         /**
+         * @desc Get Basic Projects by User Id
+         * @method Method basicProjectsByUserId
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {IProjectQueryArgs} args - destructuring: userId
+         * @returns {Array<BasicProject>} basic Projects List of a specific user
+         */
+        basicProjectsByUserId(parent, { userId }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: basicProjectsByUserId');
+            return index_1.models.Project.findAll({
+                where: {
+                    active: true,
+                    authorId: userId
+                }
+            });
+        },
+        /**
          * @desc Get all Projects
          * @method Method allProjects
          * @public
@@ -45,7 +64,7 @@ exports.resolver = {
         allProjects(parent, { limit = appConfig.ATOM_SEARCH_LIMIT }) {
             // LOG
             logger_1.logger.log('info', 'Query: allProjects');
-            return index_1.models.Atom.findAll({
+            return index_1.models.Project.findAll({
                 limit,
                 where: {
                     active: true
