@@ -23,6 +23,7 @@ interface ICreateProjectInput {
     authorId: number;
     name: string;
     website?: string;
+    description?: string;
     colorPalette: Array<IColor>;
     private: boolean;
     projectCategoryId: number;
@@ -64,6 +65,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
+    description: String
     colorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
@@ -118,7 +120,7 @@ export const resolver = {
                 input,
                 {
                     include: [{
-                        model: models.Color, 
+                        model: models.Color,
                         as: 'colorPalette',
                         include: [ { 
                             model: models.RgbaColor,

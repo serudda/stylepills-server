@@ -19,6 +19,7 @@ input AtomCodeProps {
 
 input CreateAtomInput {
     name: String 
+    description: String
     css: String
     html: String
     contextualBg: String
@@ -140,6 +141,7 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         name: atom.name,
         html,
         css,
+        description: atom.description,
         contextualBg: atom.contextualBg,
         download: atom.download,
         active: true,

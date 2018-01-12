@@ -26,6 +26,7 @@ interface IAtomCodeProps {
 interface ICreateAtomInput {
     authorId: number;
     name: string;
+    description?: string;
     css: string;
     html: string;
     contextualBg: string;
@@ -62,6 +63,7 @@ input AtomCodeProps {
 
 input CreateAtomInput {
     name: String 
+    description: String
     css: String
     html: String
     contextualBg: String
@@ -225,6 +227,7 @@ const _buildNewAtom =
         name: atom.name,
         html,
         css,
+        description: atom.description,
         contextualBg: atom.contextualBg,
         download: atom.download,
         active: true,

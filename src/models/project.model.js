@@ -10,6 +10,9 @@ function default_1(sequelize, dataTypes) {
         name: {
             type: dataTypes.STRING
         },
+        description: {
+            type: dataTypes.TEXT
+        },
         website: {
             type: dataTypes.STRING,
             allowNull: true,

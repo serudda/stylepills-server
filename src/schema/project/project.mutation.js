@@ -34,6 +34,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
+    description: String
     colorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
