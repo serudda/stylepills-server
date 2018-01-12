@@ -75,7 +75,11 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     let Atom: any = sequelize.define<IAtomInstance, IAtomAttributes>(
         'Atom', {
             name: {
-                type: dataTypes.STRING
+                type: dataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: true
+                }
             },
             description: {
                 type: dataTypes.TEXT

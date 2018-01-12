@@ -61,7 +61,11 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
     let Project: any = sequelize.define<IProjectInstance, IProjectAttributes>(
         'Project', {
             name: {
-                type: dataTypes.STRING
+                type: dataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: true
+                }
             },
             description: {
                 type: dataTypes.TEXT
