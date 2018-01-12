@@ -1,12 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = require("./../../core/utils/logger");
+const functionsUtil_1 = require("./../../core/utils/functionsUtil");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
 /*****************************************/
 exports.typeDef = `
+
+# Custom Status
+
+extend type Status {
+    id: ID
+}
+
 # Input
+
 input CodeProps {
     code: String!,
     libs: [String]
@@ -18,28 +27,32 @@ input AtomCodeProps {
 }
 
 input CreateAtomInput {
-    name: String 
+    authorId: ID!
+    ownerId: ID
+    name: String! 
     description: String
     css: String
     html: String
+    private: Boolean!
     contextualBg: String
-    download: String
+    atomCategoryId: Int
+    projectId: Int
 }
 
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Atom!
+    createAtom(input: CreateAtomInput!): Status!
 
     duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
 
     activeAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
     deactivateAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
 }
 
@@ -56,23 +69,41 @@ exports.resolver = {
          * contextualBg, download, private, atomCategoryId
          * @param {number} authorId - Author id
          * @param {string} name - Atom name
+         * @param {string} description - Atom description
          * @param {string} css - Atom css
          * @param {string} html - Atom html
          * @param {string} contextualBg - Atom contextual background
-         * @param {download} download - download atom url
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
+         * @param {number} projectId - project id
          * @returns {Bluebird<IStatus>} status response (OK or Error)
          */
         createAtom(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createAtom');
+            // NOTE: 1
+            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
+            // Assign user as the owner
+            input.ownerId = input.authorId;
+            // Save the new Atom on DB
             return index_1.models.Atom.create(input)
                 .then((result) => {
-                return {
-                    ok: true,
-                    message: 'created successful'
+                const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
+                let response = {
+                    ok: false
                 };
+                if (result.dataValues) {
+                    response = {
+                        ok: true,
+                        id: result.dataValues.id,
+                        message: 'created successfull!'
+                    };
+                }
+                else {
+                    // LOG
+                    logger_1.logger.log('error', ERROR_MESSAGE, result);
+                }
+                return response;
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: createAtom', { err });
@@ -172,4 +203,8 @@ const _extractCode = (type, atomCode) => {
     });
     return code;
 };
+/*
+(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
+references: https://github.com/sequelize/sequelize/issues/3958
+*/ 
 //# sourceMappingURL=atom.mutation.js.map
