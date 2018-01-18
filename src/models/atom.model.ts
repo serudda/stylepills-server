@@ -23,6 +23,7 @@ export interface ISourceCode {
 export interface IAtom {
     id: number | null;
     name: string;
+    description: string;
     html: string;
     css: string;
     contextualBg: string;
@@ -44,6 +45,7 @@ export interface IAtom {
 export interface IAtomAttributes {
     id?: number | null;
     name: string;
+    description?: string;
     html: string;
     css: string;
     contextualBg: string;
@@ -73,7 +75,14 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     let Atom: any = sequelize.define<IAtomInstance, IAtomAttributes>(
         'Atom', {
             name: {
-                type: dataTypes.STRING
+                type: dataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: true
+                }
+            },
+            description: {
+                type: dataTypes.TEXT
             },
             html: {
                 type: dataTypes.TEXT

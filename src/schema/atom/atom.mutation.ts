@@ -151,7 +151,7 @@ export const resolver = {
 
             if (input.atomCategoryId === 0) {
                 input.atomCategoryId = null;
-            }
+            }            
 
             // Save the new Atom on DB
             return models.Atom.create(input)

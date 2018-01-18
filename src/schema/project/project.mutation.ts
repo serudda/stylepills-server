@@ -23,6 +23,7 @@ interface ICreateProjectInput {
     authorId: number;
     name: string;
     website?: string;
+    description?: string;
     colorPalette: Array<IColor>;
     private: boolean;
     projectCategoryId: number;
@@ -64,6 +65,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
+    description: String
     colorPalette: [ColorInput]
     private: Boolean!
     projectCategoryId: Int
@@ -100,6 +102,7 @@ export const resolver = {
          * @param {number} authorId - Author id
          * @param {string} name - Project name
          * @param {string} website - Project website
+         * @param {string} description - Project description
          * @param {Array<IColor>} colorPalette - Color palette of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
@@ -118,7 +121,7 @@ export const resolver = {
                 input,
                 {
                     include: [{
-                        model: models.Color, 
+                        model: models.Color,
                         as: 'colorPalette',
                         include: [ { 
                             model: models.RgbaColor,
