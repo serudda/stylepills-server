@@ -68,7 +68,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true // NOTE: 1
                 },
-                logging: false // NOTE: 2
+                logging: true // NOTE: 2
             };
 
         case 'development':

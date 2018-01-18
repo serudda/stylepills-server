@@ -45,7 +45,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true // NOTE: 1
                 },
-                logging: false // NOTE: 2
+                logging: true // NOTE: 2
             };
         case 'development':
             return {

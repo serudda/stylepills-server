@@ -19,7 +19,7 @@ type Atom {
     duplicated: Boolean
     author: User!
     owner: User!
-    category: AtomCategory!
+    category: AtomCategory
 }
 `;
 

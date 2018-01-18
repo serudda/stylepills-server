@@ -66,6 +66,19 @@ exports.resolver = {
         createAtom(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createAtom');
+<<<<<<< Updated upstream
+=======
+            // NOTE: 1
+            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
+            // Assign user as the owner
+            input.ownerId = input.authorId;
+            // Validate if atom category id is equal to 0
+            const RADIX = 10;
+            if (parseInt(input.atomCategoryId, RADIX) === 0) {
+                input.atomCategoryId = null;
+            }
+            // Save the new Atom on DB
+>>>>>>> Stashed changes
             return index_1.models.Atom.create(input)
                 .then((result) => {
                 return {
