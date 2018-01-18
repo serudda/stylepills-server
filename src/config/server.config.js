@@ -10,6 +10,8 @@ function _getCallBackUrl(env) {
             return appConfig.LOCAL_AUTH_GOOGLE_CALLBACK_URL;
         case appConfig.DEV:
             return appConfig.DEV_AUTH_GOOGLE_CALLBACK_URL;
+        case appConfig.STAGING:
+            return appConfig.STAGING_AUTH_GOOGLE_CALLBACK_URL;
         case appConfig.ALPHA:
         case appConfig.BETA:
         case appConfig.PRD:
@@ -24,6 +26,8 @@ function _getRedirectUrl(env) {
             return appConfig.LOCAL_GOOGLE_AUTH_REDIRECT_URL;
         case appConfig.DEV:
             return appConfig.DEV_GOOGLE_AUTH_REDIRECT_URL;
+        case appConfig.STAGING:
+            return appConfig.STAGING_GOOGLE_AUTH_REDIRECT_URL;
         case appConfig.PRD:
             return appConfig.PRD_GOOGLE_AUTH_REDIRECT_URL;
         case appConfig.ALPHA:
