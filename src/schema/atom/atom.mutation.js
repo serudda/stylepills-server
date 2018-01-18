@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/**************************************/
-/*            DEPENDENCIES            */
-/**************************************/
 const logger_1 = require("./../../core/utils/logger");
+const functionsUtil_1 = require("./../../core/utils/functionsUtil");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
 /*****************************************/
 exports.typeDef = `
-# Status
-type Status {
-    ok: Boolean!,
-    message: String
+
+# Custom Status
+
+extend type Status {
+    id: ID
 }
 
 # Input
+
 input CodeProps {
     code: String!,
     libs: [String]
@@ -27,45 +27,98 @@ input AtomCodeProps {
 }
 
 input CreateAtomInput {
-    name: String 
+    authorId: ID!
+    ownerId: ID
+    name: String! 
+    description: String
     css: String
     html: String
+    private: Boolean!
     contextualBg: String
-    download: String
+    atomCategoryId: Int
+    projectId: Int
 }
 
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Atom!
+    createAtom(input: CreateAtomInput!): Status!
 
     duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
 
     activeAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
     deactivateAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
 }
 
 `;
 exports.resolver = {
     Mutation: {
-        createAtom(root, args) {
+        /**
+         * @desc Create Atom
+         * @method Method createAtom
+         * @public
+         * @param {any} parent - TODO: Investigar un poco más estos parametros
+         * @param {ICreateAtomArgs} args - destructuring: input
+         * @param {ICreateAtomInput} input - destructuring: authorId, name, css, html,
+         * contextualBg, download, private, atomCategoryId
+         * @param {number} authorId - Author id
+         * @param {string} name - Atom name
+         * @param {string} description - Atom description
+         * @param {string} css - Atom css
+         * @param {string} html - Atom html
+         * @param {string} contextualBg - Atom contextual background
+         * @param {boolean} private - the atom is private or not
+         * @param {number} atomCategoryId - the atom category
+         * @param {number} projectId - project id
+         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         */
+        createAtom(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createAtom');
-            return index_1.models.Atom.create(args.input)
+            // NOTE: 1
+            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
+            // Assign user as the owner
+            input.ownerId = input.authorId;
+            // Validate if atom category id is equal to 0
+            const RADIX = 10;
+            if (typeof input.atomCategoryId === 'string' &&
+                input.atomCategoryId !== null) {
+                input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+            }
+            if (input.atomCategoryId === 0) {
+                input.atomCategoryId = null;
+            }
+            // Save the new Atom on DB
+            return index_1.models.Atom.create(input)
                 .then((result) => {
-                return {
-                    ok: true,
-                    message: 'created successful'
+                const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
+                let response = {
+                    ok: false
                 };
+                if (result.dataValues) {
+                    response = {
+                        ok: true,
+                        id: result.dataValues.id,
+                        message: 'created successfull!'
+                    };
+                }
+                else {
+                    // LOG
+                    logger_1.logger.log('error', ERROR_MESSAGE, result);
+                }
+                return response;
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: createAtom', { err });
+                return {
+                    ok: false
+                };
             });
         },
         /**
@@ -77,7 +130,7 @@ exports.resolver = {
          * @param {number} atomId - Atom id
          * @param {number} userId - User id
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
-         * @returns {Status} Atom entity
+         * @returns {Bluebird<IStatus>} Atom entity
          */
         duplicateAtom(parent, { atomId, userId, atomCode = null }) {
             // LOG
@@ -95,10 +148,16 @@ exports.resolver = {
                 }).catch((err) => {
                     // LOG
                     logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
+                    return {
+                        ok: false
+                    };
                 });
             }).catch((err) => {
                 // LOG
                 logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
+                return {
+                    ok: false
+                };
             });
         }
     },
@@ -122,10 +181,8 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         name: atom.name,
         html,
         css,
+        description: atom.description,
         contextualBg: atom.contextualBg,
-        stores: 0,
-        views: 0,
-        likes: 0,
         download: atom.download,
         active: true,
         private: false,
@@ -155,4 +212,8 @@ const _extractCode = (type, atomCode) => {
     });
     return code;
 };
+/*
+(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
+references: https://github.com/sequelize/sequelize/issues/3958
+*/ 
 //# sourceMappingURL=atom.mutation.js.map

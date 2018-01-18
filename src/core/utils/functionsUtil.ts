@@ -12,6 +12,7 @@ interface IFunctionUtil {
     normalizeString: (str: string) => string;
     generateUsername: (firstName: string, lastName: string) => string;
     consoleLog: (message: string, value?: any) => void;
+    emptyStringsToNull: (value: any) => any;
 }
 
 
@@ -130,6 +131,33 @@ class FunctionsUtil implements IFunctionUtil {
         if (appConfig.DEBUG) {
             logger.warn(message);
         }
+    }
+
+
+    /**
+     * emptyStringsToNull
+     * @description - Parse empty string to null
+     * @use - this.emptyStringsToNull('');
+     * @function
+     * @param {any} value - Value to validated if is empty
+     * @return {any} Value parsed to null (if it contains empty value)
+     */
+
+    emptyStringsToNull(value: any) {
+
+        if (typeof value === 'string') {
+            if (value === '') {
+                value = null;
+            }
+        } else if (typeof value === 'object') {
+            for (var key in value) {
+                if (value[key] === '') {
+                    value[key] = null;
+                }
+            }
+        }
+    
+        return value;
     }
 
 }

@@ -23,6 +23,7 @@ export interface ISourceCode {
 export interface IAtom {
     id: number | null;
     name: string;
+    description: string;
     html: string;
     css: string;
     contextualBg: string;
@@ -44,18 +45,17 @@ export interface IAtom {
 export interface IAtomAttributes {
     id?: number | null;
     name: string;
+    description?: string;
     html: string;
     css: string;
     contextualBg: string;
     download: string;
-    stores: number;
-    views: number;
-    likes: number;
-    duplicated: boolean;
+    duplicated?: boolean;
     authorId: number;
-    ownerId: number;
-    atomCategoryId: number;
-    active: boolean;
+    ownerId?: number;
+    atomCategoryId: number | string;
+    projectId?: number;
+    active?: boolean;
     private: boolean;
 }
 
@@ -75,7 +75,14 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     let Atom: any = sequelize.define<IAtomInstance, IAtomAttributes>(
         'Atom', {
             name: {
-                type: dataTypes.STRING
+                type: dataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: true
+                }
+            },
+            description: {
+                type: dataTypes.TEXT
             },
             html: {
                 type: dataTypes.TEXT
@@ -128,21 +135,20 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     /*********************************/
     Atom.associate = (models: ISequelizeModels) => {
 
-        // one Atom belongs to many owners (N:M)
-        /*Atom.belongsToMany(models.User, {
-            through: 'owner',
-            foreignKey: {
-                name: 'atomId',
-                field: 'atom_id'
-            }
-        });*/
-
         // one Atom belongs to one author (1:M)
         Atom.belongsTo(models.User, {
             as: 'Author',
             foreignKey: {
                 name: 'authorId',
                 field: 'author_id'
+            }
+        });
+
+        // one Atom belongs to one Project (1:M)
+        Atom.belongsTo(models.Project, {
+            foreignKey: {
+                name: 'projectId',
+                field: 'project_id'
             }
         });
 

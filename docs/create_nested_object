@@ -1,0 +1,137 @@
+Creating with associations
+
+Se puede crear una instancia con asociación anidada en un solo paso, 
+siempre que todos los elementos sean nuevos (No existan en la base):
+
+
+1. Crear elementos de una asociación:
+BelongsTo, Has Many, HasOne
+
+Consideremos el siguiente codigo:
+
+    const Product = this.sequelize.define('product', {
+    title: Sequelize.STRING
+    });
+
+    const User = this.sequelize.define('user', {
+    first_name: Sequelize.STRING,
+    last_name: Sequelize.STRING
+    });
+
+    const Address = this.sequelize.define('address', {
+    type: Sequelize.STRING,
+    line_1: Sequelize.STRING,
+    line_2: Sequelize.STRING,
+    city: Sequelize.STRING,
+    state: Sequelize.STRING,
+    zip: Sequelize.STRING,
+    });
+
+    Product.User = Product.belongsTo(User);
+    User.Addresses = User.hasMany(Address);
+    // Also works for `hasOne`
+
+
+Un nuevo Product, User, y uno o más Address pueden ser creados en un solo
+paso de la siguiente manera:
+
+    return Product.create({
+        title: 'Chair',
+        user: {
+            first_name: 'Mick',
+            last_name: 'Broadstone',
+            addresses: [{
+            type: 'home',
+            line_1: '100 Main St.',
+            city: 'Austin',
+            state: 'TX',
+            zip: '78704'
+            }]
+        }
+        }, {
+        include: [{
+            association: Product.User,
+            include: [ User.Addresses ]
+        }]
+    });
+
+Aquí, nuestro modelo usuario se llama 'user', con una u minúscula. 
+Esto significa que la propiedad en el objeto también debe ser 'user'. 
+Si el nombre dado a sequelize.define fuera 'User', la key en el objeto también 
+debería ser 'User'. Del mismo modo para las 'addresses', excepto que está pluralizado 
+por ser una asociación hasMany.
+
+
+-------------------------------------------------------------------------------------
+
+2. Crear elementos de una asociación:
+BelongsTo
+con un alias
+
+El ejemplo anterior puede ser extendido de la siguiente manera, si deseamos
+asignar un alias a nuestro modelo:
+
+    const Creator = Product.belongsTo(User, {as: 'creator'});
+
+    return Product.create({
+        title: 'Chair',
+        creator: {
+            first_name: 'Matt',
+            last_name: 'Hansen'
+        }
+        }, {
+        include: [ Creator ]
+    });
+
+Un Product pertenece a un User, el cual tiene como alias: 'creator'. Al momento
+de crear un nuevo Product, y de paso crear el 'creator' asociado tambien en base, 
+recuerda que el alias tiene que corresponder al key del objeto que pasamos por parametro
+a la hora de crear un Product. Ademas indicamos la asociación agregando el 'include' a 
+las opciones de los parametros pasamos al metodo: create.
+
+
+-------------------------------------------------------------------------------------
+
+3. Crear elementos de una asociación:
+HasMany, BelongsToMany
+
+Asociemos un Product con muchas Tags. 
+La configuración de los modelos podría verse así: 
+
+    const Tag = this.sequelize.define('tag', {
+        name: Sequelize.STRING
+    });
+
+    Product.hasMany(Tag);
+    // Also works for `belongsToMany`.
+
+Ahora podemos crear un Product con varias Tags de la siguiente manera:
+
+    Product.create({
+        id: 1,
+        title: 'Chair',
+        tags: [
+            {name: 'Alpha'},
+            {name: 'Beta'}
+        ]
+    }, {
+        include: [Tag]
+    })
+
+Y, podemos modificar este ejemplo para que también sea compatible con un alias:
+
+    const Categories = Product.hasMany(Tag, {as: 'categories'});
+
+    Product.create({
+        id: 1,
+        title: 'Chair',
+        categories: [
+            {id: 1, name: 'Alpha'},
+            {id: 2, name: 'Beta'}
+        ]
+        }, {
+        include: [{
+            model: Categories,
+            as: 'categories'
+        }]
+    })

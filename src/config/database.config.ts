@@ -11,6 +11,7 @@ const operatorsAliases = {
     $and: Op.and,
     $or: Op.or,
     $like: Op.like,
+    $iLike: Op.iLike,
     $gt: Op.gt,
     $gte: Op.gte,
     $lt: Op.lt,
@@ -44,10 +45,11 @@ export function databaseConfig(env: string): IDatabaseConfig {
     let match = null;
     let host = null;
     let port = null;
-    if (env === 'production' ||
-        env === 'alpha'      ||
-        env === 'beta'       || 
-        env === 'development') {
+    if (env === 'development'   ||
+        env === 'staging'       || 
+        env === 'production'    ||
+        env === 'alpha'         ||
+        env === 'beta'          ) {
         match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
         host = match[3];
         port = match[4];
@@ -67,7 +69,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true // NOTE: 1
                 },
-                logging: false // NOTE: 2
+                logging: true // NOTE: 2
             };
 
         case 'development':
@@ -76,6 +78,22 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 username: 'ucltubusynwrsu',
                 password: 'f14c4838c1b7af63fbf45f25799e8c45f319a1f4c618142f19d09fb019a8eb60',
                 database: 'dcgfiqehd78k6c',
+                port,
+                host,
+                dialect: 'postgres',
+                operatorsAliases,
+                define: {
+                    underscored: true
+                },
+                logging: false
+            };
+        
+        case 'staging':
+            return {
+                use_env_variable: 'DATABASE_URL',
+                username: 'oksscfuqoffztn',
+                password: 'aa7e72457d51f8326e580fef18a359f56704df41a889146e232b5590d160f331',
+                database: 'd1irdaj3iqucd1',
                 port,
                 host,
                 dialect: 'postgres',

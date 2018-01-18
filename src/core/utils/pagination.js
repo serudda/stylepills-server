@@ -169,6 +169,7 @@ class Pagination {
                 ? this.encodeCursor([results[0][this.paginationField], results[0][this.primaryKeyField]])
                 : this.encodeCursor([results[0][this.paginationField]]);
             afterCursor = this.paginationFieldIsNonId
+                // tslint:disable-next-line:max-line-length
                 ? this.encodeCursor([results[results.length - 1][this.paginationField], results[results.length - 1][this.primaryKeyField]])
                 : this.encodeCursor([results[results.length - 1][this.paginationField]]);
         }

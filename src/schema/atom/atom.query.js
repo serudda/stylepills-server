@@ -5,7 +5,7 @@ const pagination_1 = require("./../../core/utils/pagination");
 const appConfig = require("./../../core/constants/app.constants");
 const logger_1 = require("./../../core/utils/logger");
 // TODO: Agregar un mensaje descriptivo, y mover a un lugar adecuado
-function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text) {
+function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, projectId, text) {
     // Init Filter
     let queryFilter = {
         active: true
@@ -22,10 +22,14 @@ function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text) {
     if (atomCategoryId && atomCategoryId !== 0) {
         queryFilter.atomCategoryId = atomCategoryId;
     }
+    // Add 'projectId' filter if it exists
+    if (projectId) {
+        queryFilter.projectId = projectId;
+    }
     // Add 'name' filter if 'text' exists
     if (text) {
         queryFilter.name = {
-            $like: `%${text}%`
+            $iLike: `%${text}%`
         };
     }
     return queryFilter;
@@ -49,6 +53,7 @@ exports.typeDef = `
     input AtomFilter { 
         type: AtomType   
         atomCategoryId: Int
+        projectId: Int
         text: String
     }
 
@@ -159,7 +164,7 @@ exports.resolver = {
             logger_1.logger.log('info', 'Query: searchAtoms');
             // VARIABLES
             let { first, after, last, before, primaryKey } = pagination;
-            let { type = {}, atomCategoryId, text } = filter;
+            let { type = {}, atomCategoryId, projectId, text } = filter;
             let { isDuplicated = null, isPrivate = null } = type;
             let where = {};
             let sortByQuery = {};
@@ -177,7 +182,7 @@ exports.resolver = {
                 ];
             }
             // Build filter query
-            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, text);
+            let filterQuery = buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, projectId, text);
             // Build main Where
             if (sortBy !== 'created_at') {
                 sortByQuery = {

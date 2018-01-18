@@ -20,6 +20,19 @@ import * as atomTypes from './atom/atom.type';
 import * as atomQuery from './atom/atom.query';
 import * as atomMutation from './atom/atom.mutation';
 
+import * as projectTypes from './project/project.type';
+import * as projectQuery from './project/project.query';
+import * as projectMutation from './project/project.mutation';
+
+import * as projectCategoryTypes from './projectCategory/projectCategory.type';
+import * as projectCategoryQuery from './projectCategory/projectCategory.query';
+
+import * as colorTypes from './color/color.type';
+import * as colorQuery from './color/color.query';
+
+import * as rgbaColorTypes from './rgbaColor/rgbaColor.type';
+import * as rgbaColorQuery from './rgbaColor/rgbaColor.query';
+
 import * as GraphQLJSON from 'graphql-type-json';
 
 const scalarJSON: any = {
@@ -35,15 +48,21 @@ const typeDefs = [`
     #Scalar
     scalar JSON
 
+    # Input
+    input CreateBaseInput {
+        base: String
+    }
+
     # Type
     type Base {
         id: ID!
         base: String
     }
 
-    # Input
-    input CreateBaseInput {
-        base: String
+    # Status
+    type Status {
+        ok: Boolean!,
+        message: String
     }
     
     # Query
@@ -76,6 +95,19 @@ const typeDefs = [`
     atomTypes.typeDef,
     atomQuery.typeDef,
     atomMutation.typeDef,
+
+    projectTypes.typeDef,
+    projectQuery.typeDef,
+    projectMutation.typeDef,
+
+    projectCategoryTypes.typeDef,
+    projectCategoryQuery.typeDef,
+
+    colorTypes.typeDef,
+    colorQuery.typeDef,
+
+    rgbaColorTypes.typeDef,
+    rgbaColorQuery.typeDef
     
 ];
 
@@ -95,7 +127,17 @@ const resolvers: any = merge(
     atomCategoryQuery.resolver,
 
     atomMutation.resolver,
-    atomQuery.resolver
+    atomQuery.resolver,
+
+    projectMutation.resolver,
+    projectQuery.resolver,
+
+    projectCategoryQuery.resolver,
+
+    colorQuery.resolver,
+
+    rgbaColorQuery.resolver
+
 );
 
 

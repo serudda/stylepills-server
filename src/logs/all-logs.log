@@ -30,3 +30,10 @@
 {"level":"info","message":"Query: (Atom) getAtomCategory","timestamp":"2017-12-19T17:06:58Z"}
 {"level":"info","message":"GraphQL Schema activated","timestamp":"2017-12-19T17:09:20Z"}
 {"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2017-12-19T17:09:22Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2018-01-04T21:13:52Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-01-04T21:13:53Z"}
+{"level":"info","message":"Query: userById","timestamp":"2018-01-04T21:37:14Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2018-01-04T21:55:40Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-01-04T21:55:41Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2018-01-04T21:56:32Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-01-04T21:56:36Z"}

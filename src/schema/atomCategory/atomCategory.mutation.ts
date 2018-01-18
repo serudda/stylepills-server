@@ -20,11 +20,8 @@ export const typeDef = `
 
 # Input
 input CreateAtomCategoryInput {
-    name: String 
-    css: String
-    html: String
-    contextualBg: String
-    download: String
+    name: String!
+    description: String
 }
 
 # Mutations
