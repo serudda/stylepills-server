@@ -21,7 +21,7 @@ type Atom {
     duplicated: Boolean
     author: User!
     owner: User!
-    category: AtomCategory!
+    category: AtomCategory
 }
 `;
 /* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).

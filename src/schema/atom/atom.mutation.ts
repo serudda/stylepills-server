@@ -38,7 +38,7 @@ interface ICreateAtomInput {
     contextualBg: string;
     download: string;
     private: boolean;
-    atomCategoryId: number;
+    atomCategoryId: number | string;
     projectId: number;
 }
 
@@ -141,6 +141,17 @@ export const resolver = {
 
             // Assign user as the owner
             input.ownerId = input.authorId;
+
+            // Validate if atom category id is equal to 0
+            const RADIX = 10;
+            if (typeof input.atomCategoryId === 'string' &&
+                input.atomCategoryId !== null) {
+                input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+            }
+
+            if (input.atomCategoryId === 0) {
+                input.atomCategoryId = null;
+            }            
 
             // Save the new Atom on DB
             return models.Atom.create(input)

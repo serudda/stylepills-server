@@ -53,7 +53,7 @@ export interface IAtomAttributes {
     duplicated?: boolean;
     authorId: number;
     ownerId?: number;
-    atomCategoryId: number;
+    atomCategoryId: number | string;
     projectId?: number;
     active?: boolean;
     private: boolean;
