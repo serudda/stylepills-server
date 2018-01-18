@@ -8,7 +8,14 @@ function default_1(sequelize, dataTypes) {
     const URL_INVALID_MSG = 'Invalid url';
     let Project = sequelize.define('Project', {
         name: {
-            type: dataTypes.STRING
+            type: dataTypes.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+        },
+        description: {
+            type: dataTypes.TEXT
         },
         website: {
             type: dataTypes.STRING,

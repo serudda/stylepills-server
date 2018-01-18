@@ -7,6 +7,7 @@ type Project {
     id: ID!
     name: String
     website: String
+    description: String
     colorPalette: [Color]
     atoms: [Atom]
     active: Boolean

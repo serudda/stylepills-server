@@ -20,6 +20,7 @@ export interface IProject {
     id: number | null;
     name: string;
     website: string;
+    description: string;
     colorPalette: Array<IColor>;
     active: boolean;
     private: boolean;
@@ -35,6 +36,7 @@ export interface IProjectAttributes {
     id?: number | null;
     name: string;
     website?: string;
+    description?: string;
     authorId: number;
     projectCategoryId: number;
     active?: boolean;
@@ -59,7 +61,14 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
     let Project: any = sequelize.define<IProjectInstance, IProjectAttributes>(
         'Project', {
             name: {
-                type: dataTypes.STRING
+                type: dataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    notEmpty: true
+                }
+            },
+            description: {
+                type: dataTypes.TEXT
             },
             website: {
                 type: dataTypes.STRING,

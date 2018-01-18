@@ -6,6 +6,7 @@ export const typeDef = `
 type Atom {
     id: ID!
     name: String
+    description: String
     html: String
     css: String
     contextualBg: String

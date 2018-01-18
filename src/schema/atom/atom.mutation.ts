@@ -4,15 +4,20 @@
 import * as Bluebird from 'bluebird';
 import { logger } from './../../core/utils/logger';
 
+import { functionsUtil } from './../../core/utils/functionsUtil';
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
-import { IAtom, IAtomAttributes } from './../../models/atom.model';
+import { IAtom, IAtomAttributes, IAtomInstance } from './../../models/atom.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
+interface IAtomStatus extends IStatus {
+    id?: number;
+}
+
 interface ICodeProps {
     code: string;
     libs?: Array<string>;
@@ -25,13 +30,16 @@ interface IAtomCodeProps {
 
 interface ICreateAtomInput {
     authorId: number;
+    ownerId?: number;
     name: string;
+    description?: string;
     css: string;
     html: string;
     contextualBg: string;
     download: string;
     private: boolean;
     atomCategoryId: number;
+    projectId: number;
 }
 
 interface ICreateAtomArgs {
@@ -49,7 +57,15 @@ interface IDuplicateAtomArgs {
 /*             ATOM MUTATION             */
 /*****************************************/
 export const typeDef = `
+
+# Custom Status
+
+extend type Status {
+    id: ID
+}
+
 # Input
+
 input CodeProps {
     code: String!,
     libs: [String]
@@ -61,27 +77,32 @@ input AtomCodeProps {
 }
 
 input CreateAtomInput {
-    name: String 
+    authorId: ID!
+    ownerId: ID
+    name: String! 
+    description: String
     css: String
     html: String
+    private: Boolean!
     contextualBg: String
-    download: String
+    atomCategoryId: Int
+    projectId: Int
 }
 
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Atom!
+    createAtom(input: CreateAtomInput!): Status!
 
     duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
 
     activeAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
     deactivateAtom(
         id: ID!
-    ): Atom!
+    ): Status!
 
 }
 
@@ -100,27 +121,51 @@ export const resolver = {
          * contextualBg, download, private, atomCategoryId
          * @param {number} authorId - Author id
          * @param {string} name - Atom name
+         * @param {string} description - Atom description
          * @param {string} css - Atom css
          * @param {string} html - Atom html
          * @param {string} contextualBg - Atom contextual background
-         * @param {download} download - download atom url
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
+         * @param {number} projectId - project id
          * @returns {Bluebird<IStatus>} status response (OK or Error)
          */
 
-        createAtom(parent: any, { input }: ICreateAtomArgs): Bluebird<IStatus> {
+        createAtom(parent: any, { input }: ICreateAtomArgs): Bluebird<IAtomStatus> {
 
             // LOG
             logger.log('info', 'Mutation: createAtom');
-            
+
+            // NOTE: 1
+            input = functionsUtil.emptyStringsToNull(input);
+
+            // Assign user as the owner
+            input.ownerId = input.authorId;
+
+            // Save the new Atom on DB
             return models.Atom.create(input)
             .then(
-                (result) => {
-                    return {
-                        ok: true,
-                        message: 'created successful'
+                (result: IAtomInstance) => {
+
+                    const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
+
+                    let response: IAtomStatus = {
+                        ok: false
                     };
+
+                    if (result.dataValues) {
+                        response = {
+                            ok: true,
+                            id: result.dataValues.id,
+                            message: 'created successfull!'
+                        };
+                    } else {
+                        // LOG
+                        logger.log('error', ERROR_MESSAGE, result);
+                    }
+
+                    return response;
+
                 }
             ).catch(
                 (err) => {
@@ -225,6 +270,7 @@ const _buildNewAtom =
         name: atom.name,
         html,
         css,
+        description: atom.description,
         contextualBg: atom.contextualBg,
         download: atom.download,
         active: true,
@@ -263,3 +309,9 @@ const _extractCode =
     return code;
 
 };
+
+
+/* 
+(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
+references: https://github.com/sequelize/sequelize/issues/3958
+*/
