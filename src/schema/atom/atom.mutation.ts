@@ -38,7 +38,7 @@ interface ICreateAtomInput {
     contextualBg: string;
     download: string;
     private: boolean;
-    atomCategoryId: number & string;
+    atomCategoryId: number | string;
     projectId: number;
 }
 
@@ -144,7 +144,12 @@ export const resolver = {
 
             // Validate if atom category id is equal to 0
             const RADIX = 10;
-            if (parseInt(input.atomCategoryId, RADIX) === 0) {
+            if (typeof input.atomCategoryId === 'string' &&
+                input.atomCategoryId !== null) {
+                input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+            }
+
+            if (input.atomCategoryId === 0) {
                 input.atomCategoryId = null;
             }
 
