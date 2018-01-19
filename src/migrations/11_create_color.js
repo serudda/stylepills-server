@@ -35,7 +35,17 @@ module.exports = {
                 type: Sequelize.DATE,
                 field: 'updated_at',
                 allowNull: false
-            }
+            },
+            projectId: {
+                type: Sequelize.INTEGER,
+                field: 'project_id',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'project',
+                    key: 'id',
+                    as: 'project_id',
+                }
+            },
         }, {
             tableName: 'color',
             freezeTableName: true

@@ -39,6 +39,26 @@ module.exports = {
                 type: Sequelize.DATE,
                 field: 'updated_at',
                 allowNull: false
+            },
+            authorId: {
+                type: Sequelize.INTEGER,
+                field: 'author_id',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'user',
+                    key: 'id',
+                    as: 'author_id',
+                }
+            },
+            projectCategoryId: {
+                type: Sequelize.INTEGER,
+                field: 'project_category_id',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'project_category',
+                    key: 'id',
+                    as: 'project_category_id',
+                }
             }
         }, {
             tableName: 'project',
