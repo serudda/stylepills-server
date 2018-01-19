@@ -76,7 +76,7 @@ function databaseConfig(env) {
                 define: {
                     underscored: true
                 },
-                logging: false
+                logging: true
             };
         case 'alpha':
         case 'beta':
