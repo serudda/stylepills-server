@@ -27,7 +27,17 @@ module.exports = {
                 type: Sequelize.DECIMAL(10,2),
                 allowNull: false,
                 defaultValue: 1
-            }
+            },
+            colorId: {
+                type: Sequelize.INTEGER,
+                field: 'color_id',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'color',
+                    key: 'id',
+                    as: 'color_id',
+                }
+            },
         }, {
             tableName: 'rgba_color',
             freezeTableName: true
