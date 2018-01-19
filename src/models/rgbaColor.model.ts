@@ -64,8 +64,9 @@ SequelizeStatic.Model<IRgbaColorInstance, IRgbaColorAttributes> {
                 }
             }
         }, {
+            timestamps: false,
             tableName: 'rgba_color',
-            freezeTableName: true,
+            freezeTableName: true
         }
     );
 

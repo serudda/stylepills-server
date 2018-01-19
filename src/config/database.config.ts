@@ -101,7 +101,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
                 define: {
                     underscored: true
                 },
-                logging: false
+                logging: true
             };
     
         case 'alpha':

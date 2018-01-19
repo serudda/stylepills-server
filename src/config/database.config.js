@@ -24,10 +24,11 @@ function databaseConfig(env) {
     let match = null;
     let host = null;
     let port = null;
-    if (env === 'production' ||
+    if (env === 'development' ||
+        env === 'staging' ||
+        env === 'production' ||
         env === 'alpha' ||
-        env === 'beta' ||
-        env === 'development') {
+        env === 'beta') {
         match = process.env.DATABASE_URL.match(/postgres:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/(.+)/);
         host = match[3];
         port = match[4];
@@ -61,6 +62,21 @@ function databaseConfig(env) {
                     underscored: true
                 },
                 logging: false
+            };
+        case 'staging':
+            return {
+                use_env_variable: 'DATABASE_URL',
+                username: 'oksscfuqoffztn',
+                password: 'aa7e72457d51f8326e580fef18a359f56704df41a889146e232b5590d160f331',
+                database: 'd1irdaj3iqucd1',
+                port,
+                host,
+                dialect: 'postgres',
+                operatorsAliases,
+                define: {
+                    underscored: true
+                },
+                logging: true
             };
         case 'alpha':
         case 'beta':
