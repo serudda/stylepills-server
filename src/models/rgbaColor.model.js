@@ -30,8 +30,9 @@ function default_1(sequelize, dataTypes) {
             }
         }
     }, {
+        timestamps: false,
         tableName: 'rgba_color',
-        freezeTableName: true,
+        freezeTableName: true
     });
     /*      CREATE RELATIONSHIP      */
     /*********************************/
