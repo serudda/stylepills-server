@@ -14,6 +14,7 @@ extend type Status {
     id: ID
 }
 
+
 # Input
 
 input CodeProps {
@@ -39,12 +40,19 @@ input CreateAtomInput {
     projectId: Int
 }
 
+input DuplicateAtomInput {
+    atomId: ID!
+    userId: ID!
+    atomCode: [AtomCodeProps]
+}
+
+
 # Mutations
 extend type Mutation {
 
     createAtom(input: CreateAtomInput!): Status!
 
-    duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
+    duplicateAtom(input: DuplicateAtomInput!): Status!
 
     activeAtom(
         id: ID!
@@ -132,19 +140,32 @@ exports.resolver = {
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Bluebird<IStatus>} Atom entity
          */
-        duplicateAtom(parent, { atomId, userId, atomCode = null }) {
+        duplicateAtom(parent, { input }) {
+            const { atomId, userId, atomCode = null } = input;
             // LOG
             logger_1.logger.log('info', 'Mutation: duplicateAtom');
             return index_1.models.Atom.findById(atomId)
-                .then((result) => {
+                .then((res) => {
                 // Build a new atom in order to create on database
-                let newAtom = _buildNewAtom(result.dataValues, userId, atomCode);
+                let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
                 return index_1.models.Atom.create(newAtom)
-                    .then(() => {
-                    return {
-                        ok: true,
-                        message: 'duplicated successfull!'
+                    .then((result) => {
+                    const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
+                    let response = {
+                        ok: false
                     };
+                    if (result.dataValues) {
+                        response = {
+                            ok: true,
+                            id: result.dataValues.id,
+                            message: 'duplicated successfull!'
+                        };
+                    }
+                    else {
+                        // LOG
+                        logger_1.logger.log('error', ERROR_MESSAGE, result);
+                    }
+                    return response;
                 }).catch((err) => {
                     // LOG
                     logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });

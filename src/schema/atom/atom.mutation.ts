@@ -46,10 +46,14 @@ interface ICreateAtomArgs {
     input: ICreateAtomInput;
 }
 
-interface IDuplicateAtomArgs {
+interface IDuplicateAtomInput {
     atomId: number;
     userId: number;
     atomCode: Array<IAtomCodeProps> | null;
+}
+
+interface IDuplicateAtomArgs {
+    input: IDuplicateAtomInput;
 }
 
 
@@ -63,6 +67,7 @@ export const typeDef = `
 extend type Status {
     id: ID
 }
+
 
 # Input
 
@@ -89,12 +94,19 @@ input CreateAtomInput {
     projectId: Int
 }
 
+input DuplicateAtomInput {
+    atomId: ID!
+    userId: ID!
+    atomCode: [AtomCodeProps]
+}
+
+
 # Mutations
 extend type Mutation {
 
     createAtom(input: CreateAtomInput!): Status!
 
-    duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
+    duplicateAtom(input: DuplicateAtomInput!): Status!
 
     activeAtom(
         id: ID!
@@ -204,7 +216,9 @@ export const resolver = {
          * @returns {Bluebird<IStatus>} Atom entity
          */
 
-        duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs): Bluebird<IStatus> {
+        duplicateAtom(parent: any, { input }: IDuplicateAtomArgs): Bluebird<IStatus> {
+
+            const { atomId, userId, atomCode = null } = input;
 
             // LOG
             logger.log('info', 'Mutation: duplicateAtom');
@@ -213,20 +227,35 @@ export const resolver = {
                 atomId
             )
             .then(
-                (result) => {
+                (res) => {
 
                     // Build a new atom in order to create on database
-                    let newAtom = _buildNewAtom(result.dataValues, userId, atomCode);
+                    let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
 
                     return models.Atom.create(
                         newAtom
                     )
                     .then(
-                        () => {
-                            return {
-                                ok: true,
-                                message: 'duplicated successfull!'
+                        (result: IAtomInstance) => {
+
+                            const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
+
+                            let response: IAtomStatus = {
+                                ok: false
                             };
+
+                            if (result.dataValues) {
+                                response = {
+                                    ok: true,
+                                    id: result.dataValues.id,
+                                    message: 'duplicated successfull!'
+                                };
+                            } else {
+                                // LOG
+                                logger.log('error', ERROR_MESSAGE, result);
+                            }
+
+                            return response;
                         }
                     ).catch(
                         (err) => {
