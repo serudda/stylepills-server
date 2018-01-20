@@ -23,7 +23,7 @@ interface ICodeProps {
     libs?: Array<string>;
 }
 
-interface IAtomCodeProps {
+interface IAtomCode {
     codeType: string;
     codeProps: ICodeProps;
 }
@@ -49,7 +49,7 @@ interface ICreateAtomArgs {
 interface IDuplicateAtomInput {
     atomId: number;
     userId: number;
-    atomCode: Array<IAtomCodeProps> | null;
+    atomCode: Array<IAtomCode> | null;
 }
 
 interface IDuplicateAtomArgs {
@@ -301,7 +301,7 @@ export const resolver = {
  */
 
 const _buildNewAtom = 
-    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCodeProps>): IAtomAttributes => {
+    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCode>): IAtomAttributes => {
 
     const html = _extractCode('html', atomCode) || atom.html;
     const css = _extractCode('css', atomCode) || atom.css;
@@ -334,7 +334,7 @@ const _buildNewAtom =
  */
 
 const _extractCode = 
-    (type: string, atomCode: Array<IAtomCodeProps>): string => {
+    (type: string, atomCode: Array<IAtomCode>): string => {
     
     let code = null;
     
