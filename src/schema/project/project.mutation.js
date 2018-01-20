@@ -91,9 +91,6 @@ exports.resolver = {
                     }]
             })
                 .then((result) => {
-                /* TODO: Me gusta esta implementación para los demás .then,
-                    Si funciona bien, implementar en todo el proyecto.
-                */
                 const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
                 let response = {
                     ok: false
