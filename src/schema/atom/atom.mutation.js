@@ -1,7 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**************************************/
+/*            DEPENDENCIES            */
+/**************************************/
+const Promise = require("bluebird");
 const logger_1 = require("./../../core/utils/logger");
-const functionsUtil_1 = require("./../../core/utils/functionsUtil");
+const atom_1 = require("./../../core/validations/atom");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
@@ -10,20 +14,32 @@ exports.typeDef = `
 
 # Custom Status
 
+type ValidationAtomError {
+    authorId: String
+    name: String
+    html: String
+    css: String
+    contextualBg: String
+    projectId: String
+    atomCategoryId: String
+    private: String
+}
+
 extend type Status {
     id: ID
+    validationErrors: ValidationAtomError
 }
 
 
 # Input
 
 input CodeProps {
-    code: String!,
+    code: String!
     libs: [String]
 }
 
 input AtomCodeProps {
-    codeType: String!,
+    codeType: String!
     codeProps: CodeProps!
 }
 
@@ -84,50 +100,58 @@ exports.resolver = {
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
          * @param {number} projectId - project id
-         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         * @returns {Promise<IStatus>} status response (OK or Error)
          */
         createAtom(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createAtom');
-            // NOTE: 1
-            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
-            // Assign user as the owner
-            input.ownerId = input.authorId;
-            // Validate if atom category id is equal to 0
-            const RADIX = 10;
-            if (typeof input.atomCategoryId === 'string' &&
-                input.atomCategoryId !== null) {
-                input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
-            }
-            if (input.atomCategoryId === 0) {
-                input.atomCategoryId = null;
-            }
-            // Save the new Atom on DB
-            return index_1.models.Atom.create(input)
-                .then((result) => {
-                const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
-                let response = {
-                    ok: false
-                };
-                if (result.dataValues) {
-                    response = {
-                        ok: true,
-                        id: result.dataValues.id,
-                        message: 'created successfull!'
+            // Validate each input field
+            const { errors, isValid } = atom_1.validateFields(input);
+            if (isValid) {
+                // Assign user as the owner
+                input.ownerId = input.authorId;
+                // Validate if atom category id is equal to 0
+                const RADIX = 10;
+                if (typeof input.atomCategoryId === 'string' &&
+                    input.atomCategoryId !== null) {
+                    input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+                }
+                // Save the new Atom on DB
+                return index_1.models.Atom.create(input)
+                    .then((result) => {
+                    const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
+                    let response = {
+                        ok: false
                     };
-                }
-                else {
+                    if (result.dataValues) {
+                        response = {
+                            ok: true,
+                            id: result.dataValues.id,
+                            message: 'created successfull!'
+                        };
+                    }
+                    else {
+                        // LOG
+                        logger_1.logger.log('error', ERROR_MESSAGE, result);
+                    }
+                    return response;
+                }).catch((err) => {
                     // LOG
-                    logger_1.logger.log('error', ERROR_MESSAGE, result);
-                }
-                return response;
-            }).catch((err) => {
-                // LOG
-                logger_1.logger.log('error', 'Mutation: createAtom', { err });
-                return {
-                    ok: false
-                };
-            });
+                    logger_1.logger.log('error', 'Mutation: createAtom', { err });
+                    return {
+                        ok: false
+                    };
+                });
+            }
+            else {
+                return Promise.resolve()
+                    .then(() => {
+                    return {
+                        ok: false,
+                        validationErrors: errors
+                    };
+                });
+            }
         },
         /**
          * @desc Duplicate Atom
@@ -138,7 +162,7 @@ exports.resolver = {
          * @param {number} atomId - Atom id
          * @param {number} userId - User id
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
-         * @returns {Bluebird<IStatus>} Atom entity
+         * @returns {Promise<IStatus>} Atom entity
          */
         duplicateAtom(parent, { input }) {
             const { atomId, userId, atomCode = null } = input;
@@ -233,8 +257,4 @@ const _extractCode = (type, atomCode) => {
     });
     return code;
 };
-/*
-(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
-references: https://github.com/sequelize/sequelize/issues/3958
-*/ 
 //# sourceMappingURL=atom.mutation.js.map
