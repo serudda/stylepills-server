@@ -13,6 +13,7 @@ interface IFunctionUtil {
     generateUsername: (firstName: string, lastName: string) => string;
     consoleLog: (message: string, value?: any) => void;
     emptyStringsToNull: (value: any) => any;
+    valueExistsInArray: (array: Array<any>, value: any, key: string) => boolean;
 }
 
 
@@ -158,6 +159,36 @@ class FunctionsUtil implements IFunctionUtil {
         }
     
         return value;
+    }
+
+
+    /**
+     * @desc Validate if a value exists on an Array
+     * @function valueExistsInArray
+     * @example this.valueExistsInArray(array, 'primary', 'typeColor')
+     * @param {Array<any>} array - array to validate
+     * @param {any} value - value to use to check if exists in the array
+     * @param {string} key - If array has inner objects, this is the key that contain the value
+     * @return {boolean} value exists in array (true or false)
+     */
+    valueExistsInArray(array: Array<any>, value: any, key: string = null): boolean {
+        
+        let res = false;
+
+        if (array.length > 0) {
+
+            let newArray = array.filter((elem: any) => {
+                if (key) {
+                    return elem[key] === value;
+                } else {
+                    return elem === value;
+                }
+            });
+
+            if (newArray.length > 0) { res = true; }
+        }
+
+        return res;
     }
 
 }

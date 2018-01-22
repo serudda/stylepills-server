@@ -9,10 +9,7 @@ function default_1(sequelize, dataTypes) {
     let Atom = sequelize.define('Atom', {
         name: {
             type: dataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true
-            }
+            allowNull: false
         },
         description: {
             type: dataTypes.TEXT

@@ -5,8 +5,6 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import * as appConfig from './../core/constants/app.constants';
-
 import { IAtom } from './atom.model';
 import { IProject } from './project.model';
 
@@ -60,25 +58,11 @@ export interface IUserInstance extends Instance<IUserAttributes> {
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
 SequelizeStatic.Model<IUserInstance, IUserAttributes> {
 
-    // CONSTANTS
-    // tslint:disable:max-line-length
-    const USERNAME_LENGTH_MSG = `The username needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
-    const EMAIL_INVALID_MSG = 'Invalid email';
-    const PASSWORD_LENGTH_MSG = `The password needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
-    const URL_INVALID_MSG = 'Invalid url';
-
-
     let User: any = sequelize.define<IUserInstance, IUserAttributes>(
         'User', {
             username: {
                 type: dataTypes.STRING,
-                unique: true,
-                validate: {
-                    len: {
-                      args: [appConfig.USERNAME_MIN_LENGTH, appConfig.USERNAME_MAX_LENGTH],
-                      msg: USERNAME_LENGTH_MSG,
-                    }
-                }
+                unique: true
             },
             firstname: {
                 type: dataTypes.STRING
@@ -88,31 +72,13 @@ SequelizeStatic.Model<IUserInstance, IUserAttributes> {
             },
             email: {
                 type: dataTypes.STRING,
-                unique: true,
-                validate: {
-                    isEmail: {
-                        args: true,
-                        msg: EMAIL_INVALID_MSG,
-                    }  
-                }
+                unique: true
             },
             password: {
-                type: dataTypes.STRING,
-                validate: {
-                    len: {
-                        args: [appConfig.PASSWORD_MIN_LENGTH, appConfig.PASSWORD_MAX_LENGTH],
-                        msg: PASSWORD_LENGTH_MSG,
-                    }
-                }
+                type: dataTypes.STRING
             },
             website: {
-                type: dataTypes.STRING,
-                validate: {
-                    isUrl: {
-                        args: true,
-                        msg: URL_INVALID_MSG,
-                    }
-                }
+                type: dataTypes.STRING
             },
             avatar: {
                 type: dataTypes.TEXT
