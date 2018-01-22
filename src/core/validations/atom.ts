@@ -49,7 +49,7 @@ export interface IValidationResponse {
 
 /**
  * @desc Validate fields on Atom Form fields
- * @function validateBasicFields
+ * @function validateFields
  * @param {AtomFormFields} field - atom form fields
  * @returns {IValidationResponse} errors, isValid
  */
@@ -69,12 +69,12 @@ export function validateFields(field: AtomFormFields): IValidationResponse {
 
     /* Atom Html */
     if (Validator.isEmpty(field.html)) {
-        errors.html = 'This field is required';
+        errors.html = 'Html is required';
     }
 
     /* Atom Css */
     if (Validator.isEmpty(field.css)) {
-        errors.css = 'This field is required';
+        errors.css = 'Css is required';
     }
 
     /* Atom contextual background */
@@ -85,11 +85,6 @@ export function validateFields(field: AtomFormFields): IValidationResponse {
     /* Project parent id */
     if (field.projectId === 0) {
         errors.projectId = 'Project associated does not exist';
-    }
-
-    /* Atom category */
-    if (field.atomCategoryId === 0) {
-        field.atomCategoryId = null;
     }
 
     /* Is private */

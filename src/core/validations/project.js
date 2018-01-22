@@ -3,15 +3,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
-const Validator = require("validator");
 const lodash_1 = require("lodash");
+const Validator = require("validator");
+const functionsUtil_1 = require("./../utils/functionsUtil");
+const color_model_1 = require("./../../models/color.model");
 /******************************************/
-/*         VALIDATE INPUTS (ATOM)         */
+/*        VALIDATE INPUTS (PROJECT)       */
 /******************************************/
 /**
- * @desc Validate fields on Atom Form fields
+ * @desc Validate fields on Project Form field
  * @function validateFields
- * @param {AtomFormFields} field - atom form fields
+ * @param {ProjectFormFields} field - project form fields
  * @returns {IValidationResponse} errors, isValid
  */
 function validateFields(field) {
@@ -20,25 +22,24 @@ function validateFields(field) {
     if (!field.authorId) {
         errors.authorId = 'Author is required';
     }
-    /* Atom Name */
+    /* Project Name */
     if (Validator.isEmpty(field.name)) {
         errors.name = 'This field is required';
     }
-    /* Atom Html */
-    if (Validator.isEmpty(field.html)) {
-        errors.html = 'Html is required';
+    /* Project Website */
+    if (!Validator.isEmpty(field.website)) {
+        if (!Validator.isURL(field.website)) {
+            errors.website = 'This website is not a valid url';
+        }
     }
-    /* Atom Css */
-    if (Validator.isEmpty(field.css)) {
-        errors.css = 'Css is required';
+    /* Project's color palette */
+    if (!field.colorPalette) {
+        errors.colorPalette = 'Color palette is required';
     }
-    /* Atom contextual background */
-    if (!Validator.isHexColor(field.contextualBg)) {
-        errors.contextualBg = 'Context background should be Hex color';
-    }
-    /* Project parent id */
-    if (field.projectId === 0) {
-        errors.projectId = 'Project associated does not exist';
+    else {
+        if (!functionsUtil_1.functionsUtil.valueExistsInArray(field.colorPalette, color_model_1.ColorTypeOptions.primary, 'type')) {
+            errors.colorPalette = 'Primary color is required';
+        }
     }
     /* Is private */
     if (field.private === null) {
@@ -50,4 +51,4 @@ function validateFields(field) {
     };
 }
 exports.validateFields = validateFields;
-//# sourceMappingURL=atom.js.map
+//# sourceMappingURL=project.js.map

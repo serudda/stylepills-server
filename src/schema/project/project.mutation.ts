@@ -9,7 +9,7 @@ import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
 import { IProject, IProjectAttributes, IProjectInstance } from './../../models/project.model';
-import { IColor } from './../../models/color.model';
+import { IColor as IColorModel } from './../../models/color.model';
 
 
 /************************************/
@@ -24,7 +24,7 @@ interface ICreateProjectInput {
     name: string;
     website?: string;
     description?: string;
-    colorPalette: Array<IColor>;
+    colorPalette: Array<IColorModel>;
     private: boolean;
     projectCategoryId: number;
 }
@@ -103,7 +103,7 @@ export const resolver = {
          * @param {string} name - Project name
          * @param {string} website - Project website
          * @param {string} description - Project description
-         * @param {Array<IColor>} colorPalette - Color palette of the project
+         * @param {Array<IColorModel>} colorPalette - Color palette of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
          * @returns {Bluebird<IStatus>} status response (OK or Error)

@@ -70,7 +70,7 @@ exports.resolver = {
          * @param {string} name - Project name
          * @param {string} website - Project website
          * @param {string} description - Project description
-         * @param {Array<IColor>} colorPalette - Color palette of the project
+         * @param {Array<IColorModel>} colorPalette - Color palette of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
          * @returns {Bluebird<IStatus>} status response (OK or Error)

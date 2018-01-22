@@ -1,5 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/************************************/
+/*            INTERFACE             */
+/************************************/
+/* Possible color type options */
+var ColorTypeOptions;
+(function (ColorTypeOptions) {
+    ColorTypeOptions["primary"] = "primary";
+    ColorTypeOptions["secondary"] = "secondary";
+    ColorTypeOptions["grayscale"] = "grayscale";
+})(ColorTypeOptions = exports.ColorTypeOptions || (exports.ColorTypeOptions = {}));
 /*****************************************/
 /*             SOCIAL MODEL              */
 /*****************************************/
