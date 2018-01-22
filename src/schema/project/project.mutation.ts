@@ -1,9 +1,13 @@
 /**************************************/
 /*            DEPENDENCIES            */
 /**************************************/
-import * as Bluebird from 'bluebird';
+import * as Promise from 'bluebird';
 import { logger } from './../../core/utils/logger';
 
+import { 
+    validateFields, 
+    IValidationError as IValidationProjectError 
+} from './../../core/validations/project';
 import { functionsUtil } from './../../core/utils/functionsUtil';
 import { models } from './../../models/index';
 
@@ -17,6 +21,7 @@ import { IColor as IColorModel } from './../../models/color.model';
 /************************************/
 interface IProjectStatus extends IStatus {
     id?: number;
+    validationErrors?: IValidationProjectError;
 }
 
 interface ICreateProjectInput {
@@ -41,8 +46,18 @@ export const typeDef = `
 
 # Custom Status
 
+type ValidationProjectError {
+    authorId: String
+    name: String
+    website: String
+    colorPalette: String
+    projectCategoryId: String
+    private: String
+}
+
 extend type Status {
     id: ID
+    validationErrors: ValidationProjectError
 }
 
 # Input
@@ -109,65 +124,75 @@ export const resolver = {
          * @returns {Bluebird<IStatus>} status response (OK or Error)
          */
 
-        createProject(parent: any, { input }: ICreateProjectArgs): Bluebird<IProjectStatus> {
+        createProject(parent: any, { input }: ICreateProjectArgs): Promise<IProjectStatus> {
 
             // LOG
             logger.log('info', 'Mutation: createProject');
 
-            // NOTE: 1
-            input = functionsUtil.emptyStringsToNull(input);
+            // Validate each input field
+            const { errors, isValid } = validateFields(input);
 
-            return models.Project.create(
-                input,
-                {
-                    include: [{
-                        model: models.Color,
-                        as: 'colorPalette',
-                        include: [ { 
-                            model: models.RgbaColor,
-                            as: 'rgba'
+            if (isValid) {
+
+                return models.Project.create(
+                    input,
+                    {
+                        include: [{
+                            model: models.Color,
+                            as: 'colorPalette',
+                            include: [ { 
+                                model: models.RgbaColor,
+                                as: 'rgba'
+                            }]
                         }]
-                    }]
-                }
-            )
-            .then(
-                (result: IProjectInstance) => {
-                    
-                    const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
-                    
-                    let response: IProjectStatus = {
-                        ok: false
-                    };
-
-                    if (result.dataValues) {
-                        response = {
-                            ok: true,
-                            id: result.dataValues.id,
-                            message: 'created successfull!'
-                        };
-                    } else {
-                        // LOG
-                        logger.log('error', ERROR_MESSAGE, result);
                     }
+                )
+                .then(
+                    (result: IProjectInstance) => {
+                        
+                        const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
+                        
+                        let response: IProjectStatus = {
+                            ok: false
+                        };
+    
+                        if (result.dataValues) {
+                            response = {
+                                ok: true,
+                                id: result.dataValues.id,
+                                message: 'created successfull!'
+                            };
+                        } else {
+                            // LOG
+                            logger.log('error', ERROR_MESSAGE, result);
+                        }
+    
+                        return response;
+                    }
+                ).catch(
+                    (err) => {
+                        // LOG
+                        logger.log('error', 'Mutation: createProject', { err });
+    
+                        return {
+                            ok: false
+                        };
+                    }
+                );
+                
+            } else {
+                return Promise.resolve()
+                .then(
+                    () => {
 
-                    return response;
-                }
-            ).catch(
-                (err) => {
-                    // LOG
-                    logger.log('error', 'Mutation: createProject', { err });
+                        return {
+                            ok: false,
+                            validationErrors: errors
+                        };
+                    }
+                );
+            }
 
-                    return {
-                        ok: false
-                    };
-                }
-            );
         }
     },
 };
-
-
-/* 
-(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
-references: https://github.com/sequelize/sequelize/issues/3958
-*/

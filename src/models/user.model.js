@@ -1,26 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const appConfig = require("./../core/constants/app.constants");
 /*****************************************/
 /*              USER MODEL               */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
-    // CONSTANTS
-    // tslint:disable:max-line-length
-    const USERNAME_LENGTH_MSG = `The username needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
-    const EMAIL_INVALID_MSG = 'Invalid email';
-    const PASSWORD_LENGTH_MSG = `The password needs to be between ${appConfig.USERNAME_MIN_LENGTH} and ${appConfig.USERNAME_MAX_LENGTH} characters long`;
-    const URL_INVALID_MSG = 'Invalid url';
     let User = sequelize.define('User', {
         username: {
             type: dataTypes.STRING,
-            unique: true,
-            validate: {
-                len: {
-                    args: [appConfig.USERNAME_MIN_LENGTH, appConfig.USERNAME_MAX_LENGTH],
-                    msg: USERNAME_LENGTH_MSG,
-                }
-            }
+            unique: true
         },
         firstname: {
             type: dataTypes.STRING
@@ -30,31 +17,13 @@ function default_1(sequelize, dataTypes) {
         },
         email: {
             type: dataTypes.STRING,
-            unique: true,
-            validate: {
-                isEmail: {
-                    args: true,
-                    msg: EMAIL_INVALID_MSG,
-                }
-            }
+            unique: true
         },
         password: {
-            type: dataTypes.STRING,
-            validate: {
-                len: {
-                    args: [appConfig.PASSWORD_MIN_LENGTH, appConfig.PASSWORD_MAX_LENGTH],
-                    msg: PASSWORD_LENGTH_MSG,
-                }
-            }
+            type: dataTypes.STRING
         },
         website: {
-            type: dataTypes.STRING,
-            validate: {
-                isUrl: {
-                    args: true,
-                    msg: URL_INVALID_MSG,
-                }
-            }
+            type: dataTypes.STRING
         },
         avatar: {
             type: dataTypes.TEXT

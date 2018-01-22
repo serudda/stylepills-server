@@ -9,23 +9,14 @@ function default_1(sequelize, dataTypes) {
     let Project = sequelize.define('Project', {
         name: {
             type: dataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notEmpty: true
-            }
+            allowNull: false
         },
         description: {
             type: dataTypes.TEXT
         },
         website: {
             type: dataTypes.STRING,
-            allowNull: true,
-            validate: {
-                isUrl: {
-                    args: true,
-                    msg: URL_INVALID_MSG
-                }
-            }
+            allowNull: true
         },
         active: {
             type: dataTypes.BOOLEAN,
