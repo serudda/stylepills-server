@@ -218,7 +218,8 @@ export const resolver = {
                         logger.log('error', 'Mutation: createAtom', { err });
     
                         return {
-                            ok: false
+                            ok: false,
+                            message: err
                         };
                     }
                 );
