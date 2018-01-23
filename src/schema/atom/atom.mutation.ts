@@ -1,21 +1,26 @@
 /**************************************/
 /*            DEPENDENCIES            */
 /**************************************/
-import * as Bluebird from 'bluebird';
+import * as Promise from 'bluebird';
 import { logger } from './../../core/utils/logger';
 
-import { functionsUtil } from './../../core/utils/functionsUtil';
+import { 
+        validateFields, 
+        IValidationError as IValidationAtomError 
+    } from './../../core/validations/atom';
+
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
-import { IAtom, IAtomAttributes, IAtomInstance } from './../../models/atom.model';
+import { IAtomAttributes, IAtomInstance } from './../../models/atom.model';
 
 
 /************************************/
 /*            INTERFACES            */
 /************************************/
-interface IAtomStatus extends IStatus {
+interface IAtomStatusResponse extends IStatus {
     id?: number;
+    validationErrors?: IValidationAtomError;
 }
 
 interface ICodeProps {
@@ -23,7 +28,7 @@ interface ICodeProps {
     libs?: Array<string>;
 }
 
-interface IAtomCodeProps {
+interface IAtomCode {
     codeType: string;
     codeProps: ICodeProps;
 }
@@ -46,10 +51,14 @@ interface ICreateAtomArgs {
     input: ICreateAtomInput;
 }
 
-interface IDuplicateAtomArgs {
+interface IDuplicateAtomInput {
     atomId: number;
     userId: number;
-    atomCode: Array<IAtomCodeProps> | null;
+    atomCode: Array<IAtomCode> | null;
+}
+
+interface IDuplicateAtomArgs {
+    input: IDuplicateAtomInput;
 }
 
 
@@ -58,21 +67,36 @@ interface IDuplicateAtomArgs {
 /*****************************************/
 export const typeDef = `
 
-# Custom Status
+# Status
 
-extend type Status {
-    id: ID
+type ValidationAtomError {
+    authorId: String
+    name: String
+    html: String
+    css: String
+    contextualBg: String
+    projectId: String
+    atomCategoryId: String
+    private: String
 }
+
+type AtomStatusResponse {
+    id: ID
+    ok: Boolean!,
+    message: String
+    validationErrors: ValidationAtomError
+}
+
 
 # Input
 
 input CodeProps {
-    code: String!,
+    code: String!
     libs: [String]
 }
 
 input AtomCodeProps {
-    codeType: String!,
+    codeType: String!
     codeProps: CodeProps!
 }
 
@@ -89,20 +113,27 @@ input CreateAtomInput {
     projectId: Int
 }
 
+input DuplicateAtomInput {
+    atomId: ID!
+    userId: ID!
+    atomCode: [AtomCodeProps]
+}
+
+
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Status!
+    createAtom(input: CreateAtomInput!): AtomStatusResponse!
 
-    duplicateAtom(atomId: ID!, userId: ID!, atomCode: [AtomCodeProps]): Status!
+    duplicateAtom(input: DuplicateAtomInput!): AtomStatusResponse!
 
     activeAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
     deactivateAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
 }
 
@@ -128,70 +159,87 @@ export const resolver = {
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
          * @param {number} projectId - project id
-         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         * @returns {Promise<IAtomStatusResponse>} status response (OK or Error)
          */
 
-        createAtom(parent: any, { input }: ICreateAtomArgs): Bluebird<IAtomStatus> {
+        createAtom(parent: any, { input }: ICreateAtomArgs): Promise<IAtomStatusResponse> {
 
             // LOG
             logger.log('info', 'Mutation: createAtom');
 
-            // NOTE: 1
-            input = functionsUtil.emptyStringsToNull(input);
+            // Validate each input field
+            const { errors, isValid } = validateFields(input);
 
-            // Assign user as the owner
-            input.ownerId = input.authorId;
+            if (isValid) {
+                
+                // Assign user as the owner
+                input.ownerId = input.authorId;
+    
+                // Validate if atom category id is equal to 0                
+                const RADIX = 10;
+                if (typeof input.atomCategoryId === 'string' &&
+                    input.atomCategoryId !== null) {
+                    input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+                }
 
-            // Validate if atom category id is equal to 0
-            const RADIX = 10;
-            if (typeof input.atomCategoryId === 'string' &&
-                input.atomCategoryId !== null) {
-                input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+                if (input.atomCategoryId === 0) {
+                    input.atomCategoryId = null;
+                }
+    
+                // Save the new Atom on DB
+                return models.Atom.create(input)
+                .then(
+                    (result: IAtomInstance) => {
+    
+                        const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
+    
+                        let response: IAtomStatusResponse = {
+                            ok: false
+                        };
+    
+                        if (result.dataValues) {
+                            response = {
+                                ok: true,
+                                id: result.dataValues.id,
+                                message: 'created successfull!'
+                            };
+                        } else {
+                            // LOG
+                            logger.log('error', ERROR_MESSAGE, result);
+                        }
+    
+                        return response;
+    
+                    }
+                ).catch(
+                    (err) => {
+    
+                        // LOG
+                        logger.log('error', 'Mutation: createAtom', { err });
+    
+                        return {
+                            ok: false
+                        };
+                    }
+                );
+
+            } else {
+                return Promise.resolve()
+                .then(
+                    () => {
+
+                        return {
+                            ok: false,
+                            validationErrors: errors
+                        };
+                    }
+                );
             }
 
-            if (input.atomCategoryId === 0) {
-                input.atomCategoryId = null;
-            }            
-
-            // Save the new Atom on DB
-            return models.Atom.create(input)
-            .then(
-                (result: IAtomInstance) => {
-
-                    const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
-
-                    let response: IAtomStatus = {
-                        ok: false
-                    };
-
-                    if (result.dataValues) {
-                        response = {
-                            ok: true,
-                            id: result.dataValues.id,
-                            message: 'created successfull!'
-                        };
-                    } else {
-                        // LOG
-                        logger.log('error', ERROR_MESSAGE, result);
-                    }
-
-                    return response;
-
-                }
-            ).catch(
-                (err) => {
-
-                    // LOG
-                    logger.log('error', 'Mutation: createAtom', { err });
-
-                    return {
-                        ok: false
-                    };
-                }
-            );
         },
+    
 
-
+        
         /**
          * @desc Duplicate Atom
          * @method Method duplicateAtom
@@ -201,10 +249,12 @@ export const resolver = {
          * @param {number} atomId - Atom id
          * @param {number} userId - User id
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
-         * @returns {Bluebird<IStatus>} Atom entity
+         * @returns {Promise<IStatus>} Atom entity
          */
 
-        duplicateAtom(parent: any, { atomId, userId, atomCode = null }: IDuplicateAtomArgs): Bluebird<IStatus> {
+        duplicateAtom(parent: any, { input }: IDuplicateAtomArgs): Promise<IStatus> {
+
+            const { atomId, userId, atomCode = null } = input;
 
             // LOG
             logger.log('info', 'Mutation: duplicateAtom');
@@ -213,20 +263,35 @@ export const resolver = {
                 atomId
             )
             .then(
-                (result) => {
+                (res) => {
 
                     // Build a new atom in order to create on database
-                    let newAtom = _buildNewAtom(result.dataValues, userId, atomCode);
+                    let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
 
                     return models.Atom.create(
                         newAtom
                     )
                     .then(
-                        () => {
-                            return {
-                                ok: true,
-                                message: 'duplicated successfull!'
+                        (result: IAtomInstance) => {
+
+                            const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
+
+                            let response: IAtomStatusResponse = {
+                                ok: false
                             };
+
+                            if (result.dataValues) {
+                                response = {
+                                    ok: true,
+                                    id: result.dataValues.id,
+                                    message: 'duplicated successfull!'
+                                };
+                            } else {
+                                // LOG
+                                logger.log('error', ERROR_MESSAGE, result);
+                            }
+
+                            return response;
                         }
                     ).catch(
                         (err) => {
@@ -272,7 +337,7 @@ export const resolver = {
  */
 
 const _buildNewAtom = 
-    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCodeProps>): IAtomAttributes => {
+    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCode>): IAtomAttributes => {
 
     const html = _extractCode('html', atomCode) || atom.html;
     const css = _extractCode('css', atomCode) || atom.css;
@@ -305,7 +370,7 @@ const _buildNewAtom =
  */
 
 const _extractCode = 
-    (type: string, atomCode: Array<IAtomCodeProps>): string => {
+    (type: string, atomCode: Array<IAtomCode>): string => {
     
     let code = null;
     
@@ -320,9 +385,3 @@ const _extractCode =
     return code;
 
 };
-
-
-/* 
-(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
-references: https://github.com/sequelize/sequelize/issues/3958
-*/

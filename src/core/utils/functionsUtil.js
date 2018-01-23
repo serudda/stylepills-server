@@ -122,6 +122,32 @@ class FunctionsUtil {
         }
         return value;
     }
+    /**
+     * @desc Validate if a value exists on an Array
+     * @function valueExistsInArray
+     * @example this.valueExistsInArray(array, 'primary', 'typeColor')
+     * @param {Array<any>} array - array to validate
+     * @param {any} value - value to use to check if exists in the array
+     * @param {string} key - If array has inner objects, this is the key that contain the value
+     * @return {boolean} value exists in array (true or false)
+     */
+    valueExistsInArray(array, value, key = null) {
+        let res = false;
+        if (array.length > 0) {
+            let newArray = array.filter((elem) => {
+                if (key) {
+                    return elem[key] === value;
+                }
+                else {
+                    return elem === value;
+                }
+            });
+            if (newArray.length > 0) {
+                res = true;
+            }
+        }
+        return res;
+    }
 }
 /* Export FunctionUtils instance */
 exports.functionsUtil = new FunctionsUtil();

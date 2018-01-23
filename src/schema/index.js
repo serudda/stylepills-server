@@ -47,12 +47,6 @@ const typeDefs = [`
         id: ID!
         base: String
     }
-
-    # Status
-    type Status {
-        ok: Boolean!,
-        message: String
-    }
     
     # Query
     type Query {

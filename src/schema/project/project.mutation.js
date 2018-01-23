@@ -1,17 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/**************************************/
+/*            DEPENDENCIES            */
+/**************************************/
+const Promise = require("bluebird");
 const logger_1 = require("./../../core/utils/logger");
-const functionsUtil_1 = require("./../../core/utils/functionsUtil");
+const project_1 = require("./../../core/validations/project");
 const index_1 = require("./../../models/index");
 /*****************************************/
 /*             ATOM MUTATION             */
 /*****************************************/
 exports.typeDef = `
 
-# Custom Status
+# Status
 
-extend type Status {
+type ValidationProjectError {
+    authorId: String
+    name: String
+    website: String
+    colorPalette: String
+    projectCategoryId: String
+    private: String
+}
+
+type ProjectStatusResponse {
     id: ID
+    ok: Boolean!,
+    message: String
+    validationErrors: ValidationProjectError
 }
 
 # Input
@@ -43,15 +59,15 @@ input CreateProjectInput {
 # Mutations
 extend type Mutation {
 
-    createProject(input: CreateProjectInput!): Status!
+    createProject(input: CreateProjectInput!): ProjectStatusResponse!
 
     activeProject(
         id: ID!
-    ): Status!
+    ): ProjectStatusResponse!
 
     deactivateProject(
         id: ID!
-    ): Status!
+    ): ProjectStatusResponse!
 
 }
 
@@ -70,58 +86,62 @@ exports.resolver = {
          * @param {string} name - Project name
          * @param {string} website - Project website
          * @param {string} description - Project description
-         * @param {Array<IColor>} colorPalette - Color palette of the project
+         * @param {Array<IColorModel>} colorPalette - Color palette of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
-         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         * @returns {Bluebird<IProjectStatusResponse>} status response (OK or Error)
          */
         createProject(parent, { input }) {
             // LOG
             logger_1.logger.log('info', 'Mutation: createProject');
-            // NOTE: 1
-            input = functionsUtil_1.functionsUtil.emptyStringsToNull(input);
-            return index_1.models.Project.create(input, {
-                include: [{
-                        model: index_1.models.Color,
-                        as: 'colorPalette',
-                        include: [{
-                                model: index_1.models.RgbaColor,
-                                as: 'rgba'
-                            }]
-                    }]
-            })
-                .then((result) => {
-                /* TODO: Me gusta esta implementación para los demás .then,
-                    Si funciona bien, implementar en todo el proyecto.
-                */
-                const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
-                let response = {
-                    ok: false
-                };
-                if (result.dataValues) {
-                    response = {
-                        ok: true,
-                        id: result.dataValues.id,
-                        message: 'created successfull!'
+            // Validate each input field
+            const { errors, isValid } = project_1.validateFields(input);
+            if (isValid) {
+                return index_1.models.Project.create(input, {
+                    include: [{
+                            model: index_1.models.Color,
+                            as: 'colorPalette',
+                            include: [{
+                                    model: index_1.models.RgbaColor,
+                                    as: 'rgba'
+                                }]
+                        }]
+                })
+                    .then((result) => {
+                    const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
+                    let response = {
+                        ok: false
                     };
-                }
-                else {
+                    if (result.dataValues) {
+                        response = {
+                            ok: true,
+                            id: result.dataValues.id,
+                            message: 'created successfull!'
+                        };
+                    }
+                    else {
+                        // LOG
+                        logger_1.logger.log('error', ERROR_MESSAGE, result);
+                    }
+                    return response;
+                }).catch((err) => {
                     // LOG
-                    logger_1.logger.log('error', ERROR_MESSAGE, result);
-                }
-                return response;
-            }).catch((err) => {
-                // LOG
-                logger_1.logger.log('error', 'Mutation: createProject', { err });
-                return {
-                    ok: false
-                };
-            });
+                    logger_1.logger.log('error', 'Mutation: createProject', { err });
+                    return {
+                        ok: false
+                    };
+                });
+            }
+            else {
+                return Promise.resolve()
+                    .then(() => {
+                    return {
+                        ok: false,
+                        validationErrors: errors
+                    };
+                });
+            }
         }
     },
 };
-/*
-(1) Parse empty values to NULL (If website is Empty)(issue reported on Sequelize server)
-references: https://github.com/sequelize/sequelize/issues/3958
-*/ 
 //# sourceMappingURL=project.mutation.js.map

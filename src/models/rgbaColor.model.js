@@ -23,11 +23,7 @@ function default_1(sequelize, dataTypes) {
         a: {
             type: dataTypes.DECIMAL(10, 2),
             allowNull: false,
-            defaultValue: 1,
-            validate: {
-                min: 0,
-                max: 1
-            }
+            defaultValue: 1
         }
     }, {
         timestamps: false,

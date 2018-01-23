@@ -11,12 +11,20 @@ import { IRgbaColor } from './rgbaColor.model';
 /************************************/
 /*            INTERFACE             */
 /************************************/
+
+/* Possible color type options */
+export enum ColorTypeOptions {
+    primary = 'primary',
+    secondary = 'secondary',
+    grayscale = 'grayscale'
+}
+
 export interface IColor {
     id: number | null;
     name: string;
     hex: string;
     rgba: IRgbaColor;
-    type: string;
+    type: ColorTypeOptions;
     active: boolean;
     createdAt: string;
     updatedAt: string;
@@ -26,7 +34,7 @@ export interface IColor {
 export interface IColorAttributes {
     name: string;
     hex: string;
-    type: string;
+    type: ColorTypeOptions;
     active: boolean;
 }
 
