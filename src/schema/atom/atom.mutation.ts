@@ -18,7 +18,7 @@ import { IAtomAttributes, IAtomInstance } from './../../models/atom.model';
 /************************************/
 /*            INTERFACES            */
 /************************************/
-interface IAtomStatus extends IStatus {
+interface IAtomStatusResponse extends IStatus {
     id?: number;
     validationErrors?: IValidationAtomError;
 }
@@ -67,7 +67,7 @@ interface IDuplicateAtomArgs {
 /*****************************************/
 export const typeDef = `
 
-# Custom Status
+# Status
 
 type ValidationAtomError {
     authorId: String
@@ -80,8 +80,10 @@ type ValidationAtomError {
     private: String
 }
 
-extend type Status {
+type AtomStatusResponse {
     id: ID
+    ok: Boolean!,
+    message: String
     validationErrors: ValidationAtomError
 }
 
@@ -121,17 +123,17 @@ input DuplicateAtomInput {
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Status!
+    createAtom(input: CreateAtomInput!): AtomStatusResponse!
 
-    duplicateAtom(input: DuplicateAtomInput!): Status!
+    duplicateAtom(input: DuplicateAtomInput!): AtomStatusResponse!
 
     activeAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
     deactivateAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
 }
 
@@ -157,10 +159,10 @@ export const resolver = {
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
          * @param {number} projectId - project id
-         * @returns {Promise<IStatus>} status response (OK or Error)
+         * @returns {Promise<IAtomStatusResponse>} status response (OK or Error)
          */
 
-        createAtom(parent: any, { input }: ICreateAtomArgs): Promise<IAtomStatus> {
+        createAtom(parent: any, { input }: ICreateAtomArgs): Promise<IAtomStatusResponse> {
 
             // LOG
             logger.log('info', 'Mutation: createAtom');
@@ -173,12 +175,16 @@ export const resolver = {
                 // Assign user as the owner
                 input.ownerId = input.authorId;
     
-                // Validate if atom category id is equal to 0
+                // Validate if atom category id is equal to 0                
                 const RADIX = 10;
                 if (typeof input.atomCategoryId === 'string' &&
                     input.atomCategoryId !== null) {
                     input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
-                }             
+                }
+
+                if (input.atomCategoryId === 0) {
+                    input.atomCategoryId = null;
+                }
     
                 // Save the new Atom on DB
                 return models.Atom.create(input)
@@ -187,7 +193,7 @@ export const resolver = {
     
                         const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
     
-                        let response: IAtomStatus = {
+                        let response: IAtomStatusResponse = {
                             ok: false
                         };
     
@@ -231,8 +237,9 @@ export const resolver = {
             }
 
         },
+    
 
-
+        
         /**
          * @desc Duplicate Atom
          * @method Method duplicateAtom
@@ -269,7 +276,7 @@ export const resolver = {
 
                             const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
 
-                            let response: IAtomStatus = {
+                            let response: IAtomStatusResponse = {
                                 ok: false
                             };
 

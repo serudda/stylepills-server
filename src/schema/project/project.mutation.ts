@@ -19,7 +19,7 @@ import { IColor as IColorModel } from './../../models/color.model';
 /************************************/
 /*            INTERFACES            */
 /************************************/
-interface IProjectStatus extends IStatus {
+interface IProjectStatusResponse extends IStatus {
     id?: number;
     validationErrors?: IValidationProjectError;
 }
@@ -44,7 +44,7 @@ interface ICreateProjectArgs {
 /*****************************************/
 export const typeDef = `
 
-# Custom Status
+# Status
 
 type ValidationProjectError {
     authorId: String
@@ -55,8 +55,10 @@ type ValidationProjectError {
     private: String
 }
 
-extend type Status {
+type ProjectStatusResponse {
     id: ID
+    ok: Boolean!,
+    message: String
     validationErrors: ValidationProjectError
 }
 
@@ -89,15 +91,15 @@ input CreateProjectInput {
 # Mutations
 extend type Mutation {
 
-    createProject(input: CreateProjectInput!): Status!
+    createProject(input: CreateProjectInput!): ProjectStatusResponse!
 
     activeProject(
         id: ID!
-    ): Status!
+    ): ProjectStatusResponse!
 
     deactivateProject(
         id: ID!
-    ): Status!
+    ): ProjectStatusResponse!
 
 }
 
@@ -121,10 +123,10 @@ export const resolver = {
          * @param {Array<IColorModel>} colorPalette - Color palette of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
-         * @returns {Bluebird<IStatus>} status response (OK or Error)
+         * @returns {Bluebird<IProjectStatusResponse>} status response (OK or Error)
          */
 
-        createProject(parent: any, { input }: ICreateProjectArgs): Promise<IProjectStatus> {
+        createProject(parent: any, { input }: ICreateProjectArgs): Promise<IProjectStatusResponse> {
 
             // LOG
             logger.log('info', 'Mutation: createProject');
@@ -152,7 +154,7 @@ export const resolver = {
                         
                         const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';
                         
-                        let response: IProjectStatus = {
+                        let response: IProjectStatusResponse = {
                             ok: false
                         };
     

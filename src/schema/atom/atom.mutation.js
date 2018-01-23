@@ -12,7 +12,7 @@ const index_1 = require("./../../models/index");
 /*****************************************/
 exports.typeDef = `
 
-# Custom Status
+# Status
 
 type ValidationAtomError {
     authorId: String
@@ -25,8 +25,10 @@ type ValidationAtomError {
     private: String
 }
 
-extend type Status {
+type AtomStatusResponse {
     id: ID
+    ok: Boolean!,
+    message: String
     validationErrors: ValidationAtomError
 }
 
@@ -66,17 +68,17 @@ input DuplicateAtomInput {
 # Mutations
 extend type Mutation {
 
-    createAtom(input: CreateAtomInput!): Status!
+    createAtom(input: CreateAtomInput!): AtomStatusResponse!
 
-    duplicateAtom(input: DuplicateAtomInput!): Status!
+    duplicateAtom(input: DuplicateAtomInput!): AtomStatusResponse!
 
     activeAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
     deactivateAtom(
         id: ID!
-    ): Status!
+    ): AtomStatusResponse!
 
 }
 
@@ -100,7 +102,7 @@ exports.resolver = {
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
          * @param {number} projectId - project id
-         * @returns {Promise<IStatus>} status response (OK or Error)
+         * @returns {Promise<IAtomStatusResponse>} status response (OK or Error)
          */
         createAtom(parent, { input }) {
             // LOG
@@ -110,11 +112,14 @@ exports.resolver = {
             if (isValid) {
                 // Assign user as the owner
                 input.ownerId = input.authorId;
-                // Validate if atom category id is equal to 0
+                // Validate if atom category id is equal to 0                
                 const RADIX = 10;
                 if (typeof input.atomCategoryId === 'string' &&
                     input.atomCategoryId !== null) {
                     input.atomCategoryId = parseInt(input.atomCategoryId, RADIX);
+                }
+                if (input.atomCategoryId === 0) {
+                    input.atomCategoryId = null;
                 }
                 // Save the new Atom on DB
                 return index_1.models.Atom.create(input)
