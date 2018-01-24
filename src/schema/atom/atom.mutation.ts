@@ -174,6 +174,9 @@ export const resolver = {
                 
                 // Assign user as the owner
                 input.ownerId = input.authorId;
+
+                // TODO: Remove when you implement generate download links
+                input.download = 'none';
     
                 // Validate if atom category id is equal to 0                
                 const RADIX = 10;
@@ -218,7 +221,8 @@ export const resolver = {
                         logger.log('error', 'Mutation: createAtom', { err });
     
                         return {
-                            ok: false
+                            ok: false,
+                            message: err
                         };
                     }
                 );
@@ -300,7 +304,8 @@ export const resolver = {
                             logger.log('error', 'Mutation: duplicateAtom', { err });
 
                             return {
-                                ok: false
+                                ok: false,
+                                message: err
                             };
                         }
                     );

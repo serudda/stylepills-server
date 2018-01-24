@@ -112,6 +112,8 @@ exports.resolver = {
             if (isValid) {
                 // Assign user as the owner
                 input.ownerId = input.authorId;
+                // TODO: Remove when you implement generate download links
+                input.download = 'none';
                 // Validate if atom category id is equal to 0                
                 const RADIX = 10;
                 if (typeof input.atomCategoryId === 'string' &&
@@ -144,7 +146,8 @@ exports.resolver = {
                     // LOG
                     logger_1.logger.log('error', 'Mutation: createAtom', { err });
                     return {
-                        ok: false
+                        ok: false,
+                        message: err
                     };
                 });
             }
@@ -199,7 +202,8 @@ exports.resolver = {
                     // LOG
                     logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
                     return {
-                        ok: false
+                        ok: false,
+                        message: err
                     };
                 });
             }).catch((err) => {
