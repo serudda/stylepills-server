@@ -1,6 +1,6 @@
 {
-  "name": "stylepills-server",
-  "version": "0.1.1",
+  "name": "stylepill-server",
+  "version": "0.4.4",
   "description": "",
   "scripts": {
     "sequelize": "sequelize $*",
