@@ -126,7 +126,14 @@ exports.resolver = {
                     input.atomCategoryId = null;
                 }
                 // Save the new Atom on DB
-                return index_1.models.Atom.create(input)
+                return index_1.models.Atom.create(input, {
+                    include: [
+                        {
+                            model: index_1.models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                })
                     .then((result) => {
                     const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
                     let response = {

@@ -194,7 +194,17 @@ export const resolver = {
                 }
     
                 // Save the new Atom on DB
-                return models.Atom.create(input)
+                return models.Atom.create(
+                    input,
+                    {
+                        include: [
+                            {
+                                model: models.Lib,
+                                as: 'libs'
+                            }
+                        ]
+                    }
+                )
                 .then(
                     (result: IAtomInstance) => {
     
