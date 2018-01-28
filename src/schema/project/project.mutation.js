@@ -8,7 +8,7 @@ const logger_1 = require("./../../core/utils/logger");
 const project_1 = require("./../../core/validations/project");
 const index_1 = require("./../../models/index");
 /*****************************************/
-/*             ATOM MUTATION             */
+/*                MUTATION               */
 /*****************************************/
 exports.typeDef = `
 

@@ -129,7 +129,7 @@ interface IAtomQueryArgs {
 
 
 /**************************************/
-/*         ATOM QUERY TYPEDEF         */
+/*            QUERY TYPEDEF           */
 /**************************************/
 
 export const typeDef = `
@@ -186,7 +186,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*            ATOM QUERY RESOLVER          */
+/*              QUERY RESOLVER             */
 /*******************************************/
 
 export const resolver = {

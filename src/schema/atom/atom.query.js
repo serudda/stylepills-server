@@ -35,7 +35,7 @@ function buildQueryFilter(isDuplicated, isPrivate, atomCategoryId, projectId, te
     return queryFilter;
 }
 /**************************************/
-/*         ATOM QUERY TYPEDEF         */
+/*            QUERY TYPEDEF           */
 /**************************************/
 exports.typeDef = `
 
@@ -89,7 +89,7 @@ exports.typeDef = `
 
 `;
 /*******************************************/
-/*            ATOM QUERY RESOLVER          */
+/*              QUERY RESOLVER             */
 /*******************************************/
 exports.resolver = {
     Query: {

@@ -14,7 +14,7 @@ interface ICreateUserArgs {
 
 
 /***************************************/
-/*            USER MUTATION            */
+/*              MUTATION               */
 /***************************************/
 
 export const typeDef = `

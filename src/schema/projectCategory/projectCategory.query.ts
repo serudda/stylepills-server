@@ -14,7 +14,7 @@ interface IProjectCategoryArgs {
 
 
 /**************************************/
-/*   PROJECT CATEGORY QUERY TYPEDEF   */
+/*           QUERY TYPEDEF            */
 /**************************************/
 
 export const typeDef = `
@@ -25,7 +25,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*      PROJECT CATEGORY QUERY RESOLVER    */
+/*             QUERY RESOLVER              */
 /*******************************************/
 
 export const resolver = {

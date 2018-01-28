@@ -14,7 +14,7 @@ interface ICreateAtomCategoryArgs {
 
 
 /*****************************************/
-/*             ATOM MUTATION             */
+/*               MUTATION                */
 /*****************************************/
 export const typeDef = `
 

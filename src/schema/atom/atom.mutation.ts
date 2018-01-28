@@ -63,7 +63,7 @@ interface IDuplicateAtomArgs {
 
 
 /*****************************************/
-/*             ATOM MUTATION             */
+/*                MUTATION               */
 /*****************************************/
 export const typeDef = `
 

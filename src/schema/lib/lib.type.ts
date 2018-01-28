@@ -3,24 +3,13 @@
 /************************************/
 
 export const typeDef = `
-type Atom {
+
+type Lib {
     id: ID!
-    name: String
-    description: String
-    html: String
-    css: String
-    contextualBg: String
-    stores: Int
-    views: Int
-    likes: Int
-    comments: [Comment]
-    download: String
+    name: String!
+    url: String!
+    type: String
     active: Boolean
-    private: Boolean
-    duplicated: Boolean
-    author: User!
-    owner: User!
-    category: AtomCategory
 }
 `;
 

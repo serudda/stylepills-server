@@ -10,35 +10,28 @@ const logger_1 = require("./../../core/utils/logger");
 /**************************************/
 exports.typeDef = `
     extend type Query {
-        colorById(id: ID!): Color!
+        libById(id: ID!): Lib!
     }
 `;
 /*******************************************/
-/*             QUERY RESOLVER              */
+/*               QUERY RESOLVER            */
 /*******************************************/
 exports.resolver = {
     Query: {
         /**
-         * @desc Get Color by Id
-         * @method Method colorById
+         * @desc Get Lib by Id
+         * @method Method libById
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IColorArgs} args - destructuring: id
-         * @param {number} id - Color id
-         * @returns {IColor} Color entity
+         * @param {ILibArgs} args - destructuring: id
+         * @param {number} id - Lib id
+         * @returns {ILib} Lib entity
          */
-        colorById(parent, { id }) {
+        libById(parent, { id }) {
             // LOG
-            logger_1.logger.log('info', 'Query: colorById');
-            return index_1.models.Color.findById(id);
-        }
-    },
-    Color: {
-        rgba(color) {
-            // LOG
-            logger_1.logger.log('info', 'Query (Color): getRgba');
-            return color.getRgba();
+            logger_1.logger.log('info', 'Query: libById');
+            return index_1.models.Lib.findById(id);
         }
     }
 };
-//# sourceMappingURL=color.query.js.map
+//# sourceMappingURL=lib.query.js.map

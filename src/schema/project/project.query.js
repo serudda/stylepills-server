@@ -4,7 +4,7 @@ const index_1 = require("./../../models/index");
 const appConfig = require("./../../core/constants/app.constants");
 const logger_1 = require("./../../core/utils/logger");
 /**************************************/
-/*       PROJECT QUERY TYPEDEF        */
+/*            QUERY TYPEDEF           */
 /**************************************/
 exports.typeDef = `
 
@@ -16,7 +16,7 @@ exports.typeDef = `
 
 `;
 /*******************************************/
-/*          PROJECT QUERY RESOLVER         */
+/*              QUERY RESOLVER             */
 /*******************************************/
 exports.resolver = {
     Query: {

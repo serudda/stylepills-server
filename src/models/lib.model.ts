@@ -5,60 +5,55 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IRgbaColor } from './rgbaColor.model';
-
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
 
-/* Possible color type options */
-export enum ColorTypeOptions {
-    primary = 'primary',
-    secondary = 'secondary',
-    grayscale = 'grayscale'
+/* Possible lib type options */
+export enum LibTypeOptions {
+    css = 'css',
+    javascript = 'javascript'
 }
 
-export interface IColor {
+export interface ILib {
     id: number | null;
     name: string;
-    hex: string;
-    rgba: IRgbaColor;
-    type: ColorTypeOptions;
+    url: string;
+    type: LibTypeOptions;
     active: boolean;
     createdAt: string;
     updatedAt: string;
 }
 
 
-export interface IColorAttributes {
+export interface ILibAttributes {
     name: string;
-    hex: string;
-    type: ColorTypeOptions;
+    url: string;
+    type: LibTypeOptions;
     active: boolean;
 }
 
 
-export interface IColorInstance extends Instance<IColorAttributes> {
-    dataValues: IColorAttributes;
+export interface ILibInstance extends Instance<ILibAttributes> {
+    dataValues: ILibAttributes;
 }
 
 
 /*****************************************/
-/*               COLOR MODEL             */
+/*               LIB MODEL               */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
-SequelizeStatic.Model<IColorInstance, IColorAttributes> {
+SequelizeStatic.Model<ILibInstance, ILibAttributes> {
 
-    let Color: any = sequelize.define<IColorInstance, IColorAttributes>(
-        'Color', {
+    let Lib: any = sequelize.define<ILibInstance, ILibAttributes>(
+        'Lib', {
             name: {
                 type: dataTypes.STRING
             },
-            hex: {
+            url: {
                 type: dataTypes.STRING,
-                allowNull: false,
-                defaultValue: '#FFFFFF'
+                allowNull: false
             },
             type: {
                 type: dataTypes.STRING,
@@ -70,7 +65,7 @@ SequelizeStatic.Model<IColorInstance, IColorAttributes> {
             }
         }, {
             timestamps: true,
-            tableName: 'color',
+            tableName: 'lib',
             freezeTableName: true,
         }
     );
@@ -78,28 +73,27 @@ SequelizeStatic.Model<IColorInstance, IColorAttributes> {
 
     /*      CREATE RELATIONSHIP      */
     /*********************************/
-    Color.associate = (models: ISequelizeModels) => {
+    Lib.associate = (models: ISequelizeModels) => {
 
-        // one Color belongs to one Project (1:M)
-        Color.belongsTo(models.Project, {
+        // one Lib belongs to one Atom (1:M)
+        Lib.belongsTo(models.Atom, {
             foreignKey: {
-                name: 'projectId',
-                field: 'project_id'
+                name: 'atomId',
+                field: 'atom_id'
             }
         });
 
-        // one Color has one RgbaColor (1:1)
-        Color.hasOne(models.RgbaColor, {
-            as: 'rgba',
+        // one Lib belongs to one Project (1:M)
+        Lib.belongsTo(models.Project, {
             foreignKey: {
-                name: 'colorId',
-                field: 'color_id'
+                name: 'projectId',
+                field: 'project_id'
             }
         });
         
     };
 
 
-    return Color;
+    return Lib;
 
 }

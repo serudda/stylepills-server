@@ -40,7 +40,7 @@ interface ICreateProjectArgs {
 
 
 /*****************************************/
-/*             ATOM MUTATION             */
+/*                MUTATION               */
 /*****************************************/
 export const typeDef = `
 

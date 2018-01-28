@@ -30,7 +30,7 @@ interface IProjectQueryArgs {
 
 
 /**************************************/
-/*       PROJECT QUERY TYPEDEF        */
+/*            QUERY TYPEDEF           */
 /**************************************/
 
 export const typeDef = `
@@ -45,7 +45,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*          PROJECT QUERY RESOLVER         */
+/*              QUERY RESOLVER             */
 /*******************************************/
 
 export const resolver = {

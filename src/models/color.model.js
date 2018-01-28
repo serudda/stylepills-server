@@ -11,7 +11,7 @@ var ColorTypeOptions;
     ColorTypeOptions["grayscale"] = "grayscale";
 })(ColorTypeOptions = exports.ColorTypeOptions || (exports.ColorTypeOptions = {}));
 /*****************************************/
-/*             SOCIAL MODEL              */
+/*               COLOR MODEL             */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
     let Color = sequelize.define('Color', {

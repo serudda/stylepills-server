@@ -14,7 +14,7 @@ interface IAtomCategoryArgs {
 
 
 /**************************************/
-/*     ATOM CATEGORY QUERY TYPEDEF    */
+/*            QUERY TYPEDEF           */
 /**************************************/
 
 export const typeDef = `
@@ -26,7 +26,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*       ATOM CATEGORY QUERY RESOLVER      */
+/*              QUERY RESOLVER             */
 /*******************************************/
 
 export const resolver = {
