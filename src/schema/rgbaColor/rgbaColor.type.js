@@ -1,6 +1,6 @@
 "use strict";
 /************************************/
-/*       PROJECT CATEGORY TYPE      */
+/*               TYPE               */
 /************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `

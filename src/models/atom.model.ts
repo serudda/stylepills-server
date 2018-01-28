@@ -166,6 +166,15 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
             }
         });
 
+        // One atom has many Libs (1:M)
+        Atom.hasMany(models.Lib, {
+            as: 'libs',
+            foreignKey: {
+                name: 'atomId',
+                field: 'atom_id'
+            }
+        });
+
         // One Atom has many Comments (1:M)
         // NOTE: 1 - constraints theory
         Atom.hasMany(models.Comment, {

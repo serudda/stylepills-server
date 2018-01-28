@@ -131,6 +131,15 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
             }
         });
 
+        // One project has many Libs (1:M)
+        Project.hasMany(models.Lib, {
+            as: 'libs',
+            foreignKey: {
+                name: 'projectId',
+                field: 'project_id'
+            }
+        });
+
         // One Project has many Atoms (1:M)
         Project.hasMany(models.Atom, {
             foreignKey: {

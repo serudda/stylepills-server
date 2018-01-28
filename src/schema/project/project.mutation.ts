@@ -14,6 +14,7 @@ import { models } from './../../models/index';
 import { IStatus } from './../../core/interfaces/interfaces';
 import { IProject, IProjectAttributes, IProjectInstance } from './../../models/project.model';
 import { IColor as IColorModel } from './../../models/color.model';
+import { ILib as ILibModel } from './../../models/lib.model';
 
 
 /************************************/
@@ -30,6 +31,7 @@ interface ICreateProjectInput {
     website?: string;
     description?: string;
     colorPalette: Array<IColorModel>;
+    libs: Array<ILibModel>;
     private: boolean;
     projectCategoryId: number;
 }
@@ -40,7 +42,7 @@ interface ICreateProjectArgs {
 
 
 /*****************************************/
-/*             ATOM MUTATION             */
+/*                MUTATION               */
 /*****************************************/
 export const typeDef = `
 
@@ -84,6 +86,7 @@ input CreateProjectInput {
     website: String
     description: String
     colorPalette: [ColorInput]
+    libs: [LibInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -121,6 +124,7 @@ export const resolver = {
          * @param {string} website - Project website
          * @param {string} description - Project description
          * @param {Array<IColorModel>} colorPalette - Color palette of the project
+         * @param {Array<ILibModel>} libs - External Libs of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
          * @returns {Bluebird<IProjectStatusResponse>} status response (OK or Error)
@@ -139,14 +143,20 @@ export const resolver = {
                 return models.Project.create(
                     input,
                     {
-                        include: [{
-                            model: models.Color,
-                            as: 'colorPalette',
-                            include: [ { 
-                                model: models.RgbaColor,
-                                as: 'rgba'
-                            }]
-                        }]
+                        include: [
+                            {
+                                model: models.Color,
+                                as: 'colorPalette',
+                                include: [ { 
+                                    model: models.RgbaColor,
+                                    as: 'rgba'
+                                }]
+                            },
+                            {
+                                model: models.Lib,
+                                as: 'libs'
+                            }
+                        ]
                     }
                 )
                 .then(

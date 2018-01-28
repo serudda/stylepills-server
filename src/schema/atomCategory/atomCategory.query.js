@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./../../models/index");
 const logger_1 = require("./../../core/utils/logger");
 /**************************************/
-/*     ATOM CATEGORY QUERY TYPEDEF    */
+/*            QUERY TYPEDEF           */
 /**************************************/
 exports.typeDef = `
     extend type Query {
@@ -15,7 +15,7 @@ exports.typeDef = `
     }
 `;
 /*******************************************/
-/*       ATOM CATEGORY QUERY RESOLVER      */
+/*              QUERY RESOLVER             */
 /*******************************************/
 exports.resolver = {
     Query: {

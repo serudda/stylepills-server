@@ -1,5 +1,5 @@
 /************************************/
-/*             ATOM TYPE            */
+/*               TYPE               */
 /************************************/
 
 export const typeDef = `
@@ -9,6 +9,7 @@ type Project {
     website: String
     description: String
     colorPalette: [Color]
+    libs: [Lib]
     atoms: [Atom]
     active: Boolean
     private: Boolean

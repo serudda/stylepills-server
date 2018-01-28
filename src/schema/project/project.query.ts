@@ -30,7 +30,7 @@ interface IProjectQueryArgs {
 
 
 /**************************************/
-/*       PROJECT QUERY TYPEDEF        */
+/*            QUERY TYPEDEF           */
 /**************************************/
 
 export const typeDef = `
@@ -45,7 +45,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*          PROJECT QUERY RESOLVER         */
+/*              QUERY RESOLVER             */
 /*******************************************/
 
 export const resolver = {
@@ -122,6 +122,11 @@ export const resolver = {
             // LOG
             logger.log('info', 'Query (Project): getColorPalette');
             return project.getColorPalette();
+        },
+        libs(project: any) {
+            // LOG
+            logger.log('info', 'Query (Project): getLibs');
+            return project.getLibs();
         },
         author(project: any) {
             // LOG

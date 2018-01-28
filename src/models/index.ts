@@ -17,6 +17,7 @@ import { IAtomCategoryAttributes, IAtomCategoryInstance } from './atomCategory.m
 import { ICommentAttributes, ICommentInstance } from './comment.model';
 import { IProjectAttributes, IProjectInstance } from './project.model';
 import { IProjectCategoryAttributes, IProjectCategoryInstance } from './projectCategory.model';
+import { ILibAttributes, ILibInstance } from './lib.model';
 import { IColorAttributes, IColorInstance } from './color.model';
 import { IRgbaColorAttributes, IRgbaColorInstance } from './rgbaColor.model';
 
@@ -32,6 +33,7 @@ export interface ISequelizeModels {
     Comment: SequelizeStatic.Model<ICommentInstance, ICommentAttributes>;
     Project: SequelizeStatic.Model<IProjectInstance, IProjectAttributes>;
     ProjectCategory: SequelizeStatic.Model<IProjectCategoryInstance, IProjectCategoryAttributes>;
+    Lib: SequelizeStatic.Model<ILibInstance, ILibAttributes>;
     Color: SequelizeStatic.Model<IProjectCategoryInstance, IProjectCategoryAttributes>;
     RgbaColor: SequelizeStatic.Model<IRgbaColorInstance, IRgbaColorAttributes>;
 }

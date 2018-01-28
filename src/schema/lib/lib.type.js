@@ -5,14 +5,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
 
-type ProjectCategory {
+# Input: TODO: Mover a lib.mutation cuando se haya creado
+
+input LibInput {
+    name: String!
+    url: String
+    type: String
+}
+
+type Lib {
     id: ID!
     name: String!
-    description: String
-    projects: [Project]
+    url: String!
+    type: String
     active: Boolean
 }
 `;
 /* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).
     al final cuando voy a hacer la Query, ahi omito las propiedades que no necesito, ejemplo: active, createdAt, etc */ 
-//# sourceMappingURL=projectCategory.type.js.map
+//# sourceMappingURL=lib.type.js.map
