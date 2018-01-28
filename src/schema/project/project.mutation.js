@@ -52,6 +52,7 @@ input CreateProjectInput {
     website: String
     description: String
     colorPalette: [ColorInput]
+    libs: [LibInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -87,6 +88,7 @@ exports.resolver = {
          * @param {string} website - Project website
          * @param {string} description - Project description
          * @param {Array<IColorModel>} colorPalette - Color palette of the project
+         * @param {Array<ILibModel>} libs - External Libs of the project
          * @param {boolean} private - the project is private or not
          * @param {number} projectCategoryId - the project category
          * @returns {Bluebird<IProjectStatusResponse>} status response (OK or Error)
@@ -98,14 +100,20 @@ exports.resolver = {
             const { errors, isValid } = project_1.validateFields(input);
             if (isValid) {
                 return index_1.models.Project.create(input, {
-                    include: [{
+                    include: [
+                        {
                             model: index_1.models.Color,
                             as: 'colorPalette',
                             include: [{
                                     model: index_1.models.RgbaColor,
                                     as: 'rgba'
                                 }]
-                        }]
+                        },
+                        {
+                            model: index_1.models.Lib,
+                            as: 'libs'
+                        }
+                    ]
                 })
                     .then((result) => {
                     const ERROR_MESSAGE = 'Mutation: createProject TODO: Identify error';

@@ -351,6 +351,11 @@ export const resolver = {
 
     },
     Atom: {
+        libs(atom: any) {
+            // LOG
+            logger.log('info', 'Query (Atom): getLibs');
+            return atom.getLibs();
+        },
         comments(atom: any) {
             // LOG
             logger.log('info', 'Query: (Atom) getComments');

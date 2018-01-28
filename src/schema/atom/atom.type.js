@@ -15,6 +15,7 @@ type Atom {
     views: Int
     likes: Int
     comments: [Comment]
+    libs: [Lib]
     download: String
     active: Boolean
     private: Boolean

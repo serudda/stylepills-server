@@ -83,6 +83,11 @@ exports.resolver = {
             logger_1.logger.log('info', 'Query (Project): getColorPalette');
             return project.getColorPalette();
         },
+        libs(project) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Project): getLibs');
+            return project.getLibs();
+        },
         author(project) {
             // LOG
             logger_1.logger.log('info', 'Query: (Project) getAuthor');

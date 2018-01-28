@@ -225,6 +225,11 @@ exports.resolver = {
         }
     },
     Atom: {
+        libs(atom) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Atom): getLibs');
+            return atom.getLibs();
+        },
         comments(atom) {
             // LOG
             logger_1.logger.log('info', 'Query: (Atom) getComments');

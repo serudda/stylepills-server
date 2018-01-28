@@ -123,6 +123,11 @@ export const resolver = {
             logger.log('info', 'Query (Project): getColorPalette');
             return project.getColorPalette();
         },
+        libs(project: any) {
+            // LOG
+            logger.log('info', 'Query (Project): getLibs');
+            return project.getLibs();
+        },
         author(project: any) {
             // LOG
             logger.log('info', 'Query: (Project) getAuthor');

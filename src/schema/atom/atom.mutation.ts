@@ -13,6 +13,7 @@ import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
 import { IAtomAttributes, IAtomInstance } from './../../models/atom.model';
+import { ILib as ILibModel } from './../../models/lib.model';
 
 
 /************************************/
@@ -40,6 +41,7 @@ interface ICreateAtomInput {
     description?: string;
     css: string;
     html: string;
+    libs: Array<ILibModel>;
     contextualBg: string;
     download: string;
     private: boolean;
@@ -73,7 +75,7 @@ type ValidationAtomError {
     authorId: String
     name: String
     html: String
-    css: String
+    css: String 
     contextualBg: String
     projectId: String
     atomCategoryId: String
@@ -107,6 +109,7 @@ input CreateAtomInput {
     description: String
     css: String
     html: String
+    libs: [LibInput]
     private: Boolean!
     contextualBg: String
     atomCategoryId: Int
@@ -155,6 +158,7 @@ export const resolver = {
          * @param {string} description - Atom description
          * @param {string} css - Atom css
          * @param {string} html - Atom html
+         * @param {Array<ILibModel>} libs - External Libs of the project
          * @param {string} contextualBg - Atom contextual background
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
@@ -255,7 +259,7 @@ export const resolver = {
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Promise<IStatus>} Atom entity
          */
-
+        // TODO: incluir Libs cuando se duplica
         duplicateAtom(parent: any, { input }: IDuplicateAtomArgs): Promise<IStatus> {
 
             const { atomId, userId, atomCode = null } = input;

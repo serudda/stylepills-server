@@ -4,6 +4,14 @@
 
 export const typeDef = `
 
+# Input: TODO: Mover a lib.mutation cuando se haya creado
+
+input LibInput {
+    name: String!
+    url: String
+    type: String
+}
+
 type Lib {
     id: ID!
     name: String!
