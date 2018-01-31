@@ -21,7 +21,7 @@ interface IFilterArgs {
 
 
 /**************************************/
-/*         USER QUERY TYPEDEF         */
+/*            QUERY TYPEDEF           */
 /**************************************/
 
 export const typeDef = `
@@ -34,7 +34,7 @@ export const typeDef = `
 
 
 /*******************************************/
-/*           USER QUERY RESOLVER           */
+/*              QUERY RESOLVER             */
 /*******************************************/
 
 export const resolver = {

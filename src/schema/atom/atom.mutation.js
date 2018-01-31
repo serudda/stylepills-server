@@ -8,7 +8,7 @@ const logger_1 = require("./../../core/utils/logger");
 const atom_1 = require("./../../core/validations/atom");
 const index_1 = require("./../../models/index");
 /*****************************************/
-/*             ATOM MUTATION             */
+/*                MUTATION               */
 /*****************************************/
 exports.typeDef = `
 
@@ -18,7 +18,7 @@ type ValidationAtomError {
     authorId: String
     name: String
     html: String
-    css: String
+    css: String 
     contextualBg: String
     projectId: String
     atomCategoryId: String
@@ -52,6 +52,7 @@ input CreateAtomInput {
     description: String
     css: String
     html: String
+    libs: [LibInput]
     private: Boolean!
     contextualBg: String
     atomCategoryId: Int
@@ -98,6 +99,7 @@ exports.resolver = {
          * @param {string} description - Atom description
          * @param {string} css - Atom css
          * @param {string} html - Atom html
+         * @param {Array<ILibModel>} libs - External Libs of the project
          * @param {string} contextualBg - Atom contextual background
          * @param {boolean} private - the atom is private or not
          * @param {number} atomCategoryId - the atom category
@@ -124,7 +126,14 @@ exports.resolver = {
                     input.atomCategoryId = null;
                 }
                 // Save the new Atom on DB
-                return index_1.models.Atom.create(input)
+                return index_1.models.Atom.create(input, {
+                    include: [
+                        {
+                            model: index_1.models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                })
                     .then((result) => {
                     const ERROR_MESSAGE = 'Mutation: createAtom TODO: Identify error';
                     let response = {
@@ -172,6 +181,7 @@ exports.resolver = {
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Promise<IStatus>} Atom entity
          */
+        // TODO: incluir Libs cuando se duplica
         duplicateAtom(parent, { input }) {
             const { atomId, userId, atomCode = null } = input;
             // LOG

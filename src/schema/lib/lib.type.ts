@@ -4,11 +4,19 @@
 
 export const typeDef = `
 
-type ProjectCategory {
+# Input: TODO: Mover a lib.mutation cuando se haya creado
+
+input LibInput {
+    name: String!
+    url: String
+    type: String
+}
+
+type Lib {
     id: ID!
     name: String!
-    description: String
-    projects: [Project]
+    url: String!
+    type: String
     active: Boolean
 }
 `;

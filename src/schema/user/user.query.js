@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./../../models/index");
 const logger_1 = require("./../../core/utils/logger");
 /**************************************/
-/*         USER QUERY TYPEDEF         */
+/*            QUERY TYPEDEF           */
 /**************************************/
 exports.typeDef = `
     extend type Query {
@@ -16,7 +16,7 @@ exports.typeDef = `
     }
 `;
 /*******************************************/
-/*           USER QUERY RESOLVER           */
+/*              QUERY RESOLVER             */
 /*******************************************/
 exports.resolver = {
     Query: {

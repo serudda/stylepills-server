@@ -27,6 +27,9 @@ import * as projectMutation from './project/project.mutation';
 import * as projectCategoryTypes from './projectCategory/projectCategory.type';
 import * as projectCategoryQuery from './projectCategory/projectCategory.query';
 
+import * as libTypes from './lib/lib.type';
+import * as libQuery from './lib/lib.query';
+
 import * as colorTypes from './color/color.type';
 import * as colorQuery from './color/color.query';
 
@@ -97,6 +100,9 @@ const typeDefs = [`
     projectCategoryTypes.typeDef,
     projectCategoryQuery.typeDef,
 
+    libTypes.typeDef,
+    libQuery.typeDef,
+
     colorTypes.typeDef,
     colorQuery.typeDef,
 
@@ -127,6 +133,8 @@ const resolvers: any = merge(
     projectQuery.resolver,
 
     projectCategoryQuery.resolver,
+
+    libQuery.resolver,
 
     colorQuery.resolver,
 

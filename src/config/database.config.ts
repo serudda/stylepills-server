@@ -61,7 +61,7 @@ export function databaseConfig(env: string): IDatabaseConfig {
             return {
                 username: 'sergioruizdavila',
                 password: 'admin',
-                database: 'stylepills_dev',
+                database: 'stylepill_dev',
                 host: '127.0.0.1',
                 port: process.env.PORT || 5432,
                 dialect: 'postgres',

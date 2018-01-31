@@ -1,6 +1,6 @@
 "use strict";
 /************************************/
-/*             ATOM TYPE            */
+/*               TYPE               */
 /************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
@@ -10,6 +10,7 @@ type Project {
     website: String
     description: String
     colorPalette: [Color]
+    libs: [Lib]
     atoms: [Atom]
     active: Boolean
     private: Boolean

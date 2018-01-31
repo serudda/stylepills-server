@@ -8,7 +8,7 @@ import { logger } from './../../core/utils/logger';
 /************************************/
 /*            INTERFACES            */
 /************************************/    
-interface IColorArgs {
+interface ILibArgs {
     id: number;
 }
 
@@ -19,39 +19,32 @@ interface IColorArgs {
 
 export const typeDef = `
     extend type Query {
-        colorById(id: ID!): Color!
+        libById(id: ID!): Lib!
     }
 `;
 
 
 /*******************************************/
-/*             QUERY RESOLVER              */
+/*               QUERY RESOLVER            */
 /*******************************************/
 
 export const resolver = {
     Query: {
         
         /**
-         * @desc Get Color by Id
-         * @method Method colorById
+         * @desc Get Lib by Id
+         * @method Method libById
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
-         * @param {IColorArgs} args - destructuring: id
-         * @param {number} id - Color id
-         * @returns {IColor} Color entity
+         * @param {ILibArgs} args - destructuring: id
+         * @param {number} id - Lib id
+         * @returns {ILib} Lib entity
          */
-        colorById(parent: any, { id }: IColorArgs) {
+        libById(parent: any, { id }: ILibArgs) {
             // LOG
-            logger.log('info', 'Query: colorById');
-            return models.Color.findById(id);
+            logger.log('info', 'Query: libById');
+            return models.Lib.findById(id);
         }
 
-    },
-    Color: {
-        rgba(color: any) {
-            // LOG
-            logger.log('info', 'Query (Color): getRgba');
-            return color.getRgba();
-        }
     }
 };

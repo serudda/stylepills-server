@@ -1,6 +1,6 @@
 "use strict";
 /************************************/
-/*             ATOM TYPE            */
+/*               TYPE               */
 /************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
@@ -15,6 +15,7 @@ type Atom {
     views: Int
     likes: Int
     comments: [Comment]
+    libs: [Lib]
     download: String
     active: Boolean
     private: Boolean
