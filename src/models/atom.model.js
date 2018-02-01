@@ -114,6 +114,69 @@ function default_1(sequelize, dataTypes) {
     return Atom;
 }
 exports.default = default_1;
+/************************************/
+/*             FUNCTIONS            */
+/************************************/
+/**
+ * @desc Extract new code
+ * @function _extractCode
+ * @public
+ * @param {string} type - source code type (html, css, etc)
+ * @param {Array<IAtomCode>} atomCode - New Atom source code
+ * @returns {any}
+ * TODO: Esto esta super mal implementado, el que vea esta funcion no va a entender
+ * que es IAtomCode, para que sirve esta funcion, etc.
+ */
+exports.extractCode = (type, atomCode) => {
+    let code = null;
+    if (!atomCode) {
+        return code;
+    }
+    atomCode.forEach(atomCodeObj => {
+        if (atomCodeObj.codeType === type) {
+            code = atomCodeObj.codeProps.code;
+        }
+    });
+    return code;
+};
+/**
+ * @desc Build New Atom Object
+ * @function _buildNewAtom
+ * @private
+ * @param {IAtomAttributes} atom - Atom data object
+ * @param {number} userId - owner id
+ * @param {Array<IAtomCode>} atomCode - New Atom source code
+ * @returns {IAtomAttributes} New Atom data object
+ */
+exports.buildNewAtom = (atom, userId, atomCode) => {
+    const html = exports.extractCode('html', atomCode) || atom.html;
+    const css = exports.extractCode('css', atomCode) || atom.css;
+    let libs = [];
+    // If libs exist, remove ids in order to create new records
+    if (atom.libs) {
+        libs = atom.libs.filter((lib) => {
+            delete lib.dataValues.id;
+            delete lib.dataValues.atomId;
+            delete lib.dataValues.projectId;
+            return true;
+        });
+    }
+    return {
+        name: atom.name,
+        html,
+        css,
+        description: atom.description,
+        contextualBg: atom.contextualBg,
+        download: atom.download,
+        active: true,
+        private: false,
+        duplicated: true,
+        authorId: atom.authorId,
+        ownerId: userId,
+        atomCategoryId: atom.atomCategoryId,
+        libs
+    };
+};
 /*
  (1). reference: http://docs.sequelizejs.com/manual/tutorial/associations.html
  */ 

@@ -15,6 +15,17 @@ import { ILib as ILibModel, ILibInstance } from './lib.model';
 /*            INTERFACE             */
 /************************************/
 
+/* TODO: Esto no esta bien implementado, es logica del FrontEnd, el que lea esto no lo va a entender,
+esto viene de la logica del duplicate.action, y no tiene nada que ver aqui */
+export interface ICodeProps {
+    code: string;
+}
+
+export interface IAtomCode {
+    codeType: string;
+    codeProps: ICodeProps;
+}
+
 export interface ISourceCode {
     type: string;
     code: string;
@@ -196,6 +207,86 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
     return Atom;
     
 }
+
+
+/************************************/
+/*             FUNCTIONS            */
+/************************************/
+
+
+/**
+ * @desc Extract new code
+ * @function _extractCode
+ * @public
+ * @param {string} type - source code type (html, css, etc)
+ * @param {Array<IAtomCode>} atomCode - New Atom source code
+ * @returns {any}
+ * TODO: Esto esta super mal implementado, el que vea esta funcion no va a entender
+ * que es IAtomCode, para que sirve esta funcion, etc.
+ */
+
+export const extractCode = 
+    (type: string, atomCode: Array<IAtomCode>): string => {
+    
+    let code = null;
+    
+    if (!atomCode) { return code; }
+
+    atomCode.forEach(atomCodeObj => {
+        if (atomCodeObj.codeType === type) {
+            code = atomCodeObj.codeProps.code;
+        }
+    });
+
+    return code;
+
+};
+
+
+/**
+ * @desc Build New Atom Object
+ * @function _buildNewAtom
+ * @private
+ * @param {IAtomAttributes} atom - Atom data object
+ * @param {number} userId - owner id
+ * @param {Array<IAtomCode>} atomCode - New Atom source code
+ * @returns {IAtomAttributes} New Atom data object
+ */
+
+export const buildNewAtom = 
+    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCode>): IAtomAttributes => {
+
+    const html = extractCode('html', atomCode) || atom.html;
+    const css = extractCode('css', atomCode) || atom.css;
+    let libs: Array<any> = [];
+
+    // If libs exist, remove ids in order to create new records
+    if (atom.libs) {
+        libs = atom.libs.filter((lib: ILibInstance) => {
+            delete lib.dataValues.id;
+            delete lib.dataValues.atomId;
+            delete lib.dataValues.projectId;
+            return true;
+        });
+    }
+    
+    return {
+        name: atom.name,
+        html,
+        css,
+        description: atom.description,
+        contextualBg: atom.contextualBg,
+        download: atom.download,
+        active: true,
+        private: false,
+        duplicated: true,
+        authorId: atom.authorId,
+        ownerId: userId,
+        atomCategoryId: atom.atomCategoryId,
+        libs
+    };
+
+};
 
 
 
