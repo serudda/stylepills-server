@@ -13,7 +13,7 @@ import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
 import { IAtomAttributes, IAtomInstance } from './../../models/atom.model';
-import { ILib as ILibModel } from './../../models/lib.model';
+import { ILib as ILibModel, ILibInstance } from './../../models/lib.model';
 
 
 /************************************/
@@ -278,7 +278,15 @@ export const resolver = {
             logger.log('info', 'Mutation: duplicateAtom');
 
             return models.Atom.findById(
-                atomId
+                atomId,
+                {
+                    include: [
+                        {
+                            model: models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                }
             )
             .then(
                 (res) => {
@@ -287,7 +295,15 @@ export const resolver = {
                     let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
 
                     return models.Atom.create(
-                        newAtom
+                        newAtom,
+                        {
+                            include: [
+                                {
+                                    model: models.Lib,
+                                    as: 'libs'
+                                }
+                            ]
+                        }
                     )
                     .then(
                         (result: IAtomInstance) => {
@@ -360,6 +376,17 @@ const _buildNewAtom =
 
     const html = _extractCode('html', atomCode) || atom.html;
     const css = _extractCode('css', atomCode) || atom.css;
+    let libs: Array<any> = [];
+
+    // If libs exist, remove ids in order to create new records
+    if (atom.libs) {
+        libs = atom.libs.filter((lib: ILibInstance) => {
+            delete lib.dataValues.id;
+            delete lib.dataValues.atomId;
+            delete lib.dataValues.projectId;
+            return true;
+        });
+    }
     
     return {
         name: atom.name,
@@ -373,7 +400,8 @@ const _buildNewAtom =
         duplicated: true,
         authorId: atom.authorId,
         ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
+        atomCategoryId: atom.atomCategoryId,
+        libs
     };
 
 };

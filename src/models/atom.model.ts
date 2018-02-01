@@ -8,6 +8,7 @@ import { ISequelizeModels } from './index';
 import { IUser } from './user.model';
 import { IComment } from './comment.model';
 import { IAtomCategory } from './atomCategory.model';
+import { ILib as ILibModel, ILibInstance } from './lib.model';
 
 
 /************************************/
@@ -55,6 +56,7 @@ export interface IAtomAttributes {
     ownerId?: number;
     atomCategoryId: number | string;
     projectId?: number;
+    libs?: Array<ILibInstance | ILibModel>;
     active?: boolean;
     private: boolean;
 }

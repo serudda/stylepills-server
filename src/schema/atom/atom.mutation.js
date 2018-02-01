@@ -186,11 +186,25 @@ exports.resolver = {
             const { atomId, userId, atomCode = null } = input;
             // LOG
             logger_1.logger.log('info', 'Mutation: duplicateAtom');
-            return index_1.models.Atom.findById(atomId)
+            return index_1.models.Atom.findById(atomId, {
+                include: [
+                    {
+                        model: index_1.models.Lib,
+                        as: 'libs'
+                    }
+                ]
+            })
                 .then((res) => {
                 // Build a new atom in order to create on database
                 let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
-                return index_1.models.Atom.create(newAtom)
+                return index_1.models.Atom.create(newAtom, {
+                    include: [
+                        {
+                            model: index_1.models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                })
                     .then((result) => {
                     const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
                     let response = {
@@ -241,6 +255,16 @@ exports.resolver = {
 const _buildNewAtom = (atom, userId, atomCode) => {
     const html = _extractCode('html', atomCode) || atom.html;
     const css = _extractCode('css', atomCode) || atom.css;
+    let libs = [];
+    // If libs exist, remove ids in order to create new records
+    if (atom.libs) {
+        libs = atom.libs.filter((lib) => {
+            delete lib.dataValues.id;
+            delete lib.dataValues.atomId;
+            delete lib.dataValues.projectId;
+            return true;
+        });
+    }
     return {
         name: atom.name,
         html,
@@ -253,7 +277,8 @@ const _buildNewAtom = (atom, userId, atomCode) => {
         duplicated: true,
         authorId: atom.authorId,
         ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
+        atomCategoryId: atom.atomCategoryId,
+        libs
     };
 };
 /**
