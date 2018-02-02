@@ -7,6 +7,7 @@ const Promise = require("bluebird");
 const logger_1 = require("./../../core/utils/logger");
 const atom_1 = require("./../../core/validations/atom");
 const index_1 = require("./../../models/index");
+const atom_model_1 = require("./../../models/atom.model");
 /*****************************************/
 /*                MUTATION               */
 /*****************************************/
@@ -181,16 +182,29 @@ exports.resolver = {
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Promise<IStatus>} Atom entity
          */
-        // TODO: incluir Libs cuando se duplica
         duplicateAtom(parent, { input }) {
             const { atomId, userId, atomCode = null } = input;
             // LOG
             logger_1.logger.log('info', 'Mutation: duplicateAtom');
-            return index_1.models.Atom.findById(atomId)
+            return index_1.models.Atom.findById(atomId, {
+                include: [
+                    {
+                        model: index_1.models.Lib,
+                        as: 'libs'
+                    }
+                ]
+            })
                 .then((res) => {
                 // Build a new atom in order to create on database
-                let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
-                return index_1.models.Atom.create(newAtom)
+                let newAtom = atom_model_1.buildNewAtom(res.dataValues, userId, atomCode);
+                return index_1.models.Atom.create(newAtom, {
+                    include: [
+                        {
+                            model: index_1.models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                })
                     .then((result) => {
                     const ERROR_MESSAGE = 'Mutation: duplicateAtom TODO: Identify error';
                     let response = {
@@ -225,55 +239,5 @@ exports.resolver = {
             });
         }
     },
-};
-/*****************************************/
-/*            EXTRA FUNCTIONS            */
-/*****************************************/
-/**
- * @desc Build New Atom Object
- * @function _buildNewAtom
- * @private
- * @param {IAtomAttributes} atom - Atom data object
- * @param {number} userId - owner id
- * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
- * @returns {IAtomAttributes} New Atom data object
- */
-const _buildNewAtom = (atom, userId, atomCode) => {
-    const html = _extractCode('html', atomCode) || atom.html;
-    const css = _extractCode('css', atomCode) || atom.css;
-    return {
-        name: atom.name,
-        html,
-        css,
-        description: atom.description,
-        contextualBg: atom.contextualBg,
-        download: atom.download,
-        active: true,
-        private: false,
-        duplicated: true,
-        authorId: atom.authorId,
-        ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
-    };
-};
-/**
- * @desc Extract new code
- * @function _extractCode
- * @private
- * @param {string} type - source code type (html, css, etc)
- * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
- * @returns {any}
- */
-const _extractCode = (type, atomCode) => {
-    let code = null;
-    if (!atomCode) {
-        return code;
-    }
-    atomCode.forEach(atomCodeObj => {
-        if (atomCodeObj.codeType === type) {
-            code = atomCodeObj.codeProps.code;
-        }
-    });
-    return code;
 };
 //# sourceMappingURL=atom.mutation.js.map

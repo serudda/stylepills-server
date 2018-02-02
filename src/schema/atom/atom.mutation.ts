@@ -12,8 +12,13 @@ import {
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
-import { IAtomAttributes, IAtomInstance } from './../../models/atom.model';
-import { ILib as ILibModel } from './../../models/lib.model';
+import { 
+    IAtomCode, 
+    IAtomAttributes, 
+    IAtomInstance,
+    buildNewAtom
+ } from './../../models/atom.model';
+import { ILib as ILibModel, ILibInstance } from './../../models/lib.model';
 
 
 /************************************/
@@ -22,16 +27,6 @@ import { ILib as ILibModel } from './../../models/lib.model';
 interface IAtomStatusResponse extends IStatus {
     id?: number;
     validationErrors?: IValidationAtomError;
-}
-
-interface ICodeProps {
-    code: string;
-    libs?: Array<string>;
-}
-
-interface IAtomCode {
-    codeType: string;
-    codeProps: ICodeProps;
 }
 
 interface ICreateAtomInput {
@@ -269,7 +264,6 @@ export const resolver = {
          * @param {Array<IAtomCodeProperties>} atomCode - New Atom source code
          * @returns {Promise<IStatus>} Atom entity
          */
-        // TODO: incluir Libs cuando se duplica
         duplicateAtom(parent: any, { input }: IDuplicateAtomArgs): Promise<IStatus> {
 
             const { atomId, userId, atomCode = null } = input;
@@ -278,16 +272,32 @@ export const resolver = {
             logger.log('info', 'Mutation: duplicateAtom');
 
             return models.Atom.findById(
-                atomId
+                atomId,
+                {
+                    include: [
+                        {
+                            model: models.Lib,
+                            as: 'libs'
+                        }
+                    ]
+                }
             )
             .then(
                 (res) => {
 
                     // Build a new atom in order to create on database
-                    let newAtom = _buildNewAtom(res.dataValues, userId, atomCode);
+                    let newAtom = buildNewAtom(res.dataValues, userId, atomCode);
 
                     return models.Atom.create(
-                        newAtom
+                        newAtom,
+                        {
+                            include: [
+                                {
+                                    model: models.Lib,
+                                    as: 'libs'
+                                }
+                            ]
+                        }
                     )
                     .then(
                         (result: IAtomInstance) => {
@@ -337,70 +347,4 @@ export const resolver = {
             );
         }
     },
-};
-
-
-/*****************************************/
-/*            EXTRA FUNCTIONS            */
-/*****************************************/
-
-
-/**
- * @desc Build New Atom Object
- * @function _buildNewAtom
- * @private
- * @param {IAtomAttributes} atom - Atom data object
- * @param {number} userId - owner id
- * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
- * @returns {IAtomAttributes} New Atom data object
- */
-
-const _buildNewAtom = 
-    (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCode>): IAtomAttributes => {
-
-    const html = _extractCode('html', atomCode) || atom.html;
-    const css = _extractCode('css', atomCode) || atom.css;
-    
-    return {
-        name: atom.name,
-        html,
-        css,
-        description: atom.description,
-        contextualBg: atom.contextualBg,
-        download: atom.download,
-        active: true,
-        private: false,
-        duplicated: true,
-        authorId: atom.authorId,
-        ownerId: userId,
-        atomCategoryId: atom.atomCategoryId
-    };
-
-};
-
-
-/**
- * @desc Extract new code
- * @function _extractCode
- * @private
- * @param {string} type - source code type (html, css, etc)
- * @param {Array<IAtomCodeProps>} atomCode - New Atom source code
- * @returns {any}
- */
-
-const _extractCode = 
-    (type: string, atomCode: Array<IAtomCode>): string => {
-    
-    let code = null;
-    
-    if (!atomCode) { return code; }
-
-    atomCode.forEach(atomCodeObj => {
-        if (atomCodeObj.codeType === type) {
-            code = atomCodeObj.codeProps.code;
-        }
-    });
-
-    return code;
-
 };

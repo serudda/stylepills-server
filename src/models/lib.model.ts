@@ -28,9 +28,12 @@ export interface ILib {
 
 
 export interface ILibAttributes {
+    id?: number;
     name: string;
     url: string;
     type: LibTypeOptions;
+    atomId?: number;
+    projectId?: number;
     active: boolean;
 }
 

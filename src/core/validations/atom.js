@@ -28,10 +28,6 @@ function validateFields(field) {
     if (Validator.isEmpty(field.html)) {
         errors.html = 'Html is required';
     }
-    /* Atom Css */
-    if (Validator.isEmpty(field.css)) {
-        errors.css = 'Css is required';
-    }
     /* Atom contextual background */
     if (!Validator.isHexColor(field.contextualBg)) {
         errors.contextualBg = 'Context background should be Hex color';
