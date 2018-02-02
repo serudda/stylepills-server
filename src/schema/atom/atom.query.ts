@@ -375,6 +375,11 @@ export const resolver = {
             // LOG
             logger.log('info', 'Query: (Atom) getAtomCategory');
             return atom.getAtomCategory();
+        },
+        project(atom: any) {
+            // LOG
+            logger.log('info', 'Query: (Atom) getProject');
+            return atom.getProject();
         }
     }
 };

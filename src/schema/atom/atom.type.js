@@ -23,6 +23,7 @@ type Atom {
     author: User!
     owner: User!
     category: AtomCategory
+    project: Project
 }
 `;
 /* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).
