@@ -22,6 +22,7 @@ type Atom {
     author: User!
     owner: User!
     category: AtomCategory
+    project: Project
 }
 `;
 

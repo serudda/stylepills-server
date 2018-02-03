@@ -17,6 +17,8 @@ type Lib {
     name: String!
     url: String!
     type: String
+    atom: Atom
+    project: Project
     active: Boolean
 }
 `;
