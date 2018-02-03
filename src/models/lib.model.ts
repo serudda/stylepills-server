@@ -5,6 +5,9 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
+import { IAtom } from './atom.model';
+import { IProject } from './project.model';
+
 
 /************************************/
 /*            INTERFACE             */
@@ -21,6 +24,8 @@ export interface ILib {
     name: string;
     url: string;
     type: LibTypeOptions;
+    atom: IAtom;
+    project: IProject;
     active: boolean;
     createdAt: string;
     updatedAt: string;

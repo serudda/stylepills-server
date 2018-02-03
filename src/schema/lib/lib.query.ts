@@ -46,5 +46,17 @@ export const resolver = {
             return models.Lib.findById(id);
         }
 
+    },
+    Lib: {
+        atom(lib: any) {
+            // LOG
+            logger.log('info', 'Query: (Lib) getAtom');
+            return lib.getAtom();
+        },
+        project(lib: any) {
+            // LOG
+            logger.log('info', 'Query: (Lib) getProject');
+            return lib.getProject();
+        }
     }
 };
