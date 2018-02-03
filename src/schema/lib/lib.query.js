@@ -9,17 +9,9 @@ const logger_1 = require("./../../core/utils/logger");
 /*            QUERY TYPEDEF           */
 /**************************************/
 exports.typeDef = `
-
-    # Status
-
-    type LibQueryStatusResponse {
-        id: ID
-        ok: Boolean!,
-        results: [Lib]
-    }
     extend type Query {
         libById(id: ID!): Lib!
-        getLibsByProjectId(projectId: ID!): LibQueryStatusResponse!
+        getLibsByProjectId(projectId: ID!): [Lib]
     }
 `;
 /*******************************************/
@@ -54,11 +46,7 @@ exports.resolver = {
             logger_1.logger.log('info', 'Query: getLibsByProjectId');
             // If projectId is null
             if (projectId === null) {
-                let response = {
-                    ok: false,
-                    results: null
-                };
-                return response;
+                return null;
             }
             // Get all libs based on the project Id
             return index_1.models.Lib.findAll({
@@ -66,31 +54,6 @@ exports.resolver = {
                     active: true,
                     projectId
                 }
-            }).then((result) => {
-                const ERROR_MESSAGE = 'Query: getLibsByProjectId TODO: Identify error';
-                let response = {
-                    ok: false,
-                    results: null
-                };
-                // Returned data
-                if (result.length > 0) {
-                    response = {
-                        ok: true,
-                        results: result
-                    };
-                }
-                else {
-                    // LOG
-                    logger_1.logger.log('error', ERROR_MESSAGE, result);
-                }
-                return response;
-            }).catch((err) => {
-                // LOG
-                logger_1.logger.log('error', 'Query: getLibsByProjectId', { err });
-                return {
-                    ok: false,
-                    results: null
-                };
             });
         },
     },

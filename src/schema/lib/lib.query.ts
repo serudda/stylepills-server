@@ -11,10 +11,6 @@ import { ILibInstance, ILib } from './../../models/lib.model';
 /************************************/
 /*            INTERFACES            */
 /************************************/    
-interface ILibQueryStatusResponse extends IStatus {
-    id?: number;
-    results: Array<ILibInstance>;
-}
 
 interface ILibArgs {
     id: number;
@@ -27,17 +23,9 @@ interface ILibArgs {
 /**************************************/
 
 export const typeDef = `
-
-    # Status
-
-    type LibQueryStatusResponse {
-        id: ID
-        ok: Boolean!,
-        results: [Lib]
-    }
     extend type Query {
         libById(id: ID!): Lib!
-        getLibsByProjectId(projectId: ID!): LibQueryStatusResponse!
+        getLibsByProjectId(projectId: ID!): [Lib]
     }
 `;
 
@@ -82,12 +70,7 @@ export const resolver = {
 
             // If projectId is null
             if (projectId === null) {
-                let response: ILibQueryStatusResponse = {
-                    ok: false,
-                    results: null
-                };
-                
-                return response;
+                return null;
             }
 
             // Get all libs based on the project Id
@@ -96,40 +79,7 @@ export const resolver = {
                     active: true,
                     projectId
                 }
-            }).then(
-                (result: Array<ILibInstance>) => {
-                    
-                    const ERROR_MESSAGE = 'Query: getLibsByProjectId TODO: Identify error';
-                    
-                    let response: ILibQueryStatusResponse = {
-                        ok: false,
-                        results: null
-                    };
-
-                    // Returned data
-                    if (result.length > 0) {
-                        response = {
-                            ok: true,
-                            results: result
-                        };
-                    } else {
-                        // LOG
-                        logger.log('error', ERROR_MESSAGE, result);
-                    }
-
-                    return response;
-                }
-            ).catch(
-                (err) => {
-                    // LOG
-                    logger.log('error', 'Query: getLibsByProjectId', { err });
-
-                    return {
-                        ok: false,
-                        results: null
-                    };
-                }
-            );
+            });
         },
 
     },
