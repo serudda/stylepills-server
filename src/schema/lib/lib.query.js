@@ -44,11 +44,6 @@ exports.resolver = {
         getLibsByProjectId(parent, { projectId }) {
             // LOG
             logger_1.logger.log('info', 'Query: getLibsByProjectId');
-            // If projectId is null
-            if (projectId === null) {
-                return null;
-            }
-            // Get all libs based on the project Id
             return index_1.models.Lib.findAll({
                 where: {
                     active: true,

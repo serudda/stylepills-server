@@ -68,12 +68,6 @@ export const resolver = {
             // LOG
             logger.log('info', 'Query: getLibsByProjectId');
 
-            // If projectId is null
-            if (projectId === null) {
-                return null;
-            }
-
-            // Get all libs based on the project Id
             return models.Lib.findAll({
                 where: {
                     active: true,
