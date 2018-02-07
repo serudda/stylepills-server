@@ -6,12 +6,11 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IUser } from 'models/user.model';
-import { IComment } from 'models/comment.model';
-import { IAtomCategory } from 'models/atomCategory.model';
-import { ILib, ILibInstance } from 'models/lib.model';
-import { IProject } from 'models/project.model';
-
+import { IUser } from './user.model';
+import { IComment } from './comment.model';
+import { IAtomCategory } from './atomCategory.model';
+import { ILib, ILibInstance } from './lib.model';
+import { IProject } from './project.model';
 
 /************************************/
 /*            INTERFACE             */
