@@ -278,6 +278,14 @@ export const resolver = {
                         {
                             model: models.Lib,
                             as: 'libs'
+                        },
+                        {
+                            model: models.Project,
+                            as: 'project',
+                            include: [{ 
+                                model: models.Lib,
+                                as: 'libs'
+                            }]
                         }
                     ]
                 }
@@ -337,12 +345,20 @@ export const resolver = {
             ).catch(
                 (err) => {
 
-                    // LOG
-                    logger.log('error', 'Mutation: duplicateAtom', { err });
-
-                    return {
+                    let response: IAtomStatusResponse = {
                         ok: false
                     };
+
+                    if (err.message) {
+                        response.message = err.message;
+                    } else {
+                        response.message = err;
+                    }
+
+                    // LOG
+                    logger.log('error', 'Mutation: duplicateAtom', response);
+
+                    return response;
                 }
             );
         }

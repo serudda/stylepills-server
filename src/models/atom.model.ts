@@ -1,3 +1,4 @@
+
 /************************************/
 /*           DEPENDENCIES           */
 /************************************/
@@ -5,10 +6,11 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IUser } from './user.model';
-import { IComment } from './comment.model';
-import { IAtomCategory } from './atomCategory.model';
-import { ILib as ILibModel, ILibInstance } from './lib.model';
+import { IUser } from 'models/user.model';
+import { IComment } from 'models/comment.model';
+import { IAtomCategory } from 'models/atomCategory.model';
+import { ILib, ILibInstance } from 'models/lib.model';
+import { IProject } from 'models/project.model';
 
 
 /************************************/
@@ -48,6 +50,7 @@ export interface IAtom {
     active: boolean;
     private: boolean;
     author: IUser;
+    project: Array<IProject>;
     category: IAtomCategory;
     createdAt: string;
     updatedAt: string;
@@ -67,7 +70,8 @@ export interface IAtomAttributes {
     ownerId?: number;
     atomCategoryId: number | string;
     projectId?: number;
-    libs?: Array<ILibInstance | ILibModel>;
+    project?: IProject;
+    libs?: Array<ILibInstance | ILib>;
     active?: boolean;
     private: boolean;
 }
@@ -156,6 +160,7 @@ SequelizeStatic.Model<IAtomInstance, IAtomAttributes> {
 
         // one Atom belongs to one Project (1:M)
         Atom.belongsTo(models.Project, {
+            as: 'project',
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'
@@ -256,19 +261,36 @@ export const extractCode =
 export const buildNewAtom = 
     (atom: IAtomAttributes, userId: number, atomCode: Array<IAtomCode>): IAtomAttributes => {
 
+    const { project } = atom;
     const html = extractCode('html', atomCode) || atom.html;
     const css = extractCode('css', atomCode) || atom.css;
+    let atomLibs: Array<any> = [];
+    let projectLibs: Array<any> = [];
     let libs: Array<any> = [];
 
-    // If libs exist, remove ids in order to create new records
+    // If atom libs exist, remove ids in order to create new records
     if (atom.libs) {
-        libs = atom.libs.filter((lib: ILibInstance) => {
+        atomLibs = atom.libs.filter((lib: ILibInstance) => {
             delete lib.dataValues.id;
             delete lib.dataValues.atomId;
             delete lib.dataValues.projectId;
             return true;
         });
     }
+
+    // If project libs exist, remove ids in order to create new records
+    if (project) {
+        if (project.libs) {
+            projectLibs = atom.project.libs.filter((lib: ILibInstance) => {
+                delete lib.dataValues.id;
+                delete lib.dataValues.atomId;
+                delete lib.dataValues.projectId;
+                return true;
+            });
+        }
+    }
+
+    libs = atomLibs.concat(projectLibs);
     
     return {
         name: atom.name,

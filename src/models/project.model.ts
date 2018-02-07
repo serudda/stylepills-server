@@ -5,11 +5,12 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IUser } from './user.model';
-import { IComment } from './comment.model';
-import { IProjectCategory } from './projectCategory.model';
-import { IColor } from './color.model';
-import { IAtom } from './atom.model';
+import { IUser } from 'models/user.model';
+import { IComment } from 'models/comment.model';
+import { IProjectCategory } from 'models/projectCategory.model';
+import { IColor } from 'models/color.model';
+import { IAtom } from 'models/atom.model';
+import { ILib, ILibInstance } from 'models/lib.model';
 
 
 /************************************/
@@ -27,6 +28,7 @@ export interface IProject {
     author: IUser;
     category: IProjectCategory;
     atoms: Array<IAtom>;
+    libs: Array<ILibInstance | ILib>;
     createdAt: string;
     updatedAt: string;
 }
@@ -39,6 +41,7 @@ export interface IProjectAttributes {
     description?: string;
     authorId: number;
     projectCategoryId: number;
+    libs?: Array<ILibInstance | ILib>;
     active?: boolean;
     private: boolean;
 }
