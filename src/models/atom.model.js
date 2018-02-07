@@ -70,6 +70,7 @@ function default_1(sequelize, dataTypes) {
         });
         // one Atom belongs to one Project (1:M)
         Atom.belongsTo(models.Project, {
+            as: 'project',
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'
@@ -149,18 +150,33 @@ exports.extractCode = (type, atomCode) => {
  * @returns {IAtomAttributes} New Atom data object
  */
 exports.buildNewAtom = (atom, userId, atomCode) => {
+    const { project } = atom;
     const html = exports.extractCode('html', atomCode) || atom.html;
     const css = exports.extractCode('css', atomCode) || atom.css;
+    let atomLibs = [];
+    let projectLibs = [];
     let libs = [];
-    // If libs exist, remove ids in order to create new records
+    // If atom libs exist, remove ids in order to create new records
     if (atom.libs) {
-        libs = atom.libs.filter((lib) => {
+        atomLibs = atom.libs.filter((lib) => {
             delete lib.dataValues.id;
             delete lib.dataValues.atomId;
             delete lib.dataValues.projectId;
             return true;
         });
     }
+    // If project libs exist, remove ids in order to create new records
+    if (project) {
+        if (project.libs) {
+            projectLibs = atom.project.libs.filter((lib) => {
+                delete lib.dataValues.id;
+                delete lib.dataValues.atomId;
+                delete lib.dataValues.projectId;
+                return true;
+            });
+        }
+    }
+    libs = atomLibs.concat(projectLibs);
     return {
         name: atom.name,
         html,
