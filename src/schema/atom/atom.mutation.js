@@ -191,6 +191,14 @@ exports.resolver = {
                     {
                         model: index_1.models.Lib,
                         as: 'libs'
+                    },
+                    {
+                        model: index_1.models.Project,
+                        as: 'project',
+                        include: [{
+                                model: index_1.models.Lib,
+                                as: 'libs'
+                            }]
                     }
                 ]
             })
@@ -231,11 +239,18 @@ exports.resolver = {
                     };
                 });
             }).catch((err) => {
-                // LOG
-                logger_1.logger.log('error', 'Mutation: duplicateAtom', { err });
-                return {
+                let response = {
                     ok: false
                 };
+                if (err.message) {
+                    response.message = err.message;
+                }
+                else {
+                    response.message = err;
+                }
+                // LOG
+                logger_1.logger.log('error', 'Mutation: duplicateAtom', response);
+                return response;
             });
         }
     },
