@@ -70,7 +70,7 @@ input RgbaColorInput {
     r: Int
     g: Int
     b: Int
-    a: Int
+    a: String
 }
 
 input ColorInput {
