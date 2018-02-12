@@ -37,7 +37,7 @@ export const typeDef = `
 
     extend type Query {
         projectById(id: ID!): Project!
-        basicProjectsByUserId(userId: ID!): [Project!]!
+        projectsByUserId(userId: ID!): [Project!]!
         allProjects(limit: Int): [Project!]!
     }
 
@@ -69,19 +69,19 @@ export const resolver = {
 
 
         /**
-         * @desc Get Basic Projects by User Id
-         * @method Method basicProjectsByUserId
+         * @desc Get Projects by User Id
+         * @method Method projectsByUserId
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
          * @param {IProjectQueryArgs} args - destructuring: userId
-         * @returns {Array<BasicProject>} basic Projects List of a specific user
+         * @returns {Array<IProject>} Projects List of a specific user
          */
-        basicProjectsByUserId(
+        projectsByUserId(
             parent: any, 
             { userId }: IProjectQueryArgs
         ) {
             // LOG
-            logger.log('info', 'Query: basicProjectsByUserId');
+            logger.log('info', 'Query: projectsByUserId');
             return models.Project.findAll({
                 where: {
                     active: true,
@@ -109,7 +109,7 @@ export const resolver = {
                     active: true
                 }
             });
-        }
+        },
 
     },
     Project: {
@@ -127,6 +127,11 @@ export const resolver = {
             // LOG
             logger.log('info', 'Query (Project): getLibs');
             return project.getLibs();
+        },
+        preprocessors(project: any) {
+            // LOG
+            logger.log('info', 'Query (Project): getPreprocessors');
+            return project.getPreprocessors();
         },
         author(project: any) {
             // LOG

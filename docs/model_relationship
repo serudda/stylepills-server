@@ -10,3 +10,64 @@ Artist.hasMany(Album) => artist.getAlbums()
 User.hasMany(Comment) => user.getComments()
 
 
+Many to Many
+------------
+
+1. Add belongsTo on each associated Model:
+
+// Preprocessor Model: one Preprocessor belongs to Many Projects (1:M)
+Preprocessor.belongsToMany(models.Project, {  
+    through: 'project_preprocessor',
+    foreignKey: {
+        name: 'preprocessorId',
+        field: 'preprocessor_id'
+    }
+});
+
+//Project Model: One project belongs to many Preproccesors (1:M)
+Project.belongsToMany(models.Preprocessor, {
+    as: 'preprocessors',
+    through: 'project_preprocessor',
+    foreignKey: {
+        name: 'projectId',
+        field: 'project_id'
+    }
+});
+
+2. Create Join Table migration file: e.g. project_preprocessor
+
+3. Get Method using QUERY raw:
+
+ getProjectPreprocessors(parent: any, { projectId }: IProjectQueryArgs) {
+    // LOG
+    logger.log('info', 'Query: getProjectPreprocessors');
+
+    return sequelize.query(
+        `SELECT * 
+        FROM preprocessor AS p 
+        INNER JOIN project_preprocessor AS pp
+        ON p.id = pp.preprocessor_id
+        AND pp.project_id = ?`,
+        {
+            replacements: [projectId],
+            model: models.Preprocessor,
+            raw: true,
+        },
+    );
+}
+
+3.a. Get Method using sequelize
+
+preprocessorsByProjectId(parent: any, { projectId }: IPreprocessorQueryArgs) {
+    // LOG
+    logger.log('info', 'Query: preprocessorsByProjectId');
+    return models.Preprocessor.findAll({
+        include: [{
+            model: models.Project,
+            where: { id: projectId }
+        }],
+        where: {
+            active: true
+        }, raw: true
+    });
+}
