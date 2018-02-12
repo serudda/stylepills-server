@@ -3,20 +3,11 @@
 /************************************/
 
 export const typeDef = `
-type Project {
+type Preprocessor {
     id: ID!
-    name: String
-    website: String
-    description: String
-    colorPalette: [Color]
-    libs: [Lib]
-    preprocessors: [Preprocessor]
-    sources: [Source]
-    atoms: [Atom]
+    type: String
+    compileTo: String
     active: Boolean
-    private: Boolean
-    author: User!
-    category: ProjectCategory!
 }
 `;
 

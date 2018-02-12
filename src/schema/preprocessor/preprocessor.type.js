@@ -4,22 +4,13 @@
 /************************************/
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
-type Project {
+type Preprocessor {
     id: ID!
-    name: String
-    website: String
-    description: String
-    colorPalette: [Color]
-    libs: [Lib]
-    preprocessors: [Preprocessor]
-    sources: [Source]
-    atoms: [Atom]
+    type: String
+    compileTo: String
     active: Boolean
-    private: Boolean
-    author: User!
-    category: ProjectCategory!
 }
 `;
 /* NOTE: Ponemos todas sus propiedades, hasta sus objetos anidados (si los necesito traer en algun momento).
     al final cuando voy a hacer la Query, ahi omito las propiedades que no necesito, ejemplo: active, createdAt, etc */ 
-//# sourceMappingURL=project.type.js.map
+//# sourceMappingURL=preprocessor.type.js.map

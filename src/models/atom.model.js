@@ -99,6 +99,23 @@ function default_1(sequelize, dataTypes) {
                 field: 'atom_id'
             }
         });
+        // One atom has many Sources (1:M)
+        Atom.hasMany(models.Source, {
+            as: 'sources',
+            foreignKey: {
+                name: 'atomId',
+                field: 'atom_id'
+            }
+        });
+        // One atom belongs to many Preproccesors (1:M)
+        Atom.belongsToMany(models.Preprocessor, {
+            as: 'preprocessors',
+            through: 'atom_preprocessor',
+            foreignKey: {
+                name: 'atomId',
+                field: 'atom_id'
+            }
+        });
         // One Atom has many Comments (1:M)
         // NOTE: 1 - constraints theory
         Atom.hasMany(models.Comment, {

@@ -23,6 +23,10 @@ const projectCategoryTypes = require("./projectCategory/projectCategory.type");
 const projectCategoryQuery = require("./projectCategory/projectCategory.query");
 const libTypes = require("./lib/lib.type");
 const libQuery = require("./lib/lib.query");
+const preprocessorTypes = require("./preprocessor/preprocessor.type");
+const preprocessorQuery = require("./preprocessor/preprocessor.query");
+const sourceTypes = require("./source/source.type");
+const sourceQuery = require("./source/source.query");
 const colorTypes = require("./color/color.type");
 const colorQuery = require("./color/color.query");
 const rgbaColorTypes = require("./rgbaColor/rgbaColor.type");
@@ -83,6 +87,10 @@ const typeDefs = [`
     projectCategoryQuery.typeDef,
     libTypes.typeDef,
     libQuery.typeDef,
+    preprocessorTypes.typeDef,
+    preprocessorQuery.typeDef,
+    sourceTypes.typeDef,
+    sourceQuery.typeDef,
     colorTypes.typeDef,
     colorQuery.typeDef,
     rgbaColorTypes.typeDef,
@@ -91,7 +99,7 @@ const typeDefs = [`
 /*****************************************/
 /*             ROOT RESOLVERS            */
 /*****************************************/
-const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver, projectMutation.resolver, projectQuery.resolver, projectCategoryQuery.resolver, libQuery.resolver, colorQuery.resolver, rgbaColorQuery.resolver);
+const resolvers = lodash_1.merge(scalarJSON, userMutation.resolver, userQuery.resolver, commentQuery.resolver, atomCategoryQuery.resolver, atomMutation.resolver, atomQuery.resolver, projectMutation.resolver, projectQuery.resolver, projectCategoryQuery.resolver, libQuery.resolver, preprocessorQuery.resolver, sourceQuery.resolver, colorQuery.resolver, rgbaColorQuery.resolver);
 /*****************************************/
 /*         SIMPLE LOGGER SYSTEM          */
 /*****************************************/

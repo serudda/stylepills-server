@@ -10,7 +10,7 @@ exports.typeDef = `
 
     extend type Query {
         projectById(id: ID!): Project!
-        basicProjectsByUserId(userId: ID!): [Project!]!
+        projectsByUserId(userId: ID!): [Project!]!
         allProjects(limit: Int): [Project!]!
     }
 
@@ -35,16 +35,16 @@ exports.resolver = {
             return index_1.models.Project.findById(id);
         },
         /**
-         * @desc Get Basic Projects by User Id
-         * @method Method basicProjectsByUserId
+         * @desc Get Projects by User Id
+         * @method Method projectsByUserId
          * @public
          * @param {any} parent - TODO: Investigar un poco más estos parametros
          * @param {IProjectQueryArgs} args - destructuring: userId
-         * @returns {Array<BasicProject>} basic Projects List of a specific user
+         * @returns {Array<IProject>} Projects List of a specific user
          */
-        basicProjectsByUserId(parent, { userId }) {
+        projectsByUserId(parent, { userId }) {
             // LOG
-            logger_1.logger.log('info', 'Query: basicProjectsByUserId');
+            logger_1.logger.log('info', 'Query: projectsByUserId');
             return index_1.models.Project.findAll({
                 where: {
                     active: true,
@@ -70,7 +70,7 @@ exports.resolver = {
                     active: true
                 }
             });
-        }
+        },
     },
     Project: {
         atoms(project) {
@@ -87,6 +87,16 @@ exports.resolver = {
             // LOG
             logger_1.logger.log('info', 'Query (Project): getLibs');
             return project.getLibs();
+        },
+        preprocessors(project) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Project): getPreprocessors');
+            return project.getPreprocessors();
+        },
+        sources(project) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Project): getSources');
+            return project.getSources();
         },
         author(project) {
             // LOG

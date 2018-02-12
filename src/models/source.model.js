@@ -1,29 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-/************************************/
-/*            INTERFACE             */
-/************************************/
-/* Possible lib type options */
-var LibTypeOptions;
-(function (LibTypeOptions) {
-    LibTypeOptions["css"] = "css";
-    LibTypeOptions["js"] = "js";
-})(LibTypeOptions = exports.LibTypeOptions || (exports.LibTypeOptions = {}));
 /*****************************************/
 /*               LIB MODEL               */
 /*****************************************/
 function default_1(sequelize, dataTypes) {
-    let Lib = sequelize.define('Lib', {
+    let Source = sequelize.define('Source', {
         name: {
-            type: dataTypes.STRING
-        },
-        url: {
             type: dataTypes.STRING,
             allowNull: false
         },
-        type: {
+        filename: {
             type: dataTypes.STRING,
             allowNull: false
+        },
+        code: {
+            type: dataTypes.TEXT,
+            allowNull: false
+        },
+        order: {
+            type: dataTypes.INTEGER,
+            allowNull: true
         },
         active: {
             type: dataTypes.BOOLEAN,
@@ -31,28 +27,35 @@ function default_1(sequelize, dataTypes) {
         }
     }, {
         timestamps: true,
-        tableName: 'lib',
+        tableName: 'source',
         freezeTableName: true,
     });
     /*      CREATE RELATIONSHIP      */
     /*********************************/
-    Lib.associate = (models) => {
-        // one Lib belongs to one Atom (1:M)
-        Lib.belongsTo(models.Atom, {
+    Source.associate = (models) => {
+        // one Source belongs to one Atom (1:M)
+        Source.belongsTo(models.Atom, {
             foreignKey: {
                 name: 'atomId',
                 field: 'atom_id'
             }
         });
-        // one Lib belongs to one Project (1:M)
-        Lib.belongsTo(models.Project, {
+        // one Source belongs to one Project (1:M)
+        Source.belongsTo(models.Project, {
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'
             }
         });
+        // one Source belongs to one Preprocessor (1:M)
+        Source.belongsTo(models.Preprocessor, {
+            foreignKey: {
+                name: 'preprocessorId',
+                field: 'preprocessor_id'
+            }
+        });
     };
-    return Lib;
+    return Source;
 }
 exports.default = default_1;
-//# sourceMappingURL=lib.model.js.map
+//# sourceMappingURL=source.model.js.map

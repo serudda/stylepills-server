@@ -3,20 +3,14 @@
 /************************************/
 
 export const typeDef = `
-type Project {
+type Source {
     id: ID!
     name: String
-    website: String
-    description: String
-    colorPalette: [Color]
-    libs: [Lib]
-    preprocessors: [Preprocessor]
-    sources: [Source]
-    atoms: [Atom]
+    filename: String
+    code: String
+    preprocessor: Preprocessor
+    order: Int
     active: Boolean
-    private: Boolean
-    author: User!
-    category: ProjectCategory!
 }
 `;
 

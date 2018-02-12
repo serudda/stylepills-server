@@ -5,46 +5,39 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IAtom } from './atom.model';
-import { IProject } from './project.model';
-
+import { IPreprocessor as IPreprocessorModel } from './preprocessor.model';
 
 /************************************/
 /*            INTERFACE             */
 /************************************/
 
-/* Possible lib type options */
-export enum LibTypeOptions {
-    css = 'css',
-    js = 'js'
-}
-
-export interface ILib {
+export interface ISource {
     id: number | null;
     name: string;
-    url: string;
-    type: LibTypeOptions;
-    atom: IAtom;
-    project: IProject;
+    filename: string;
+    code: string;
+    preprocessor: IPreprocessorModel;
+    order: number;
     active: boolean;
     createdAt: string;
     updatedAt: string;
 }
 
 
-export interface ILibAttributes {
+export interface ISourceAttributes {
     id?: number;
-    name: string;
-    url: string;
-    type: LibTypeOptions;
+    filename: string;
+    code: string;
+    order: number;
+    preprocessorId: number;
     atomId?: number;
     projectId?: number;
     active: boolean;
 }
 
 
-export interface ILibInstance extends Instance<ILibAttributes> {
-    dataValues: ILibAttributes;
+export interface ISourceInstance extends Instance<ISourceAttributes> {
+    dataValues: ISourceAttributes;
 }
 
 
@@ -52,20 +45,25 @@ export interface ILibInstance extends Instance<ILibAttributes> {
 /*               LIB MODEL               */
 /*****************************************/
 export default function(sequelize: Sequelize, dataTypes: DataTypes): 
-SequelizeStatic.Model<ILibInstance, ILibAttributes> {
+SequelizeStatic.Model<ISourceInstance, ISourceAttributes> {
 
-    let Lib: any = sequelize.define<ILibInstance, ILibAttributes>(
-        'Lib', {
+    let Source: any = sequelize.define<ISourceInstance, ISourceAttributes>(
+        'Source', {
             name: {
-                type: dataTypes.STRING
-            },
-            url: {
                 type: dataTypes.STRING,
                 allowNull: false
             },
-            type: {
+            filename: {
                 type: dataTypes.STRING,
                 allowNull: false
+            },
+            code: {
+                type: dataTypes.TEXT,
+                allowNull: false
+            },
+            order: {
+                type: dataTypes.INTEGER,
+                allowNull: true
             },
             active: {
                 type: dataTypes.BOOLEAN,
@@ -73,7 +71,7 @@ SequelizeStatic.Model<ILibInstance, ILibAttributes> {
             }
         }, {
             timestamps: true,
-            tableName: 'lib',
+            tableName: 'source',
             freezeTableName: true,
         }
     );
@@ -81,27 +79,35 @@ SequelizeStatic.Model<ILibInstance, ILibAttributes> {
 
     /*      CREATE RELATIONSHIP      */
     /*********************************/
-    Lib.associate = (models: ISequelizeModels) => {
+    Source.associate = (models: ISequelizeModels) => {
 
-        // one Lib belongs to one Atom (1:M)
-        Lib.belongsTo(models.Atom, {
+        // one Source belongs to one Atom (1:M)
+        Source.belongsTo(models.Atom, {
             foreignKey: {
                 name: 'atomId',
                 field: 'atom_id'
             }
         });
 
-        // one Lib belongs to one Project (1:M)
-        Lib.belongsTo(models.Project, {
+        // one Source belongs to one Project (1:M)
+        Source.belongsTo(models.Project, {
             foreignKey: {
                 name: 'projectId',
                 field: 'project_id'
+            }
+        });
+
+        // one Source belongs to one Preprocessor (1:M)
+        Source.belongsTo(models.Preprocessor, {
+            foreignKey: {
+                name: 'preprocessorId',
+                field: 'preprocessor_id'
             }
         });
         
     };
 
 
-    return Lib;
+    return Source;
 
 }

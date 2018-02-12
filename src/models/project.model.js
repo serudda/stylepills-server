@@ -77,6 +77,23 @@ function default_1(sequelize, dataTypes) {
                 field: 'project_id'
             }
         });
+        // One project has many Sources (1:M)
+        Project.hasMany(models.Source, {
+            as: 'sources',
+            foreignKey: {
+                name: 'projectId',
+                field: 'project_id'
+            }
+        });
+        // One project belongs to many Preproccesors (1:M)
+        Project.belongsToMany(models.Preprocessor, {
+            as: 'preprocessors',
+            through: 'project_preprocessor',
+            foreignKey: {
+                name: 'projectId',
+                field: 'project_id'
+            }
+        });
         // One Project has many Atoms (1:M)
         Project.hasMany(models.Atom, {
             foreignKey: {
