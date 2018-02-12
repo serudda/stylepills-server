@@ -33,6 +33,9 @@ import * as libQuery from './lib/lib.query';
 import * as preprocessorTypes from './preprocessor/preprocessor.type';
 import * as preprocessorQuery from './preprocessor/preprocessor.query';
 
+import * as sourceTypes from './source/source.type';
+import * as sourceQuery from './source/source.query';
+
 import * as colorTypes from './color/color.type';
 import * as colorQuery from './color/color.query';
 
@@ -109,6 +112,9 @@ const typeDefs = [`
     preprocessorTypes.typeDef,
     preprocessorQuery.typeDef,
 
+    sourceTypes.typeDef,
+    sourceQuery.typeDef,
+
     colorTypes.typeDef,
     colorQuery.typeDef,
 
@@ -143,6 +149,8 @@ const resolvers: any = merge(
     libQuery.resolver,
 
     preprocessorQuery.resolver,
+
+    sourceQuery.resolver,
 
     colorQuery.resolver,
 

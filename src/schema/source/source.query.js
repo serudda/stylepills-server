@@ -10,8 +10,7 @@ const logger_1 = require("./../../core/utils/logger");
 /**************************************/
 exports.typeDef = `
     extend type Query {
-        preprocessorsByProjectId(projectId: ID!): [Preprocessor!]
-        allPreprocessors: [Preprocessor!]!
+        sourcesByProjectId(projectId: ID!): [Source!]
     }
 `;
 /*******************************************/
@@ -20,30 +19,15 @@ exports.typeDef = `
 exports.resolver = {
     Query: {
         /**
-         * @desc Get all Preprocessors
-         * @method Method allPreprocessors
+         * @desc Get Sources by Project id
+         * @method Method sourcesByProjectId
          * @public
-         * @returns {Array<IPreprocessor>} Preprocessors list
+         * @returns {Array<ISource>} Sources list by project id
          */
-        allPreprocessors() {
+        sourcesByProjectId(parent, { projectId }) {
             // LOG
-            logger_1.logger.log('info', 'Query: allPreprocessors');
-            return index_1.models.Preprocessor.findAll({
-                where: {
-                    active: true
-                }
-            });
-        },
-        /**
-         * @desc Get Preprocessors by Project id
-         * @method Method preprocessorsByProjectId
-         * @public
-         * @returns {Array<IPreprocessor>} Preprocessors list
-         */
-        preprocessorsByProjectId(parent, { projectId }) {
-            // LOG
-            logger_1.logger.log('info', 'Query: preprocessorsByProjectId');
-            return index_1.models.Preprocessor.findAll({
+            logger_1.logger.log('info', 'Query: sourcesByProjectId');
+            return index_1.models.Source.findAll({
                 include: [{
                         model: index_1.models.Project,
                         where: { id: projectId }
@@ -53,6 +37,13 @@ exports.resolver = {
                 }
             });
         }
+    },
+    Source: {
+        preprocessor(source) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Project): getPreprocessor');
+            return source.getPreprocessor();
+        }
     }
 };
-//# sourceMappingURL=preprocessor.query.js.map
+//# sourceMappingURL=source.query.js.map

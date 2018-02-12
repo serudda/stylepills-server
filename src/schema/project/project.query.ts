@@ -133,6 +133,11 @@ export const resolver = {
             logger.log('info', 'Query (Project): getPreprocessors');
             return project.getPreprocessors();
         },
+        sources(project: any) {
+            // LOG
+            logger.log('info', 'Query (Project): getSources');
+            return project.getSources();
+        },
         author(project: any) {
             // LOG
             logger.log('info', 'Query: (Project) getAuthor');

@@ -93,6 +93,11 @@ exports.resolver = {
             logger_1.logger.log('info', 'Query (Project): getPreprocessors');
             return project.getPreprocessors();
         },
+        sources(project) {
+            // LOG
+            logger_1.logger.log('info', 'Query (Project): getSources');
+            return project.getSources();
+        },
         author(project) {
             // LOG
             logger_1.logger.log('info', 'Query: (Project) getAuthor');

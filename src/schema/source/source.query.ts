@@ -6,9 +6,9 @@ import { logger } from './../../core/utils/logger';
 
 import { IStatus } from './../../core/interfaces/interfaces';
 import { 
-    IPreprocessorInstance, 
-    IPreprocessor 
-} from './../../models/preprocessor.model';
+    ISourceInstance, 
+    ISource 
+} from './../../models/source.model';
 
 
 /************************************/
@@ -18,7 +18,7 @@ import {
 /**
  * Arguments passed to Preprocessor queries
  */
-interface IPreprocessorQueryArgs {
+interface ISourceQueryArgs {
     atomId: number;
     projectId: number;
 }
@@ -30,8 +30,7 @@ interface IPreprocessorQueryArgs {
 
 export const typeDef = `
     extend type Query {
-        preprocessorsByProjectId(projectId: ID!): [Preprocessor!]
-        allPreprocessors: [Preprocessor!]!
+        sourcesByProjectId(projectId: ID!): [Source!]
     }
 `;
 
@@ -44,32 +43,15 @@ export const resolver = {
     Query: {
 
         /**
-         * @desc Get all Preprocessors
-         * @method Method allPreprocessors
+         * @desc Get Sources by Project id
+         * @method Method sourcesByProjectId
          * @public
-         * @returns {Array<IPreprocessor>} Preprocessors list
+         * @returns {Array<ISource>} Sources list by project id
          */
-        allPreprocessors() {
+        sourcesByProjectId(parent: any, { projectId }: ISourceQueryArgs) {
             // LOG
-            logger.log('info', 'Query: allPreprocessors');
-            return models.Preprocessor.findAll({
-                where: {
-                    active: true
-                }
-            });
-        },
-
-
-        /**
-         * @desc Get Preprocessors by Project id
-         * @method Method preprocessorsByProjectId
-         * @public
-         * @returns {Array<IPreprocessor>} Preprocessors list
-         */
-        preprocessorsByProjectId(parent: any, { projectId }: IPreprocessorQueryArgs) {
-            // LOG
-            logger.log('info', 'Query: preprocessorsByProjectId');
-            return models.Preprocessor.findAll({
+            logger.log('info', 'Query: sourcesByProjectId');
+            return models.Source.findAll({
                 include: [{
                     model: models.Project,
                     where: { id: projectId }
@@ -78,6 +60,14 @@ export const resolver = {
                     active: true
                 }
             });
+        }
+
+    },
+    Source: {
+        preprocessor(source: any) {
+            // LOG
+            logger.log('info', 'Query (Project): getPreprocessor');
+            return source.getPreprocessor();
         }
     }
 };

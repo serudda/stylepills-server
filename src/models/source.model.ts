@@ -5,9 +5,7 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IAtom } from './atom.model';
-import { IProject } from './project.model';
-
+import { IPreprocessor as IPreprocessorModel } from './preprocessor.model';
 
 /************************************/
 /*            INTERFACE             */
@@ -18,6 +16,7 @@ export interface ISource {
     name: string;
     filename: string;
     code: string;
+    preprocessor: IPreprocessorModel;
     order: number;
     active: boolean;
     createdAt: string;
