@@ -5,8 +5,6 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
-import { IRgbaColor } from './rgbaColor.model';
-
 
 /************************************/
 /*            INTERFACE             */
@@ -20,6 +18,14 @@ export enum PreprocessorTypeOptions {
     stylus = 'stylus'
 }
 
+/* Possible preprocessor name options */
+export enum PreprocessorNameOptions {
+    sass = 'SASS',
+    scss = 'SCSS',
+    less = 'Less',
+    stylus = 'Stylus'
+}
+
 /* Possible compileTo type options */
 export enum CompileToTypeOptions {
     html = 'html',
@@ -29,6 +35,7 @@ export enum CompileToTypeOptions {
 
 export interface IPreprocessor {
     id: number | null;
+    name: PreprocessorNameOptions;
     type: PreprocessorTypeOptions;
     compileTo: CompileToTypeOptions;
     active: boolean;
@@ -38,6 +45,7 @@ export interface IPreprocessor {
 
 
 export interface IPreprocessorAttributes {
+    name: PreprocessorNameOptions;
     type: PreprocessorTypeOptions;
     compileTo: CompileToTypeOptions;
     active: boolean;
@@ -58,6 +66,10 @@ SequelizeStatic.Model<IPreprocessorInstance, IPreprocessorAttributes> {
     let Preprocessor: any = sequelize.define<IPreprocessorInstance, IPreprocessorAttributes>(
         'Preprocessor', {
             type: {
+                type: dataTypes.STRING,
+                allowNull: false
+            },
+            name: {
                 type: dataTypes.STRING,
                 allowNull: false
             },

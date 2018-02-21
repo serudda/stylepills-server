@@ -12,6 +12,10 @@ module.exports = {
                 type: Sequelize.STRING,
                 allowNull: false
             },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
             compileTo: {
                 type: Sequelize.STRING,
                 field: 'compile_to',

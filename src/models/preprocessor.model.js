@@ -11,6 +11,14 @@ var PreprocessorTypeOptions;
     PreprocessorTypeOptions["less"] = "less";
     PreprocessorTypeOptions["stylus"] = "stylus";
 })(PreprocessorTypeOptions = exports.PreprocessorTypeOptions || (exports.PreprocessorTypeOptions = {}));
+/* Possible preprocessor name options */
+var PreprocessorNameOptions;
+(function (PreprocessorNameOptions) {
+    PreprocessorNameOptions["sass"] = "SASS";
+    PreprocessorNameOptions["scss"] = "SCSS";
+    PreprocessorNameOptions["less"] = "Less";
+    PreprocessorNameOptions["stylus"] = "Stylus";
+})(PreprocessorNameOptions = exports.PreprocessorNameOptions || (exports.PreprocessorNameOptions = {}));
 /* Possible compileTo type options */
 var CompileToTypeOptions;
 (function (CompileToTypeOptions) {
@@ -24,6 +32,10 @@ var CompileToTypeOptions;
 function default_1(sequelize, dataTypes) {
     let Preprocessor = sequelize.define('Preprocessor', {
         type: {
+            type: dataTypes.STRING,
+            allowNull: false
+        },
+        name: {
             type: dataTypes.STRING,
             allowNull: false
         },

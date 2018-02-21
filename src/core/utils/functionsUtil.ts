@@ -9,6 +9,15 @@ import { logger } from './logger';
 /*            INTERFACES            */
 /************************************/    
 interface IFunctionUtil {
+    updateObject: (oldObject: Object, newValues: any) => any;
+    copyArray: (array: Array<any>) => Array<any>;
+    updateItemInArray: (array: Array<any>, 
+                        key: string, 
+                        value: number | string, 
+                        updateItemCallback: Function) => Array<any>;
+    deleteItemInArray: (array: Array<any>, key: string, value: number | string) => Array<any>;
+    deletePropInCollection: (array: Array<any>, ...keys: Array<string>) => Array<any>;
+    itemExistsInArray: (array: Array<any>, value: any, key: string) => boolean;
     normalizeString: (str: string) => string;
     generateUsername: (firstName: string, lastName: string) => string;
     consoleLog: (message: string, value?: any) => void;
@@ -28,6 +37,158 @@ class FunctionsUtil implements IFunctionUtil {
     /**********************************/
     /*            METHODS             */
     /**********************************/
+
+
+    /**
+     * @desc Encapsulate the idea of passing a new object as 
+     * the first parameter to Object.assign to ensure we correctly 
+     * copy data instead of mutating.
+     * @function updateObject
+     * @example - this.updateObject(state, {todos : newTodos});
+     * @param {Object} oldObject - old object to update
+     * @param {any} newValues - values or object to include in old object
+     * @return {Object}
+     */
+    updateObject(oldObject: Object, newValues: any = {}): any {
+        return Object.assign({}, oldObject, newValues);
+    }
+
+
+    /**
+     * @desc Encapsulate the idea of copy an Array ensuring we 
+     * correctly copy data instead of mutating.
+     * @function copyArray
+     * @example - this.copyArray(array);
+     * @param {Array<any>} array - old array to concat (or copy)
+     * @param {Array<any>} newArray - new array to use to concat
+     * @return {Array<any>}
+     */
+    copyArray(array: Array<any>): Array<any> {
+        return [].concat(array);
+    }
+
+
+    /**
+     * @desc Encapsulate the idea of updating and item in an array 
+     * to ensure we correctly copy data instead of mutating.
+     * @function updateItemInArray
+     * @example 
+     * const newTodos = updateItemInArray(state.todos, 'id', action.id, todo => {
+     *      return updateObject(todo, {completed : !todo.completed});
+     * });
+     * @param {Array<any>} array - array of objects
+     * @param {number | string} value - value to use to find item inside the array
+     * @param {string} key - item identifier: e.g. id, uuid, etc.
+     * @return {Array<any>}
+     */
+    updateItemInArray(
+        array: Array<any>,
+        key: string = 'id',
+        value: number | string, 
+        updateItemCallback: Function): Array<any> {
+
+        const updatedItems = array.map(item => {
+            if (item[key] !== value) {
+                /* Since we only want to update one item, 
+                    preserve all others as they are now */
+                return item;
+            }
+    
+            // Use the provided callback to create an updated item
+            const updatedItem = updateItemCallback(item);
+            return updatedItem;
+        });
+    
+        return updatedItems;
+    }
+
+
+    /**
+     * @desc Encapsulate the idea of deleting and item in an array 
+     * to ensure we correctly copy data instead of mutating.
+     * @function deleteItemInArray
+     * @example 
+     * const newTodos = deleteItemInArray(state.todos, 'id', action.id);
+     * @param {Array<any>} array - array of objects
+     * @param {number | string} value - value to use to find item inside the array
+     * @param {string} key - item identifier: e.g. id, uuid, etc.
+     * @return {Array<any>}
+     */
+    deleteItemInArray(
+        array: Array<any>,
+        key: string = 'id',
+        value: number | string): Array<any> {
+
+        const newList = array.filter(
+            (item) => {
+            if (item[key] === value) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+    
+        return newList;
+    }
+
+
+    /**
+     * @desc Validate if an item exists on an Array
+     * @function itemExistsInArray
+     * @example this.itemExistsInArray(array, 'primary', 'typeColor')
+     * @param {Array<any>} array - array to validate
+     * @param {any} value - value to use to check if exists in the array
+     * @param {string} key - If array has inner objects, this is the key that contain the value
+     * @return {boolean} value exists in array (true or false)
+     */
+    itemExistsInArray(array: Array<any>, value: any, key: string = null): boolean {
+        
+        let res = false;
+
+        if (array.length > 0) {
+
+            let newArray = array.filter((elem: any) => {
+                if (key) {
+                    return elem[key] === value;
+                } else {
+                    return elem === value;
+                }
+            });
+
+            if (newArray.length > 0) { res = true; }
+        }
+
+        return res;
+    }
+
+
+    /**
+     * @desc Encapsulate the idea of deleting inner props an array 
+     * to ensure we correctly copy data instead of mutating.
+     * @function deletePropInCollection
+     * @example 
+     * const newTodos = deletePropInCollection(atom.todos, 'id', 'atomId', 'projectId');
+     * @param {Array<any>} array - array of objects
+     * @param {Array<string>} props - list of keys to delete e.g. 'id', 'atomId', 'projectId'
+     * @return {Array<any>}
+     */
+    deletePropInCollection(array: Array<any>, ...keys: Array<string>): Array<any> {
+
+        const newCollection = array.filter((item) => {
+
+            keys.forEach(
+                (key) => { 
+                    delete item[key];
+                }
+            );
+            
+            return true;
+        });
+
+        return newCollection;
+
+    }
+
 
     /**
      * normalizeString

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.typeDef = `
 type Preprocessor {
     id: ID!
+    name: String
     type: String
     compileTo: String
     active: Boolean

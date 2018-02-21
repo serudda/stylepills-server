@@ -175,6 +175,10 @@ exports.buildNewAtom = (atom, userId, atomCode) => {
     let libs = [];
     // If atom libs exist, remove ids in order to create new records
     if (atom.libs) {
+        /* TODO: Con esta funcion deberiamos poder eliminar las props, pero como estamos manejando en este
+            Array, objecto con propiedades anidadas: e.g. dataValues.id. Entonces esta funcion no nos sirve
+            por el momento, hasta no encontrar una forma de poder hacerlo.*/
+        // atomLibs = functionsUtil.deletePropInCollection(atom.libs, 'id', 'atomId', 'projectId');
         atomLibs = atom.libs.filter((lib) => {
             delete lib.dataValues.id;
             delete lib.dataValues.atomId;

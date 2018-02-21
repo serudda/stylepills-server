@@ -6,6 +6,8 @@ import * as SequelizeStatic from 'sequelize';
 import { Instance, DataTypes, Sequelize } from 'sequelize';
 import { ISequelizeModels } from './index';
 
+import { functionsUtil } from './../core/utils/functionsUtil';
+
 import { IUser } from './user.model';
 import { IComment } from './comment.model';
 import { IAtomCategory } from './atomCategory.model';
@@ -288,6 +290,12 @@ export const buildNewAtom =
 
     // If atom libs exist, remove ids in order to create new records
     if (atom.libs) {
+
+        /* TODO: Con esta funcion deberiamos poder eliminar las props, pero como estamos manejando en este
+            Array, objecto con propiedades anidadas: e.g. dataValues.id. Entonces esta funcion no nos sirve
+            por el momento, hasta no encontrar una forma de poder hacerlo.*/
+        // atomLibs = functionsUtil.deletePropInCollection(atom.libs, 'id', 'atomId', 'projectId');
+
         atomLibs = atom.libs.filter((lib: ILibInstance) => {
             delete lib.dataValues.id;
             delete lib.dataValues.atomId;

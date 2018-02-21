@@ -11,6 +11,7 @@ import { IProjectCategory } from 'models/projectCategory.model';
 import { IColor } from 'models/color.model';
 import { IAtom } from 'models/atom.model';
 import { ILib, ILibInstance } from 'models/lib.model';
+import { ISource, ISourceInstance } from 'models/source.model';
 
 
 /************************************/
@@ -29,6 +30,7 @@ export interface IProject {
     category: IProjectCategory;
     atoms: Array<IAtom>;
     libs: Array<ILibInstance | ILib>;
+    sources: Array<ISource>;
     createdAt: string;
     updatedAt: string;
 }
@@ -42,6 +44,7 @@ export interface IProjectAttributes {
     authorId: number;
     projectCategoryId: number;
     libs?: Array<ILibInstance | ILib>;
+    sources?: Array<ISourceInstance | ISource>;
     active?: boolean;
     private: boolean;
 }
