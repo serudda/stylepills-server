@@ -12,6 +12,7 @@ exports.typeDef = `
     extend type Query {
         preprocessorsByProjectId(projectId: ID!): [Preprocessor!]
         allPreprocessors: [Preprocessor!]!
+        preprocessorById(id: ID!): Preprocessor!
     }
 `;
 /*******************************************/
@@ -52,6 +53,19 @@ exports.resolver = {
                     active: true
                 }
             });
+        },
+        /**
+         * @desc Get Preprocessors by id
+         * @method Method preprocessorById
+         * @public
+         * @param {IPreprocessorQueryArgs} args - destructuring: id
+         * @param {number} id - Preprocessor id
+         * @returns {IPreprocessor} Preprocessor
+         */
+        preprocessorById(parent, { id }) {
+            // LOG
+            logger_1.logger.log('info', 'Query: preprocessorById');
+            return index_1.models.Preprocessor.findById(id);
         }
     }
 };

@@ -8,18 +8,22 @@ module.exports = {
                 primaryKey: true,
                 type: Sequelize.INTEGER
             },
+            name: {
+                type: Sequelize.STRING,
+                allowNull: false
+            },
             type: {
                 type: Sequelize.STRING,
                 allowNull: false
             },
-            name: {
+            extension: {
                 type: Sequelize.STRING,
                 allowNull: false
             },
             compileTo: {
                 type: Sequelize.STRING,
                 field: 'compile_to',
-                allowNull: false
+                allowNull: true
             },
             active: {
                 type: Sequelize.BOOLEAN,

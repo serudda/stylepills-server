@@ -20,10 +20,18 @@ export enum PreprocessorTypeOptions {
 
 /* Possible preprocessor name options */
 export enum PreprocessorNameOptions {
-    sass = 'SASS',
+    sass = 'Sass',
     scss = 'SCSS',
     less = 'Less',
     stylus = 'Stylus'
+}
+
+/* Possible preprocessor extension options */
+export enum PreprocessorExtOptions {
+    sass = 'sass',
+    scss = 'scss',
+    less = 'less',
+    stylus = 'styl'
 }
 
 /* Possible compileTo type options */
@@ -37,6 +45,7 @@ export interface IPreprocessor {
     id: number | null;
     name: PreprocessorNameOptions;
     type: PreprocessorTypeOptions;
+    extension: PreprocessorExtOptions;
     compileTo: CompileToTypeOptions;
     active: boolean;
     createdAt: string;
@@ -76,6 +85,10 @@ SequelizeStatic.Model<IPreprocessorInstance, IPreprocessorAttributes> {
             compileTo: {
                 type: dataTypes.STRING,
                 field: 'compile_to',
+                allowNull: true
+            },
+            extension: {
+                type: dataTypes.STRING,
                 allowNull: false
             },
             active: {

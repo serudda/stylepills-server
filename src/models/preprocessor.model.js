@@ -14,11 +14,19 @@ var PreprocessorTypeOptions;
 /* Possible preprocessor name options */
 var PreprocessorNameOptions;
 (function (PreprocessorNameOptions) {
-    PreprocessorNameOptions["sass"] = "SASS";
+    PreprocessorNameOptions["sass"] = "Sass";
     PreprocessorNameOptions["scss"] = "SCSS";
     PreprocessorNameOptions["less"] = "Less";
     PreprocessorNameOptions["stylus"] = "Stylus";
 })(PreprocessorNameOptions = exports.PreprocessorNameOptions || (exports.PreprocessorNameOptions = {}));
+/* Possible preprocessor extension options */
+var PreprocessorExtOptions;
+(function (PreprocessorExtOptions) {
+    PreprocessorExtOptions["sass"] = "sass";
+    PreprocessorExtOptions["scss"] = "scss";
+    PreprocessorExtOptions["less"] = "less";
+    PreprocessorExtOptions["stylus"] = "styl";
+})(PreprocessorExtOptions = exports.PreprocessorExtOptions || (exports.PreprocessorExtOptions = {}));
 /* Possible compileTo type options */
 var CompileToTypeOptions;
 (function (CompileToTypeOptions) {
@@ -42,6 +50,10 @@ function default_1(sequelize, dataTypes) {
         compileTo: {
             type: dataTypes.STRING,
             field: 'compile_to',
+            allowNull: true
+        },
+        extension: {
+            type: dataTypes.STRING,
             allowNull: false
         },
         active: {

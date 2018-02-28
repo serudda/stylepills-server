@@ -15,6 +15,7 @@ import { IStatus } from './../../core/interfaces/interfaces';
 import { IProject, IProjectAttributes, IProjectInstance } from './../../models/project.model';
 import { IColor as IColorModel } from './../../models/color.model';
 import { ILib as ILibModel } from './../../models/lib.model';
+import { ISource as ISourceModel } from './../../models/source.model';
 
 
 /************************************/
@@ -32,6 +33,7 @@ interface ICreateProjectInput {
     description?: string;
     colorPalette: Array<IColorModel>;
     libs: Array<ILibModel>;
+    sources: Array<ISourceModel>;
     private: boolean;
     projectCategoryId: number;
 }
@@ -87,6 +89,7 @@ input CreateProjectInput {
     description: String
     colorPalette: [ColorInput]
     libs: [LibInput]
+    sources: [SourceInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -155,6 +158,10 @@ export const resolver = {
                             {
                                 model: models.Lib,
                                 as: 'libs'
+                            },
+                            {
+                                model: models.Source,
+                                as: 'sources'
                             }
                         ]
                     }

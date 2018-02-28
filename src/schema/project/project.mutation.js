@@ -53,6 +53,7 @@ input CreateProjectInput {
     description: String
     colorPalette: [ColorInput]
     libs: [LibInput]
+    sources: [SourceInput]
     private: Boolean!
     projectCategoryId: Int
 }
@@ -112,6 +113,10 @@ exports.resolver = {
                         {
                             model: index_1.models.Lib,
                             as: 'libs'
+                        },
+                        {
+                            model: index_1.models.Source,
+                            as: 'sources'
                         }
                     ]
                 })

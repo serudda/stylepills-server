@@ -3,6 +3,17 @@
 /************************************/
 
 export const typeDef = `
+
+# Input: TODO: Mover a source.mutation cuando se haya creado
+
+input SourceInput {
+    name: String
+    filename: String
+    code: String
+    preprocessorId: ID!
+    order: Int
+}
+
 type Source {
     id: ID!
     name: String

@@ -19,6 +19,7 @@ import {
  * Arguments passed to Preprocessor queries
  */
 interface IPreprocessorQueryArgs {
+    id: number;
     atomId: number;
     projectId: number;
 }
@@ -32,6 +33,7 @@ export const typeDef = `
     extend type Query {
         preprocessorsByProjectId(projectId: ID!): [Preprocessor!]
         allPreprocessors: [Preprocessor!]!
+        preprocessorById(id: ID!): Preprocessor!
     }
 `;
 
@@ -78,6 +80,24 @@ export const resolver = {
                     active: true
                 }
             });
+        },
+
+
+        /**
+         * @desc Get Preprocessors by id
+         * @method Method preprocessorById
+         * @public
+         * @param {IPreprocessorQueryArgs} args - destructuring: id
+         * @param {number} id - Preprocessor id
+         * @returns {IPreprocessor} Preprocessor
+         */
+        preprocessorById(parent: any, { id }: IPreprocessorQueryArgs) {
+            // LOG
+            logger.log('info', 'Query: preprocessorById');
+            return models.Preprocessor.findById(id);
         }
+
+
+
     }
 };

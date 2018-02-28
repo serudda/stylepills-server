@@ -6,6 +6,7 @@ export const typeDef = `
 type Preprocessor {
     id: ID!
     name: String
+    extension: String
     type: String
     compileTo: String
     active: Boolean
