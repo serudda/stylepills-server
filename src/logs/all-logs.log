@@ -41,3 +41,7 @@
 {"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-03-29T22:18:46Z"}
 {"level":"info","message":"GraphQL Schema activated","timestamp":"2018-03-30T00:17:29Z"}
 {"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-03-30T00:17:29Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2018-03-30T00:40:20Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-03-30T00:40:21Z"}
+{"level":"info","message":"GraphQL Schema activated","timestamp":"2018-03-30T00:40:28Z"}
+{"level":"info","message":"GraphiQL is now running on http://localhost:4000/graphiql","timestamp":"2018-03-30T00:40:29Z"}
