@@ -63,12 +63,12 @@ export const STAGING_AUTH_GOOGLE_CALLBACK_URL   = `${STAGING_AUTH_GOOGLE_URL}${A
 export const PRD_AUTH_GOOGLE_CALLBACK_URL       = `${PRD_AUTH_GOOGLE_URL}${AUTH_CALLBACK}`;
 
 /* Google redirect when user signed up successful */
-export const LOCAL_GOOGLE_AUTH_REDIRECT_URL     = `${LOCAL_CLIENT_URL}?token=`;
-export const DEV_GOOGLE_AUTH_REDIRECT_URL       = `${DEV_CLIENT_URL}?token=`;
-export const STAGING_GOOGLE_AUTH_REDIRECT_URL   = `${STAGING_CLIENT_URL}?token=`;
-export const PRD_GOOGLE_AUTH_REDIRECT_URL       = `${PRD_CLIENT_URL}?token=`;
-export const ALPHA_GOOGLE_AUTH_REDIRECT_URL     = `${ALPHA_CLIENT_URL}?token=`;
-export const BETA_GOOGLE_AUTH_REDIRECT_URL      = `${BETA_CLIENT_URL}?token=`;
+export const LOCAL_GOOGLE_AUTH_REDIRECT_URL     = `${LOCAL_CLIENT_URL}/dashboard?token=`;
+export const DEV_GOOGLE_AUTH_REDIRECT_URL       = `${DEV_CLIENT_URL}/dashboard?token=`;
+export const STAGING_GOOGLE_AUTH_REDIRECT_URL   = `${STAGING_CLIENT_URL}/dashboard?token=`;
+export const PRD_GOOGLE_AUTH_REDIRECT_URL       = `${PRD_CLIENT_URL}/dashboard?token=`;
+export const ALPHA_GOOGLE_AUTH_REDIRECT_URL     = `${ALPHA_CLIENT_URL}/dashboard?token=`;
+export const BETA_GOOGLE_AUTH_REDIRECT_URL      = `${BETA_CLIENT_URL}/dashboard?token=`;
 
 /* Auth Logout Base Endpoints */
 export const LOCAL_AUTH_LOGOUT_URL      = `${LOCAL_SERVER_URL}${AUTH_LOGOUT}`;
