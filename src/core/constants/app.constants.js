@@ -54,12 +54,12 @@ exports.DEV_AUTH_GOOGLE_CALLBACK_URL = `${exports.DEV_AUTH_GOOGLE_URL}${exports.
 exports.STAGING_AUTH_GOOGLE_CALLBACK_URL = `${exports.STAGING_AUTH_GOOGLE_URL}${exports.AUTH_CALLBACK}`;
 exports.PRD_AUTH_GOOGLE_CALLBACK_URL = `${exports.PRD_AUTH_GOOGLE_URL}${exports.AUTH_CALLBACK}`;
 /* Google redirect when user signed up successful */
-exports.LOCAL_GOOGLE_AUTH_REDIRECT_URL = `${exports.LOCAL_CLIENT_URL}/explore?token=`;
-exports.DEV_GOOGLE_AUTH_REDIRECT_URL = `${exports.DEV_CLIENT_URL}/explore?token=`;
-exports.STAGING_GOOGLE_AUTH_REDIRECT_URL = `${exports.STAGING_CLIENT_URL}/explore?token=`;
-exports.PRD_GOOGLE_AUTH_REDIRECT_URL = `${exports.PRD_CLIENT_URL}/explore?token=`;
-exports.ALPHA_GOOGLE_AUTH_REDIRECT_URL = `${exports.ALPHA_CLIENT_URL}/explore?token=`;
-exports.BETA_GOOGLE_AUTH_REDIRECT_URL = `${exports.BETA_CLIENT_URL}/explore?token=`;
+exports.LOCAL_GOOGLE_AUTH_REDIRECT_URL = `${exports.LOCAL_CLIENT_URL}?token=`;
+exports.DEV_GOOGLE_AUTH_REDIRECT_URL = `${exports.DEV_CLIENT_URL}?token=`;
+exports.STAGING_GOOGLE_AUTH_REDIRECT_URL = `${exports.STAGING_CLIENT_URL}?token=`;
+exports.PRD_GOOGLE_AUTH_REDIRECT_URL = `${exports.PRD_CLIENT_URL}?token=`;
+exports.ALPHA_GOOGLE_AUTH_REDIRECT_URL = `${exports.ALPHA_CLIENT_URL}?token=`;
+exports.BETA_GOOGLE_AUTH_REDIRECT_URL = `${exports.BETA_CLIENT_URL}?token=`;
 /* Auth Logout Base Endpoints */
 exports.LOCAL_AUTH_LOGOUT_URL = `${exports.LOCAL_SERVER_URL}${exports.AUTH_LOGOUT}`;
 exports.DEV_AUTH_LOGOUT_URL = `${exports.DEV_SERVER_URL}${exports.AUTH_LOGOUT}`;
