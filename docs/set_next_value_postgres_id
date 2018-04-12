@@ -13,3 +13,36 @@ SELECT setval('atom_id_seq', (select max(id) from atom));
 # SELECT setval('<tabla>_id_seq', (select max(<primaryKey>) from <tabla>));
 
 # Referencias: https://stackoverflow.com/questions/35029052/sequelize-throwing-id-must-be-unique-on-create
+
+
+# Current Setvals
+
+SELECT nextval('user_id_seq');
+SELECT setval('user_id_seq', (select max(id) from "user"));
+
+SELECT nextval('atom_id_seq');
+SELECT setval('atom_id_seq', (select max(id) from "atom"));
+
+SELECT nextval('atom_category_id_seq');
+SELECT setval('atom_category_id_seq', (select max(id) from "atom_category"));
+
+SELECT nextval('authentication_method_id_seq');
+SELECT setval('authentication_method_id_seq', (select max(id) from "authentication_method"));
+
+SELECT nextval('color_id_seq');
+SELECT setval('color_id_seq', (select max(id) from "color"));
+
+SELECT nextval('comment_id_seq');
+SELECT setval('comment_id_seq', (select max(id) from "comment"));
+
+SELECT nextval('lib_id_seq');
+SELECT setval('lib_id_seq', (select max(id) from "lib"));
+
+SELECT nextval('project_id_seq');
+SELECT setval('project_id_seq', (select max(id) from "project"));
+
+SELECT nextval('project_category_id_seq');
+SELECT setval('project_category_id_seq', (select max(id) from "project_category"));
+
+SELECT nextval('rgba_color_id_seq');
+SELECT setval('rgba_color_id_seq', (select max(id) from "rgba_color"));
