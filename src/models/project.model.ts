@@ -17,14 +17,23 @@ import { ILib, ILibInstance } from 'models/lib.model';
 /*            INTERFACE             */
 /************************************/
 
+/* Possible status options */
+export enum StatusOptions {
+    new = 'NW',
+    validated = 'VA',
+    verified = 'VE'
+}
+
 export interface IProject {
     id: number | null;
     name: string;
     website: string;
+    logoUrl: string;
     description: string;
     colorPalette: Array<IColor>;
     active: boolean;
     private: boolean;
+    status: StatusOptions;
     author: IUser;
     category: IProjectCategory;
     atoms: Array<IAtom>;
@@ -38,12 +47,14 @@ export interface IProjectAttributes {
     id?: number | null;
     name: string;
     website?: string;
+    logoUrl?: string;
     description?: string;
     authorId: number;
     projectCategoryId: number;
     libs?: Array<ILibInstance | ILib>;
     active?: boolean;
     private: boolean;
+    status: StatusOptions;
 }
 
 
@@ -74,6 +85,11 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
                 type: dataTypes.STRING,
                 allowNull: true
             },
+            logoUrl: {
+                type: dataTypes.TEXT,
+                field: 'logo_url',
+                allowNull: true
+            },
             active: {
                 type: dataTypes.BOOLEAN,
                 defaultValue: true
@@ -81,6 +97,11 @@ SequelizeStatic.Model<IProjectInstance, IProjectAttributes> {
             private: {
                 type: dataTypes.BOOLEAN,
                 defaultValue: false
+            },
+            status: {
+                type: dataTypes.STRING(2),
+                allowNull: false,
+                defaultValue: StatusOptions.new
             }
         },
         {

@@ -12,6 +12,7 @@ import { functionsUtil } from './../../core/utils/functionsUtil';
 import { logger } from './../../core/utils/logger';
 
 import { IAtomInstance } from './../../models/atom.model';
+import { StatusOptions } from './../../models/project.model';
 
 
 /************************************/
@@ -106,7 +107,8 @@ export const resolver = {
             return models.Project.findAll({
                 limit,
                 where: {
-                    active: true
+                    active: true,
+                    status: [StatusOptions.validated, StatusOptions.verified]
                 }
             });
         }

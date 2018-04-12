@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./../../models/index");
 const appConfig = require("./../../core/constants/app.constants");
 const logger_1 = require("./../../core/utils/logger");
+const project_model_1 = require("./../../models/project.model");
 /**************************************/
 /*            QUERY TYPEDEF           */
 /**************************************/
@@ -67,7 +68,8 @@ exports.resolver = {
             return index_1.models.Project.findAll({
                 limit,
                 where: {
-                    active: true
+                    active: true,
+                    status: [project_model_1.StatusOptions.validated, project_model_1.StatusOptions.verified]
                 }
             });
         }
