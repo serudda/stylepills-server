@@ -1,5 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/************************************/
+/*            INTERFACE             */
+/************************************/
+/* Possible status options */
+var StatusOptions;
+(function (StatusOptions) {
+    StatusOptions["new"] = "NW";
+    StatusOptions["validated"] = "VA";
+    StatusOptions["verified"] = "VE";
+})(StatusOptions = exports.StatusOptions || (exports.StatusOptions = {}));
 /*****************************************/
 /*               ATOM MODEL              */
 /*****************************************/
@@ -18,6 +28,11 @@ function default_1(sequelize, dataTypes) {
             type: dataTypes.STRING,
             allowNull: true
         },
+        logoUrl: {
+            type: dataTypes.TEXT,
+            field: 'logo_url',
+            allowNull: true
+        },
         active: {
             type: dataTypes.BOOLEAN,
             defaultValue: true
@@ -25,6 +40,11 @@ function default_1(sequelize, dataTypes) {
         private: {
             type: dataTypes.BOOLEAN,
             defaultValue: false
+        },
+        status: {
+            type: dataTypes.STRING(2),
+            allowNull: false,
+            defaultValue: StatusOptions.new
         }
     }, {
         timestamps: true,

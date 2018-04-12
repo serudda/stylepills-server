@@ -18,6 +18,7 @@ type ValidationProjectError {
     authorId: String
     name: String
     website: String
+    logoUrl: String
     colorPalette: String
     projectCategoryId: String
     private: String
@@ -50,6 +51,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
+    logoUrl: String
     description: String
     colorPalette: [ColorInput]
     libs: [LibInput]

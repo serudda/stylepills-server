@@ -12,7 +12,7 @@ import { functionsUtil } from './../../core/utils/functionsUtil';
 import { models } from './../../models/index';
 
 import { IStatus } from './../../core/interfaces/interfaces';
-import { IProject, IProjectAttributes, IProjectInstance } from './../../models/project.model';
+import { IProject, IProjectAttributes, IProjectInstance, StatusOptions } from './../../models/project.model';
 import { IColor as IColorModel } from './../../models/color.model';
 import { ILib as ILibModel } from './../../models/lib.model';
 
@@ -29,11 +29,13 @@ interface ICreateProjectInput {
     authorId: number;
     name: string;
     website?: string;
+    logoUrl?: string;
     description?: string;
     colorPalette: Array<IColorModel>;
     libs: Array<ILibModel>;
     private: boolean;
     projectCategoryId: number;
+    status: StatusOptions;
 }
 
 interface ICreateProjectArgs {
@@ -52,6 +54,7 @@ type ValidationProjectError {
     authorId: String
     name: String
     website: String
+    logoUrl: String
     colorPalette: String
     projectCategoryId: String
     private: String
@@ -84,6 +87,7 @@ input CreateProjectInput {
     authorId: ID!
     name: String! 
     website: String
+    logoUrl: String
     description: String
     colorPalette: [ColorInput]
     libs: [LibInput]

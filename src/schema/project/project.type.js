@@ -8,12 +8,14 @@ type Project {
     id: ID!
     name: String
     website: String
+    logoUrl: String
     description: String
     colorPalette: [Color]
     libs: [Lib]
     atoms: [Atom]
     active: Boolean
     private: Boolean
+    status: String
     author: User!
     category: ProjectCategory!
 }
